@@ -1,7 +1,7 @@
 from matplotlib import pyplot as plt
-from quad import QuadrantGrid, QuadrantPoints
-from quadvis import visualize_grid
-from quadseq import SequenceGenerator, animate_sequence_matplotlib
+from quad.task import QuadrantGrid, QuadrantPoints
+from quad.vis import visualize_grid
+from quad.seq import SequenceGenerator, animate_sequence_matplotlib
 
 scaffold = QuadrantGrid(10, 20)
 points = QuadrantPoints(

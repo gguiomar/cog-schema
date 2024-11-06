@@ -1,11 +1,13 @@
+import random
+import numpy as np
+
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.animation import FuncAnimation
-import numpy as np
 from typing import List, Tuple, NamedTuple
 from dataclasses import dataclass
-import random
-from quad import QuadrantGrid
+
+from quad.task import QuadrantGrid
 
 @dataclass
 class ActivePoint:
