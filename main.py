@@ -1,7 +1,6 @@
 from matplotlib import pyplot as plt
-from quad.task import QuadrantGrid, QuadrantPoints
-from quad.vis import visualize_grid
-from quad.seq import SequenceGenerator, animate_sequence_matplotlib
+from quad.task import QuadrantGrid, QuadrantPoints, SequenceGenerator
+from quad.vis import visualize_grid, animate_sequence_matplotlib
 
 scaffold = QuadrantGrid(10, 20)
 points = QuadrantPoints(
@@ -20,16 +19,26 @@ points = QuadrantPoints(
     value=1
 )
 scaffold.place_points(points)
+
 # visualize_grid(scaffold)
 # plt.show()
 
-task = QuadrantGrid(10, 20)
 seq_gen = SequenceGenerator(scaffold)
 sequence = seq_gen.generate_random_sequence(
-    n_frames=50,          # Total number of frames
-    max_points=5,         # Maximum simultaneous points
-    min_lifetime=3,       # Minimum frames a point exists
-    max_lifetime=8,       # Maximum frames a point exists
-    appearance_prob=0.3   # Probability of new point per quadrant per frame
+    n_frames=30,
+    max_points=10,
+    min_lifetime=3,
+    max_lifetime=8,
+    appearance_prob=0.3
 )
-animate_sequence_matplotlib(scaffold, sequence, interval=1000, title="Points with Lifetimes")
+
+#animate_sequence_matplotlib(scaffold, sequence, interval=1000, title="Points with Lifetimes")
+
+seq_an = seq_gen.analyze_sequence(sequence)
+
+seq_gen.print_frame_analysis(seq_an[0])
+
+for i,e in enumerate(seq_an):
+    print("=====================================")
+    print(f"FRAME: {i}")
+    seq_gen.print_frame_analysis(e)
