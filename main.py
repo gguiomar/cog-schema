@@ -32,7 +32,7 @@ sequence = seq_gen.generate_random_sequence(
     appearance_prob=0.3
 )
 
-#animate_sequence_matplotlib(scaffold, sequence, interval=1000, title="Points with Lifetimes")
+animate_sequence_matplotlib(scaffold, sequence, interval=1000, title="Points with Lifetimes")
 
 seq_an = seq_gen.analyze_sequence(sequence)
 

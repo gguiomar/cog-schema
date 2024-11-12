@@ -1,9 +1,16 @@
 import random
+from enum import Enum
+from dataclasses import dataclass, field
 import numpy as np
 from collections import defaultdict
-from typing import List, Tuple, Dict, Union, NamedTuple, Set
+from typing import Optional, List, Tuple, Dict, Union, NamedTuple, Set
 from dataclasses import dataclass
 
+
+class PointColor(Enum):
+    UNKNOWN = 0
+    RED = 1
+    GREEN = 2
 
 @dataclass
 class QuadrantPoints:
@@ -12,6 +19,25 @@ class QuadrantPoints:
     bottom_left: List[Tuple[int, int]] = None
     bottom_right: List[Tuple[int, int]] = None
     value: int = 1
+
+@dataclass
+class ActivePoint:
+    """Enhanced class to track an active point with color identity"""
+    position: Tuple[int, int]
+    birth_frame: int
+    lifetime: int
+    true_color: PointColor  # Actual color (hidden from agent)
+    visible_color: PointColor = PointColor.UNKNOWN  # Color visible to agent
+    sampled: bool = False
+    
+    def is_alive(self, current_frame: int) -> bool:
+        return current_frame < self.birth_frame + self.lifetime
+    
+    def sample(self) -> PointColor:
+        """Sample this point to reveal its true color"""
+        self.sampled = True
+        self.visible_color = self.true_color
+        return self.true_color
 
 class QuadrantGrid:
     def __init__(self, height: int, width: int):
@@ -31,6 +57,10 @@ class QuadrantGrid:
         # Calculate quadrant boundaries
         self.mid_h = height // 2
         self.mid_w = width // 2
+    
+    def get_grid(self) -> np.ndarray:
+        """Return a copy of the current grid."""
+        return self.grid.copy()
     
     def get_quadrant_bounds(self, quadrant: str) -> Tuple[slice, slice]:
         """Get the slice bounds for a given quadrant."""
@@ -57,16 +87,7 @@ class QuadrantGrid:
     
     def place_points(self, points: Union[QuadrantPoints, Dict[str, List[Tuple[int, int]]], List[Tuple[int, int]]], 
                     quadrant: str = None, value: int = 1):
-        """Place points in specified quadrant(s) with given value.
-        
-        Args:
-            points: Can be:
-                   - QuadrantPoints object
-                   - Dict mapping quadrant names to point lists
-                   - List of (h, w) points (requires quadrant parameter)
-            quadrant: Required if points is a list, ignored otherwise
-            value: Value to place at the points (default 1)
-        """
+        """Place points in specified quadrant(s) with given value."""
         if isinstance(points, QuadrantPoints):
             for quad in ['top_left', 'top_right', 'bottom_left', 'bottom_right']:
                 quad_points = getattr(points, quad)
@@ -89,17 +110,15 @@ class QuadrantGrid:
         
         else:
             raise ValueError("Invalid points format or missing quadrant specification")
-
-@dataclass
-class ActivePoint:
-    """Class to track an active point and its lifetime."""
-    position: Tuple[int, int]
-    birth_frame: int
-    lifetime: int
     
-    def is_alive(self, current_frame: int) -> bool:
-        """Check if point is still alive at current frame."""
-        return current_frame < self.birth_frame + self.lifetime
+    def clear_quadrant(self, quadrant: str):
+        """Clear all points in the specified quadrant."""
+        h_slice, w_slice = self.get_quadrant_bounds(quadrant)
+        self.grid[h_slice, w_slice] = 0
+    
+    def clear_all(self):
+        """Clear the entire grid."""
+        self.grid.fill(0)
 
 @dataclass
 class FrameAnalysis:
@@ -160,134 +179,168 @@ class FrameAnalysis:
             available_positions=dict(available_by_quadrant)
         )
 
+
+@dataclass
+class QuadrantConfig:
+    """Configuration for color probabilities in each quadrant"""
+    quadrant_probs: Dict[str, Tuple[float, float, int]] = field(default_factory=lambda: {
+        'top_left': (0.9, 0.1, 0),      # [90,10,0]
+        'top_right': (0.5, 0.5, 1),     # [50,50,1]
+        'bottom_left': (0.5, 0.5, 2),   # [50,50,2]
+        'bottom_right': (0.5, 0.5, 3)    # [50,50,3]
+    })
+
+@dataclass
+class FrameState:
+    """State of the frame including sampling information"""
+    active_points: Dict[str, List[ActivePoint]]  # Points active in each quadrant
+    occupied_positions: Set[Tuple[int, int]]     # All occupied positions
+    points_per_quadrant: Dict[str, int]          # Count of points per quadrant
+    total_points: int                            # Total active points
+    available_positions: Dict[str, List[Tuple[int, int]]]  # Available positions
+    available_actions: List[Tuple[int, int]]     # Points that can be sampled
+
 class SequenceGenerator:
-    def __init__(self, scaffold_grid: QuadrantGrid):
-        """Initialize with a scaffolding grid that defines valid point positions."""
+    def __init__(self, scaffold_grid: QuadrantGrid, config: QuadrantConfig = None):
+        """Initialize with scaffold grid and color configuration"""
         self.scaffold = scaffold_grid.get_grid()
+        self.config = config or QuadrantConfig()
+        self.height, self.width = self.scaffold.shape
+        mid_h, mid_w = self.height // 2, self.width // 2
         
-        # Store valid points by quadrant
-        height, width = self.scaffold.shape
-        mid_h, mid_w = height // 2, width // 2
+        # Initialize quadrant points
+        self.quadrant_points = self._init_quadrant_points(mid_h, mid_w)
         
-        self.quadrant_points = {
-            'top_left': [],
-            'top_right': [],
-            'bottom_left': [],
-            'bottom_right': []
+        # Track sampled points for visualization
+        self.sampled_points: Dict[Tuple[int, int], PointColor] = {}
+    
+    def _init_quadrant_points(self, mid_h: int, mid_w: int) -> Dict[str, List[Tuple[int, int]]]:
+        quadrant_points = {
+            'top_left': [], 'top_right': [], 
+            'bottom_left': [], 'bottom_right': []
         }
         
-        for i in range(height):
-            for j in range(width):
+        for i in range(self.height):
+            for j in range(self.width):
                 if self.scaffold[i, j] == 1:
                     if i < mid_h:
                         if j < mid_w:
-                            self.quadrant_points['top_left'].append((i, j))
+                            quadrant_points['top_left'].append((i, j))
                         else:
-                            self.quadrant_points['top_right'].append((i, j))
+                            quadrant_points['top_right'].append((i, j))
                     else:
                         if j < mid_w:
-                            self.quadrant_points['bottom_left'].append((i, j))
+                            quadrant_points['bottom_left'].append((i, j))
                         else:
-                            self.quadrant_points['bottom_right'].append((i, j))
+                            quadrant_points['bottom_right'].append((i, j))
+        
+        return quadrant_points
+    
+    def _assign_point_color(self, position: Tuple[int, int]) -> PointColor:
+        """Assign a color to a point based on its quadrant's probabilities"""
+        # Determine quadrant
+        i, j = position
+        mid_h, mid_w = self.height // 2, self.width // 2
+        
+        if i < mid_h:
+            quadrant = 'top_left' if j < mid_w else 'top_right'
+        else:
+            quadrant = 'bottom_left' if j < mid_w else 'bottom_right'
+            
+        # Get probabilities for this quadrant
+        red_prob, _, _ = self.config.quadrant_probs[quadrant]
+        
+        # Assign color based on probability
+        return PointColor.RED if random.random() < red_prob else PointColor.GREEN
     
     def generate_random_sequence(self, 
                                n_frames: int, 
                                max_points: int,
                                min_lifetime: int = 3,
                                max_lifetime: int = 8,
-                               appearance_prob: float = 0.3) -> List[List[Tuple[int, int]]]:
-        """
-        Generate a sequence where points appear randomly and persist for multiple frames.
-        
-        Args:
-            n_frames: Number of frames in sequence
-            max_points: Maximum number of points that can exist simultaneously
-            min_lifetime: Minimum number of frames a point can exist
-            max_lifetime: Maximum number of frames a point can exist
-            appearance_prob: Probability of a new point appearing in each quadrant per frame
-        
-        Returns:
-            List of frames, where each frame contains list of active point positions
-        """
-        active_points = []  # List to track all active points
-        sequence = []  # Final sequence of frames
+                               appearance_prob: float = 0.3) -> List[List[ActivePoint]]:
+        """Generate sequence with colored points"""
+        active_points = []
+        sequence = []
         
         for frame in range(n_frames):
             # Remove dead points
             active_points = [p for p in active_points if p.is_alive(frame)]
             
-            # Try to add new points if under max_points
+            # Try to add new points
             if len(active_points) < max_points:
-                # Check each quadrant
                 for quadrant, points in self.quadrant_points.items():
                     if random.random() < appearance_prob:
-                        # Get currently occupied positions
                         occupied = {p.position for p in active_points}
-                        
-                        # Get available positions in this quadrant
                         available = [p for p in points if p not in occupied]
                         
                         if available:
-                            # Add a new point
                             new_position = random.choice(available)
                             lifetime = random.randint(min_lifetime, max_lifetime)
-                            active_points.append(ActivePoint(new_position, frame, lifetime))
+                            true_color = self._assign_point_color(new_position)
+                            
+                            active_points.append(ActivePoint(
+                                position=new_position,
+                                birth_frame=frame,
+                                lifetime=lifetime,
+                                true_color=true_color
+                            ))
             
-            # Add current frame to sequence
-            sequence.append([p.position for p in active_points])
+            sequence.append(active_points.copy())
         
         return sequence
+    
+    def sample_point(self, 
+                    frame_state: FrameState, 
+                    position: Tuple[int, int]) -> Optional[PointColor]:
+        """Sample a point to reveal its color"""
+        # Find the point in active points
+        for points in frame_state.active_points.values():
+            for point in points:
+                if point.position == position and not point.sampled:
+                    color = point.sample()
+                    self.sampled_points[position] = color
+                    return color
+        return None
+    
+    def get_frame_state(self, 
+                       active_points: List[ActivePoint], 
+                       frame: int) -> FrameState:
+        """Get the current frame state including available sampling actions"""
+        # Initialize collections
+        points_by_quadrant = {q: [] for q in self.quadrant_points.keys()}
+        occupied = set()
+        sampeable_points = []
+        
+        # Process active points
+        for point in active_points:
+            if point.is_alive(frame):
+                pos = point.position
+                occupied.add(pos)
+                
+                # Add to quadrant
+                for quadrant, valid_points in self.quadrant_points.items():
+                    if pos in valid_points:
+                        points_by_quadrant[quadrant].append(point)
+                        break
+                
+                # Add to sampeable points if not already sampled
+                if not point.sampled:
+                    sampeable_points.append(pos)
+        
+        # Calculate available positions
+        available = {
+            quadrant: [pos for pos in points if pos not in occupied]
+            for quadrant, points in self.quadrant_points.items()
+        }
+        
+        return FrameState(
+            active_points=points_by_quadrant,
+            occupied_positions=occupied,
+            points_per_quadrant={q: len(p) for q, p in points_by_quadrant.items()},
+            total_points=len(occupied),
+            available_positions=available,
+            available_actions=sampeable_points
+        )
 
 
-    def analyze_sequence(self, sequence: List[List[Tuple[int, int]]]) -> List[FrameAnalysis]:
-        """
-        Analyze an entire sequence frame by frame.
-        
-        Args:
-            sequence: List of frames, where each frame contains point positions
-            
-        Returns:
-            List of FrameAnalysis objects, one per frame
-        """
-        analyses = []
-        active_points = []
-        
-        for frame, positions in enumerate(sequence):
-            
-            active_points = [p for p in active_points if p.is_alive(frame)]
-            for pos in positions:
-                if pos not in {p.position for p in active_points}:
-                    
-                    lifetime = 1
-                    for future_frame in range(frame + 1, len(sequence)):
-                        if pos in sequence[future_frame]:
-                            lifetime += 1
-                        else:
-                            break
-                    active_points.append(ActivePoint(pos, frame, lifetime))
-            
-            analysis = FrameAnalysis.from_points(active_points, frame, self.quadrant_points)
-            analyses.append(analysis)
-            
-        return analyses
-    
-    def print_frame_analysis(self, analysis: FrameAnalysis):
-        """Print a human-readable analysis of a frame."""
-        print("\nFrame Analysis:")
-        print("===============")
-        print(f"Total active points: {analysis.total_points}")
-        print("\nPoints per quadrant:")
-        for quadrant, count in analysis.points_per_quadrant.items():
-            print(f"  {quadrant}: {count} points")
-            print(f"    Active positions: {analysis.active_points.get(quadrant, [])}")
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
