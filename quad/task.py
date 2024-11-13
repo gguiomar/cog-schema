@@ -238,7 +238,7 @@ class SequenceGenerator:
     
     def _assign_point_color(self, position: Tuple[int, int]) -> PointColor:
         """Assign a color to a point based on its quadrant's probabilities"""
-        # Determine quadrant
+
         i, j = position
         mid_h, mid_w = self.height // 2, self.width // 2
         
@@ -246,11 +246,8 @@ class SequenceGenerator:
             quadrant = 'top_left' if j < mid_w else 'top_right'
         else:
             quadrant = 'bottom_left' if j < mid_w else 'bottom_right'
-            
-        # Get probabilities for this quadrant
+
         red_prob, _, _ = self.config.quadrant_probs[quadrant]
-        
-        # Assign color based on probability
         return PointColor.RED if random.random() < red_prob else PointColor.GREEN
     
     def generate_random_sequence(self, 
@@ -342,5 +339,27 @@ class SequenceGenerator:
             available_positions=available,
             available_actions=sampeable_points
         )
-
+    
+    def get_state_matrix(self, frame_state: FrameState) -> np.ndarray:
+        """
+        Convert a FrameState into a 2D matrix representation.
+        
+        Returns:
+            numpy.ndarray: A height x width matrix where each cell contains:
+                0: No point
+                1: Unsampled active point
+                2: Sampled red point
+                3: Sampled green point
+        """
+        state_matrix = np.zeros((self.height, self.width), dtype=int)
+        
+        for quadrant_points in frame_state.active_points.values():
+            for point in quadrant_points:
+                x, y = point.position
+                if point.sampled:
+                    state_matrix[x, y] = 2 if point.true_color == PointColor.RED else 3
+                else:
+                    state_matrix[x, y] = 1
+                    
+        return state_matrix
 
