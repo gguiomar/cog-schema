@@ -22,7 +22,6 @@ class QuadrantPoints:
 
 @dataclass
 class ActivePoint:
-    """Enhanced class to track an active point with color identity"""
     position: Tuple[int, int]
     birth_frame: int
     lifetime: int

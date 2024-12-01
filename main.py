@@ -48,16 +48,3 @@ for frame, active_points in enumerate(sequence):
 
 plt.ioff()  
 plt.show()
-
-
-# for frame, active_points in enumerate(sequence):
-#     frame_state = seq_gen.get_frame_state(active_points, frame)
-#     print(f"Frame {frame} available actions: {frame_state.available_actions}")
-#     if frame_state.available_actions:
-#         point_to_sample = random.choice(frame_state.available_actions)
-#         color = seq_gen.sample_point(frame_state, point_to_sample)
-#         print(f"Sampled point {point_to_sample}: {color}")
-#     visualize_frame(frame_state, scaffold.height, scaffold.width, frame, fig, ax)
-#     plt.pause(0.5)
-# plt.ioff()  
-# plt.show()  
