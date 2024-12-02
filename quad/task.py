@@ -206,11 +206,8 @@ class SequenceGenerator:
         self.config = config or QuadrantConfig()
         self.height, self.width = self.scaffold.shape
         mid_h, mid_w = self.height // 2, self.width // 2
-        
-        # Initialize quadrant points
+        self.quadrant_divisions = {mid_h, mid_w} # check
         self.quadrant_points = self._init_quadrant_points(mid_h, mid_w)
-        
-        # Track sampled points for visualization
         self.sampled_points: Dict[Tuple[int, int], PointColor] = {}
     
     def _init_quadrant_points(self, mid_h: int, mid_w: int) -> Dict[str, List[Tuple[int, int]]]:
@@ -263,7 +260,7 @@ class SequenceGenerator:
             # Remove dead points
             active_points = [p for p in active_points if p.is_alive(frame)]
             
-            # Try to add new points
+            # add new points
             if len(active_points) < max_points:
                 for quadrant, points in self.quadrant_points.items():
                     if random.random() < appearance_prob:
@@ -319,12 +316,10 @@ class SequenceGenerator:
                     if pos in valid_points:
                         points_by_quadrant[quadrant].append(point)
                         break
-                
-                # Add to sampeable points if not already sampled
+                    
                 if not point.sampled:
                     sampeable_points.append(pos)
-        
-        # Calculate available positions
+
         available = {
             quadrant: [pos for pos in points if pos not in occupied]
             for quadrant, points in self.quadrant_points.items()
