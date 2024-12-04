@@ -1,6 +1,7 @@
 from collections import Counter
 
 class CompleteObserver:
+    """Has access to all the information about the sequence, returns the full ratio of colors in each quadrant"""
     
     def __init__(self, seq_gen):
         self.seq_gen = seq_gen
@@ -44,3 +45,4 @@ class CompleteObserver:
                     
         self.ratios = positions
         self.counts = Counter(self.quad_data)
+

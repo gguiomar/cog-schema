@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from quad.task import *
-from quad.vis import visualize_frame, animate_sequence, setup_visualization
+from quad.vis import visualize_frame, setup_visualization
 
 scaffold = QuadrantGrid(10, 20)
 points = QuadrantPoints(
@@ -24,7 +24,6 @@ config = QuadrantConfig()
 seq_gen = SequenceGenerator(scaffold, config)
 sequence = seq_gen.generate_random_sequence(n_frames=30, max_points=100,min_lifetime=4, max_lifetime=5)
 
-# animate_sequence(scaffold, sequence, interval=500, title="Points with Lifetimes")
 # fig, ax = setup_visualization(scaffold.height, scaffold.width)
 last_sample_frame = -4
 point_to_sample = None
@@ -54,7 +53,6 @@ for frame, active_points in enumerate(sequence):
 #plt.show()
 
 from agents.observers import CompleteObserver
-
 observer = CompleteObserver(seq_gen)
 ratios = observer.process_sequence(sequence)
 
