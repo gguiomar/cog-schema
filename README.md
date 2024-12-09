@@ -1,3 +1,3 @@
-# viz-ark
+# LLM Cognitive Schemas
 
-Visual sampling test adaptation to the ARC-AGI framework.
+Solving a Visual Sampling task with LLMs.
