@@ -1,6 +1,6 @@
 #%%
 
-# !pip install unsloth "xformers==0.0.28.post2"
+!pip install unsloth "xformers==0.0.28.post2"
 
 #%%
 
@@ -13,6 +13,9 @@ model, tokenizer = FastLanguageModel.from_pretrained(
   dtype = None,
   load_in_4bit = True,
 )
+
+#%%
+
 FastLanguageModel.for_inference(model)
 
 pipe = transformers.pipeline(
