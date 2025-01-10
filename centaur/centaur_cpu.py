@@ -31,3 +31,17 @@ choice = pipe(prompt)[0]['generated_text'][len(prompt):]
 print(choice)
 
 # %%
+
+
+prompt = "You will play a game with 5 rounds.\n" \
+"In each round you'll be shown a set of black squares distributed over 2 areas.\n" \
+"There can be up to 2 black squares in each quadrant, each named after its number and quadrant: A, B, C, D.\n" \
+"Each black square will be accessible for a finite amount of rounds until it disappears.\n" \
+"New black squares might or not appear in each round.\n" \
+"In each round you'll be able to choose one of the available black squares and know its identity which can be either GREEN or RED by pressing the button corresponding to its name.\n" \
+"Round 1: You see black squares C, D. You press <<" 
+
+choice = pipe(prompt)[0]['generated_text'][len(prompt):]
+print(choice)# %%
+
+# %%
