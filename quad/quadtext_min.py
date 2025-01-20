@@ -33,11 +33,10 @@ class ModifiedTask:
             "In each round you'll be shown a set of black squares distributed over "
             f"{len(self.quadrants)} quadrants of a rectangle.\n"
             f"The available quadrants are: {', '.join(quadrant_letters)}.\n"
-            "Each quadrant contains 2 squares with specific letter names:\n" +
+            "Each quadrant can contain up to 2 squares with specific letter names:\n" +
             '\n'.join([f"- Quadrant {i+1}: squares {' and '.join(self.letter_pairs[i])}" 
                       for i in self.quadrants]) + "\n"
             "Each black square will be accessible for a finite amount of rounds until it disappears.\n"
-            "New black squares might or might not appear in each round.\n"
             "In each round you'll be able to choose one of the available black squares "
             "and learn its color (GREEN or RED) by selecting its letter.\n"
             f"Once the {self.nrounds} rounds are finished, you'll be asked to choose "

@@ -22,7 +22,7 @@ pipe = transformers.pipeline(
 )
 
 manager = SimulationManager(
-    n_simulations=10,  # Number of simulations to run
+    n_simulations=1,  # Number of simulations to run
     nrounds=5,          # Rounds per simulation
     num_quadrants=2,    # Number of quadrants
     pipe=pipe
