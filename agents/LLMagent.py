@@ -1,7 +1,6 @@
 import transformers
 
-
-class LLMAgent:
+class LLMagent:
     def __init__(self, model_name: str):
         """Initialize LLM agent with specified model."""
         if model_name == "centaur8b":
