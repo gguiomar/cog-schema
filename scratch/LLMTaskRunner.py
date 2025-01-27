@@ -1,3 +1,5 @@
+# DEPRECATED: This file is no longer used. The task runner is now implemented in the run_detailed.py file.
+
 import random
 from typing import List, Tuple
 import transformers
