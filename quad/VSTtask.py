@@ -27,7 +27,95 @@ class VSTtask:
         
         self.quadrants = list(range(n_quadrants))
         self.biased_quadrant = random.choice(self.quadrants)
-        self.active_queues: List[Dict] = []
+        self.biased_color = 'RED'  # Can be randomized to 'GREEN' if needed
+        self.pregen_rounds: List[List[Dict]] = []
+        
+        # Generate and validate task until we get a solvable configuration
+        while True:
+            self._pregenerate_rounds()
+            if self._validate_task():
+                break
+
+    def _pregenerate_rounds(self):
+        """Generate all rounds upfront for validation"""
+        self.pregen_rounds = []
+        for _ in range(self.n_rounds):
+            round_queues = []
+            
+            # Generate active queues for this round
+            for q in self.quadrants:
+                for queue in self.queue_map[q]:
+                    if random.random() < 0.5:
+                        color = self._get_queue_color(q)
+                        round_queues.append({
+                            'name': queue,
+                            'color': color,
+                            'quadrant': q,
+                            'rounds_remaining': random.randint(1, self.n_rounds)
+                        })
+            
+            # Ensure at least one queue per round
+            if not round_queues:
+                q = random.choice(self.quadrants)
+                queue = random.choice(self.queue_map[q])
+                round_queues.append({
+                    'name': queue,
+                    'color': self._get_queue_color(q),
+                    'quadrant': q,
+                    'rounds_remaining': random.randint(1, self.n_rounds)
+                })
+            
+            self.pregen_rounds.append(round_queues)
+
+    def _validate_task(self) -> bool:
+        """Check if the generated task is solvable through potential observations"""
+        color_counts = {q: {'RED': 0, 'GREEN': 0} for q in self.quadrants}
+        
+        # Simulate perfect sampling of all queues in all rounds
+        for round_data in self.pregen_rounds:
+            for queue in round_data:
+                q = queue['quadrant']
+                color = queue['color']
+                color_counts[q][color] += 1
+
+        # Calculate color ratios for each quadrant
+        ratios = {}
+        for q in self.quadrants:
+            total = color_counts[q]['RED'] + color_counts[q]['GREEN']
+            if total == 0:
+                return False  # No samples from this quadrant
+            ratios[q] = {
+                'RED': color_counts[q]['RED'] / total,
+                'GREEN': color_counts[q]['GREEN'] / total
+            }
+
+        # Check biased quadrant meets 90/10 threshold
+        biased_ratio = ratios[self.biased_quadrant][self.biased_color]
+        if biased_ratio < 0.8:  # Allow some tolerance for small sample sizes
+            return False
+
+        # Check other quadrants are within 50/50 ± 15%
+        for q in self.quadrants:
+            if q == self.biased_quadrant:
+                continue
+            red_ratio = ratios[q]['RED']
+            if not (0.35 <= red_ratio <= 0.65):
+                return False
+
+        # Check biased quadrant has clearly highest target color count
+        biased_count = color_counts[self.biased_quadrant][self.biased_color]
+        other_counts = [
+            color_counts[q][self.biased_color] 
+            for q in self.quadrants if q != self.biased_quadrant
+        ]
+        return biased_count > max(other_counts, default=0)
+
+    def _get_queue_color(self, quadrant: int) -> str:
+        """Generate color based on quadrant probability"""
+        if quadrant == self.biased_quadrant:
+            return self.biased_color if random.random() < 0.9 else \
+                  'GREEN' if self.biased_color == 'RED' else 'RED'
+        return random.choice(['RED', 'GREEN'])
 
     def generate_task_description(self) -> str:
         quadrant_descs = [
@@ -37,84 +125,35 @@ class VSTtask:
         return (
             f"Visual Sampling Task ({self.n_quadrants} quadrants, {self.n_queues} queues/quadrant)\n"
             f"You will play a game with {self.n_rounds} rounds.\n"
-            "In each round you'll see active queues (chooseable) and inactive queues (black):\n" +
-            '\n'.join(quadrant_descs) + "\n\n"
-            "Key mechanics:\n"
-            "1. One quadrant has 90% one color/10% other\n"
-            "2. Other quadrants have 50/50 color distribution\n"
-            "3. At least one queue active per round\n"
-            "4. Active queues disappear after random duration\n\n"
-            f"After {self.n_rounds} rounds, identify the biased quadrant.\n"
+            "One quadrant has a 90% bias to one color while the  other quadrants have 50/50 distribution\n"
+            "There's at least one active queue per round\n"
+            "Active queues disappear after random duration\n\n"
+            f"After {self.n_rounds} rounds, identify the biased quadrant by pressing {np.arange(1, self.n_queues+1, 1)}.\n"
             "Correct: +100 points, Wrong: -100 points."
         )
 
-    def _get_queue_color(self, quadrant: int) -> Tuple[str, str]:
-        """Return (actual color, initial state) for a queue"""
-        if quadrant == self.biased_quadrant:
-            color = 'RED' if random.random() < 0.9 else 'GREEN'
-        else:
-            color = random.choice(['RED', 'GREEN'])
-        return color, 'black'
-
-    def _ensure_active_queues(self):
-        """Guarantee at least one active queue per round"""
-        if not self.active_queues:
-            forced_queue = random.choice(self.letters)
-            q = self.queue_to_quadrant[forced_queue]
-            color, state = self._get_queue_color(q)
-            self.active_queues.append({
-                'name': forced_queue,
-                'color': color,
-                'state': state,
-                'quadrant': q,
-                'rounds_remaining': random.randint(1, self.n_rounds - self.current_round + 1)
-            })
-
     def play_round(self) -> None:
-        self.current_round += 1
-        self.active_queues = []
-        
-        # Generate initial active queues
-        for q in self.quadrants:
-            for queue in self.queue_map[q]:
-                if random.random() < 0.5:  # Base activation chance
-                    color, state = self._get_queue_color(q)
-                    self.active_queues.append({
-                        'name': queue,
-                        'color': color,
-                        'state': state,
-                        'quadrant': q,
-                        'rounds_remaining': random.randint(1, self.n_rounds - self.current_round + 1)
-                    })
-        
-        # Ensure minimum one active queue
-        self._ensure_active_queues()
-        
-        # Display round information
-        available = ', '.join(q['name'] for q in self.active_queues)
-        print(f"\nRound {self.current_round}/{self.n_rounds}")
+        if self.current_round >= self.n_rounds:
+            raise ValueError("All rounds completed")
+
+        current_data = self.pregen_rounds[self.current_round]
+        available = ', '.join(q['name'] for q in current_data)
+        print(f"\nRound {self.current_round+1}/{self.n_rounds}")
         print(f"Active queues: {available}")
         print("You press <<")
 
-    def get_queue_state(self, choice: str) -> Optional[str]:
-        for q in self.active_queues:
-            if q['name'] == choice:
-                q['state'] = q['color']  # Reveal actual color
-                return q['state']
+    def process_choice(self, choice: str) -> Optional[str]:
+        current_data = self.pregen_rounds[self.current_round]
+        for queue in current_data:
+            if queue['name'] == choice.upper():
+                print(f"{choice.upper()} >> shows {queue['color']}")
+                return queue['color']
+        print(f"Invalid choice: {choice}")
         return None
-
-    def process_choice(self, choice: str) -> None:
-        state = self.get_queue_state(choice.upper())
-        if state:
-            print(f"{choice.upper()} >> shows {state}")
-        else:
-            print(f"Invalid choice: {choice}")
 
     def final_question(self) -> None:
         valid = [str(q+1) for q in self.quadrants]
-        answer = input(
-            f"\nWhich quadrant had the 90/10 distribution? ({'/'.join(valid)}) << "
-        )
+        answer = input(f"\nWhich quadrant had the 90/10 distribution? ({'/'.join(valid)}) << ")
         
         if answer in valid:
             correct = str(self.biased_quadrant + 1)
@@ -127,19 +166,22 @@ class VSTtask:
 
     def run_game(self):
         print(self.generate_task_description())
-        for _ in range(self.n_rounds):
+        for self.current_round in range(self.n_rounds):
             self.play_round()
             while True:
                 choice = input("Choose queue: ").strip().upper()
-                if choice in {q['name'] for q in self.active_queues}:
+                if any(q['name'] == choice for q in self.pregen_rounds[self.current_round]):
                     break
                 print("Invalid choice, try again")
             self.process_choice(choice)
         self.final_question()
 
 
-# Example usage
 if __name__ == "__main__":
-    # 2 quadrants, 1 queue each (original ModifiedTask behavior)
-    task = VSTtask(n_rounds=10, n_quadrants=2, n_queues=2)
+    # Example validation test
+    valid = False
+    while not valid:
+        task = VSTtask(n_rounds=10, n_quadrants=2, n_queues=1)
+        valid = task._validate_task()
+    
     task.run_game()
