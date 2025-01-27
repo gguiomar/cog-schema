@@ -1,4 +1,4 @@
-from quad.quadtext_min import ModifiedTask
+from quad.VSTtask import VSTtask
 import agents.LLMagent as LLMagent
 from manager.SimulationManager import SimulationManager
 import transformers
