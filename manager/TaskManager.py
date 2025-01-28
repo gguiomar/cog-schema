@@ -7,22 +7,14 @@ from tqdm import tqdm
 from tasks.VSTtask import VSTtask
 from agents.LLMagent import LLMagent
 
-import os
-from datetime import datetime
-import json
-from typing import List, Dict, Tuple
-import numpy as np
-from tqdm import tqdm
-from tasks.VSTtask import VSTtask
-from agents.LLMagent import LLMagent
-
 class TaskManager:
-    def __init__(self, n_simulations: int, nrounds: int, num_quadrants: int, 
+    def __init__(self, n_simulations: int, nrounds: int, num_quadrants: int, num_queues: int,
                  pipe: LLMagent, output_dir: str = "simulation_results", verbose: bool = False):
         """Initialize task manager with simulation parameters."""
         self.n_simulations = n_simulations
         self.nrounds = nrounds
         self.num_quadrants = num_quadrants
+        self.n_queues = num_queues
         self.agent = pipe
         self.output_dir = output_dir
         self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -62,7 +54,7 @@ class TaskManager:
         
     def run_single_task(self) -> Dict:
         """Run a single VST task and return results."""
-        self.task = VSTtask(self.nrounds, self.num_quadrants)
+        self.task = VSTtask(self.nrounds, self.num_quadrants, self.n_queues)
         self.conversation_history = ""
         self.agent.reset_history()
         

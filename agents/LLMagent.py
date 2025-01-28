@@ -1,7 +1,7 @@
 import transformers
 
 class LLMagent:
-    def __init__(self, model_name: str):
+    def __init__(self, model_name: str, device_map: str = "cpu"):
         """Initialize LLM agent with specified model."""
         if model_name == "centaur8b":
             model_path = "agents/llama_centaur_adapter/"
@@ -9,7 +9,7 @@ class LLMagent:
         # Initialize model and tokenizer
         model = transformers.AutoModelForCausalLM.from_pretrained(
             model_path, 
-            device_map="cpu"
+            device_map = device_map
         )
         tokenizer = transformers.AutoTokenizer.from_pretrained(model_path)
         
