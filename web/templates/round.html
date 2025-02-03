@@ -1,77 +1,56 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Round {{ round_number + 1 }}</title>
-    <style>
-        .cue-button {
-            padding: 20px;
-            margin: 10px;
-            font-size: 24px;
-        }
-        #next-round {
-            display: none;
-            margin-top: 20px;
-        }
-    </style>
-</head>
-<body>
-    <h2>Round {{ round_number + 1 }}</h2>
-    <div id="cues">
-        {% for cue in round_data.queues %}
-            <button class="cue-button" data-color="{{ cue.color }}">{{ cue.name }}</button>
-        {% endfor %}
-    </div>
-    <button id="next-round" onclick="goNext()">Next Round</button>
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Round {{ round_number + 1 }}</h2>
+<div id="cues">
+    {% for cue in round_data.queues %}
+        <button class="cue-button" data-color="{{ cue.color }}">{{ cue.name }}</button>
+    {% endfor %}
+</div>
+<button id="next-round" class="button" onclick="goNext()" style="display: none;">Next Round</button>
+
+<script>
+    var roundNumber = {{ round_number }};
     
-    <script>
-        // Make the round number available to JavaScript.
-        var roundNumber = {{ round_number }};
-        
-        // Function to send an AJAX POST to log the cue choice.
-        function logChoice(cueName, cueColor, roundNumber) {
-            fetch('/log_choice', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    round: roundNumber,
-                    cue: { name: cueName, color: cueColor }
-                })
+    function logChoice(cueName, cueColor, roundNumber) {
+        fetch('/log_choice', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                round: roundNumber,
+                cue: { name: cueName, color: cueColor }
             })
-            .then(response => {
-                if (!response.ok) {
-                    console.error("Logging failed");
-                }
-            })
-            .catch(error => console.error("Logging error:", error));
-        }
-        
-        // Reveal the cue's color on click and log the event.
-        document.querySelectorAll('.cue-button').forEach(function(button) {
-            button.addEventListener('click', function() {
-                let color = button.getAttribute('data-color');
-                let cueName = button.textContent.trim();
-                button.style.backgroundColor = color.toLowerCase();
-                button.textContent += " (" + color + ")";
-                button.disabled = true;
-                // Log the choice with round number, cue name, and color.
-                logChoice(cueName, color, roundNumber);
-            });
+        })
+        .then(response => {
+            if (!response.ok) {
+                console.error("Logging failed");
+            }
+        })
+        .catch(error => console.error("Logging error:", error));
+    }
+    
+    document.querySelectorAll('.cue-button').forEach(function(button) {
+        button.addEventListener('click', function() {
+            let color = button.getAttribute('data-color');
+            let cueName = button.textContent.trim();
+            button.style.backgroundColor = color.toLowerCase();
+            button.textContent += " (" + color + ")";
+            button.disabled = true;
+            logChoice(cueName, color, roundNumber);
         });
+    });
 
-        // After the round duration, disable cues and show the Next Round button.
-        let duration = {{ round_data.duration }};
-        setTimeout(function() {
-            document.querySelectorAll('.cue-button').forEach(function(button) {
-                button.disabled = true;
-            });
-            document.getElementById('next-round').style.display = 'block';
-        }, duration);
+    let duration = {{ round_data.duration }};
+    setTimeout(function() {
+        document.querySelectorAll('.cue-button').forEach(function(button) {
+            button.disabled = true;
+        });
+        document.getElementById('next-round').style.display = 'block';
+    }, duration);
 
-        function goNext() {
-            let nextRound = {{ round_number + 1 }};
-            window.location.href = "/round/" + nextRound;
-        }
-    </script>
-</body>
-</html>
+    function goNext() {
+        let nextRound = {{ round_number + 1 }};
+        window.location.href = "/round/" + nextRound;
+    }
+</script>
+{% endblock %}

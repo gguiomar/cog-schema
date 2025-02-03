@@ -1,18 +1,15 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Result</title>
-</head>
-<body>
-    <h2>Game Result</h2>
-    <p>You chose Quadrant {{ chosen + 1 }}.</p>
-    <p>The biased quadrant was Quadrant {{ biased + 1 }}.</p>
-    {% if correct %}
-        <p style="color: green;">Correct! You earned +100 points.</p>
-    {% else %}
-        <p style="color: red;">Incorrect. You lost -100 points.</p>
-    {% endif %}
-    <a href="{{ url_for('index') }}">Play Again</a>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Game Result</h2>
+<p>You chose Quadrant {{ chosen + 1 }}.</p>
+<p>The biased quadrant was Quadrant {{ biased + 1 }}.</p>
+{% if correct %}
+    <p class="result-correct">Correct! You earned +100 points.</p>
+{% else %}
+    <p class="result-incorrect">Incorrect. You lost -100 points.</p>
+{% endif %}
+<div style="text-align: center; margin-top: 2rem;">
+    <a href="{{ url_for('index') }}" class="button">Play Again</a>
+</div>
+{% endblock %}
