@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Final Choice</title>
+</head>
+<body>
+    <h2>Final Step: Identify the Biased Quadrant</h2>
+    <form method="post">
+        {% for q in range(n_quadrants) %}
+            <label>
+                <input type="radio" name="biased_quadrant" value="{{ q }}">
+                Quadrant {{ q + 1 }}
+            </label><br>
+        {% endfor %}
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
