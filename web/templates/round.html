@@ -2,12 +2,11 @@
 
 {% block content %}
 <h2>Round {{ round_number + 1 }}</h2>
-<div id="cues">
+<div id="cues" class="queues-{{ round_data.queues|length }}">
     {% for cue in round_data.queues %}
         <button class="cue-button" data-color="{{ cue.color }}">{{ cue.name }}</button>
     {% endfor %}
 </div>
-<button id="next-round" class="button" onclick="goNext()" style="display: none;">Next Round</button>
 
 <script>
     var roundNumber = {{ round_number }};
@@ -29,28 +28,25 @@
         .catch(error => console.error("Logging error:", error));
     }
     
-    document.querySelectorAll('.cue-button').forEach(function(button) {
-        button.addEventListener('click', function() {
-            let color = button.getAttribute('data-color');
-            let cueName = button.textContent.trim();
-            button.style.backgroundColor = color.toLowerCase();
-            button.textContent += " (" + color + ")";
-            button.disabled = true;
-            logChoice(cueName, color, roundNumber);
-        });
-    });
-
-    let duration = {{ round_data.duration }};
-    setTimeout(function() {
-        document.querySelectorAll('.cue-button').forEach(function(button) {
-            button.disabled = true;
-        });
-        document.getElementById('next-round').style.display = 'block';
-    }, duration);
-
     function goNext() {
         let nextRound = {{ round_number + 1 }};
         window.location.href = "/round/" + nextRound;
     }
+    
+    document.querySelectorAll('.cue-button').forEach(function(button) {
+        button.addEventListener('click', function() {
+            if (this.getAttribute('data-clicked') === 'true') return;
+            
+            let color = button.getAttribute('data-color');
+            let cueName = button.textContent.trim();
+            button.style.backgroundColor = color.toLowerCase();
+            button.textContent += " (" + color + ")";
+            button.setAttribute('data-clicked', 'true');
+            logChoice(cueName, color, roundNumber);
+            
+            // Wait a short moment before moving to next round
+            setTimeout(goNext, 500);
+        });
+    });
 </script>
 {% endblock %}

@@ -2,15 +2,13 @@
 
 {% block content %}
 <h2>Final Step: Identify the Biased Quadrant</h2>
-<form method="post">
-    <div class="radio-group">
+<form method="post" id="quadrant-form">
+    <div id="cues" class="queues-{{ n_quadrants }}">
         {% for q in range(n_quadrants) %}
-            <label class="radio-label">
-                <input type="radio" name="biased_quadrant" value="{{ q }}">
+            <button type="submit" name="biased_quadrant" value="{{ q }}" class="cue-button">
                 Quadrant {{ q + 1 }}
-            </label>
+            </button>
         {% endfor %}
     </div>
-    <button type="submit" class="button">Submit</button>
 </form>
 {% endblock %}

@@ -36,6 +36,33 @@ class VSTtask:
             return 'RED' if random.random() < 0.9 else 'GREEN'
         return random.choice(['RED', 'GREEN'])
         
+    # def _generate_rounds(self):
+    #     while True:
+    #         rounds = []
+    #         for _ in range(self.n_rounds):
+    #             round_queues = []
+    #             for q in self.quadrants:
+    #                 for queue in self.queue_map[q]:
+    #                     if random.random() < 0.5:
+    #                         round_queues.append({
+    #                             'name': queue,
+    #                             'color': self._get_color(q),
+    #                             'quadrant': q
+    #                         })
+    #             if not round_queues:
+    #                 q = random.choice(self.quadrants)
+    #                 queue = random.choice(self.queue_map[q])
+    #                 round_queues.append({
+    #                     'name': queue,
+    #                     'color': self._get_color(q),
+    #                     'quadrant': q
+    #                 })
+    #             # Each round now includes a random duration (in milliseconds)
+    #             duration = random.randint(2000, 5000)
+    #             rounds.append({'queues': round_queues, 'duration': duration})
+    #         if self._validate_rounds([r['queues'] for r in rounds]):
+    #             return rounds
+
     def _generate_rounds(self):
         while True:
             rounds = []
@@ -43,26 +70,17 @@ class VSTtask:
                 round_queues = []
                 for q in self.quadrants:
                     for queue in self.queue_map[q]:
-                        if random.random() < 0.5:
-                            round_queues.append({
-                                'name': queue,
-                                'color': self._get_color(q),
-                                'quadrant': q
-                            })
-                if not round_queues:
-                    q = random.choice(self.quadrants)
-                    queue = random.choice(self.queue_map[q])
-                    round_queues.append({
-                        'name': queue,
-                        'color': self._get_color(q),
-                        'quadrant': q
-                    })
-                # Each round now includes a random duration (in milliseconds)
-                duration = random.randint(2000, 5000)
-                rounds.append({'queues': round_queues, 'duration': duration})
+                        round_queues.append({
+                            'name': queue,
+                            'color': self._get_color(q),
+                            'quadrant': q
+                        })
+                # Duration is no longer needed since queues won't disappear
+                rounds.append({'queues': round_queues})
             if self._validate_rounds([r['queues'] for r in rounds]):
                 return rounds
-    
+
+        
     def _validate_rounds(self, rounds):
         color_counts = {q: {'RED': 0, 'GREEN': 0} for q in self.quadrants}
         for round_queues in rounds:
