@@ -10,7 +10,7 @@ app.secret_key = 'your_secret_key_here'  # Replace with a secure key
 # --- VSTtask Class ---
 
 class VSTtask:
-    def __init__(self, n_rounds: int, n_quadrants: int = 2, n_queues: int = 1):
+    def __init__(self, n_rounds: int = 5, n_quadrants: int = 4, n_queues: int = 1):
         if not 2 <= n_quadrants <= 4:
             raise ValueError("Number of quadrants must be between 2 and 4")
         if n_queues < 1:
@@ -35,33 +35,6 @@ class VSTtask:
         if quadrant == self.biased_quadrant:
             return 'RED' if random.random() < 0.9 else 'GREEN'
         return random.choice(['RED', 'GREEN'])
-        
-    # def _generate_rounds(self):
-    #     while True:
-    #         rounds = []
-    #         for _ in range(self.n_rounds):
-    #             round_queues = []
-    #             for q in self.quadrants:
-    #                 for queue in self.queue_map[q]:
-    #                     if random.random() < 0.5:
-    #                         round_queues.append({
-    #                             'name': queue,
-    #                             'color': self._get_color(q),
-    #                             'quadrant': q
-    #                         })
-    #             if not round_queues:
-    #                 q = random.choice(self.quadrants)
-    #                 queue = random.choice(self.queue_map[q])
-    #                 round_queues.append({
-    #                     'name': queue,
-    #                     'color': self._get_color(q),
-    #                     'quadrant': q
-    #                 })
-    #             # Each round now includes a random duration (in milliseconds)
-    #             duration = random.randint(2000, 5000)
-    #             rounds.append({'queues': round_queues, 'duration': duration})
-    #         if self._validate_rounds([r['queues'] for r in rounds]):
-    #             return rounds
 
     def _generate_rounds(self):
         while True:
@@ -156,7 +129,7 @@ def index():
 def start():
     # Set game parameters (adjust as desired):
     n_rounds = 5
-    n_quadrants = 2
+    n_quadrants = 4
     n_queues = 1
     task = VSTtask(n_rounds=n_rounds, n_quadrants=n_quadrants, n_queues=n_queues)
     session['game'] = {
