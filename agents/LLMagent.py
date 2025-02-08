@@ -15,8 +15,7 @@ class LLMagent:
         Initialize LLM agent with specified model and backend.
         
         Parameters:
-        - model_name: str, the name or path of the model. 
-          (For OpenAI API, e.g. "gpt-3.5-turbo" or "gpt-4o-mini"; for Anthropic API, e.g. "claude-v1")
+        - model_name: str, the name or path of the model.
         - device_map: str, device to use (e.g., 'cpu', 'cuda:0').
         - max_seq_length: int, maximum sequence length for the model.
         - load_in_4bit: bool, whether to load the model in 4-bit precision (unsloth only).
@@ -28,23 +27,39 @@ class LLMagent:
         """
         self.openai_api_key = openai_api_key
         self.anthropic_api_key = anthropic_api_key
-        
+
+        # Map friendly model names to their corresponding Hugging Face repository strings.
+        model_aliases = {
+            "Deepseek_R1_1B_Qwen": "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
+            "Deepseek_R1_7B_Qwen": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+            "Deepseek_R1_8B_Llama": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+            "Qwen_1B": "Qwen/Qwen2.5-1.5B",
+            "Qwen_3B": "Qwen/Qwen2.5-3B",
+            "Qwen_7B": "Qwen/Qwen2.5-7B",
+            "Qwen_1B_Instruct": "Qwen/Qwen2.5-1.5B-Instruct",
+            "Qwen_3B_Instruct": "Qwen/Qwen2.5-3B-Instruct",
+            "Qwen_7B_Instruct": "Qwen/Qwen2.5-7B-Instruct",
+            "Centaur_8B":    "marcelbinz/Llama-3.1-Centaur-8B-adapter"
+        }
+        # Use the mapped repository string if available
+        if model_name in model_aliases:
+            model_name = model_aliases[model_name]
+        self.model_name = model_name
+
         if self.openai_api_key:
             print("Using OpenAI API for GPT model")
-            self.model_name = model_name  # e.g., "gpt-3.5-turbo", "gpt-4o-mini", etc.
-            # Instantiate the OpenAI client using the provided API key
             from openai import OpenAI
             self.client = OpenAI(api_key=self.openai_api_key)
         elif self.anthropic_api_key:
             print("Using Anthropic API for GPT model")
-            self.model_name = model_name  # e.g., "claude-v1"
-            # Delay the import until it's needed
             import anthropic
-            # Pass the API key to the Anthropic client (ensure your anthropic package supports this)
             self.client = anthropic.Anthropic(api_key=self.anthropic_api_key)
         elif use_unsloth:
             from unsloth import FastLanguageModel
             print("Using unsloth with GPU")
+            # Optionally adjust parameters based on model (e.g., max_seq_length)
+            if "qwen" in model_name.lower():
+                max_seq_length = 4096  # adjust if Qwen requires a different sequence length
             model, tokenizer = FastLanguageModel.from_pretrained(
                 model_name=model_name,
                 max_seq_length=max_seq_length,
@@ -92,8 +107,8 @@ class LLMagent:
                 model=self.model_name,
                 messages=[{"role": "user", "content": full_prompt}],
                 temperature=1.0,
-                max_tokens=1,     # adjust if necessary
-                stop=["<<"]       # customize stop tokens if needed
+                max_tokens=1,  # adjust if necessary
+                stop=["<<"]    # customize stop tokens if needed
             )
             generated_text = response.choices[0].message.content.strip()
         elif self.anthropic_api_key:
