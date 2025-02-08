@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 import json
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Optional
 import numpy as np
 from tqdm import tqdm
 from tasks.VSTtask import VSTtask
@@ -33,11 +33,12 @@ class TaskManager:
         
         return self.conversation_history + current_prompt
         
-    def update_history(self, queues: str, choice: str, result: str, round_num: int) -> None:
+    def update_history(self, queues: str, choice: str, result: Optional[str], round_num: int) -> None:
         """Update conversation history with round results."""
+        result_text = result if result is not None else "Invalid choice"
         round_text = (
             f"Round {round_num + 1}: Available queues {queues}. "
-            f"You chose {choice} and saw {result}.\n"
+            f"You chose {choice} and saw {result_text}.\n"
         )
         self.conversation_history += round_text
         
@@ -57,7 +58,7 @@ class TaskManager:
         self.task = VSTtask(self.n_rounds, self.num_quadrants, self.n_queues)
         self.conversation_history = ""
         self.agent.reset_history()
-        
+
         stats = {
             'rounds': [],
             'final_choice': None,
@@ -65,44 +66,44 @@ class TaskManager:
             'success': False,
             'full_conversation': []
         }
-        
+
         # Initialize conversation with task description
         task_description = self.task.get_task_description()
         self.conversation_history = task_description + "\n\n"
-        
+
         if self.verbose:
             print("\n=== Task Description ===")
             print(task_description)
             print("\n=== Beginning Rounds ===")
-        
+
         stats['full_conversation'].append(("INITIAL_DESCRIPTION", task_description))
-        
+
         # Run all rounds
         for round_num in range(self.task.n_rounds):
             if self.verbose:
                 print(f"\n--- Round {round_num + 1} ---")
-            
+
             round_data = self.task.get_round_data(round_num)
             available_queues = [q['name'] for q in round_data]
-            
+
             # Build and show prompt with accumulated history
             prompt = self.build_prompt(', '.join(available_queues), round_num)
-            
+
             if self.verbose:
                 print("\nAccumulated prompt shown to LLM:")
                 print("--------------------")
                 print(prompt)
                 print("--------------------")
-            
+
             # Get agent's choice
             choice = self.agent.get_response(prompt)
-            
+
             if self.verbose:
                 print(f"\nLLM chose: {choice}")
-            
+
             # Process choice
             result = self.task.process_choice(choice, round_data)
-            
+
             if self.verbose:
                 if result:
                     print(f"Result: {result}")
@@ -112,54 +113,54 @@ class TaskManager:
                             print(f"(Queue {choice} was from Quadrant {q['quadrant'] + 1})")
                 else:
                     print("Invalid choice!")
-            
-            # Update history and stats
-            if result:
-                self.update_history(', '.join(available_queues), choice, result, round_num)
-                
+
+            # Always update conversation history, even if the choice is invalid.
+            # (You might want to modify update_history to handle a None result gracefully.)
+            self.update_history(', '.join(available_queues), choice, result, round_num)
+                    
             stats['rounds'].append({
                 'available_queues': available_queues,
                 'choice': choice,
                 'result': result,
                 'full_prompt': prompt  # Store the full accumulated prompt
             })
-            
-            # Store the sequential nature of the conversation
+
+            # Record the conversation details (marking invalid rounds as needed)
             stats['full_conversation'].extend([
                 ("ACCUMULATED_PROMPT", prompt),
                 ("LLM_CHOICE", choice),
-                ("RESULT", result)
+                ("RESULT", result if result is not None else "Invalid choice")
             ])
-        
+
         # Get final answer
         if self.verbose:
             print("\n=== Final Decision ===")
-            
+
         final_prompt = self.get_final_prompt()
-        
+
         if self.verbose:
             print("\nFinal accumulated prompt shown to LLM:")
             print("-------------------------")
             print(final_prompt)
             print("-------------------------")
-        
+
         final_choice = self.agent.get_response(final_prompt)
-        
+
         if self.verbose:
             print(f"\nLLM's final choice: Quadrant {final_choice}")
             print("\n=== Game Results ===")
             print(f"Correct quadrant: {self.task.biased_quadrant + 1}")
             print(f"LLM chose: {final_choice}")
             print(f"Success: {str(self.task.biased_quadrant + 1) == final_choice}")
-        
+
         stats['final_choice'] = final_choice
         stats['success'] = str(self.task.biased_quadrant + 1) == final_choice
-        
+
         stats['full_conversation'].extend([
             ("FINAL_ACCUMULATED_PROMPT", final_prompt),
             ("FINAL_CHOICE", final_choice)
         ])
-        
+
         return stats
     
     def run_simulations(self) -> Dict:

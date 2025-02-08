@@ -1,5 +1,6 @@
 import os
 import transformers
+from typing import Optional
 
 class LLMagent:
     def __init__(self, 
@@ -8,8 +9,8 @@ class LLMagent:
                  max_seq_length: int = 32768, 
                  load_in_4bit: bool = True, 
                  use_unsloth: bool = False,
-                 use_openai_api: bool = False,
-                 use_anthropic_api: bool = False):
+                 openai_api_key: Optional[str] = None,
+                 anthropic_api_key: Optional[str] = None):
         """
         Initialize LLM agent with specified model and backend.
         
@@ -20,26 +21,28 @@ class LLMagent:
         - max_seq_length: int, maximum sequence length for the model.
         - load_in_4bit: bool, whether to load the model in 4-bit precision (unsloth only).
         - use_unsloth: bool, whether to use unsloth or transformers.
-        - use_openai_api: bool, whether to use the OpenAI API.
-        - use_anthropic_api: bool, whether to use the Anthropic API.
+        - openai_api_key: Optional[str], if provided, the OpenAI API is used with this API key.
+        - anthropic_api_key: Optional[str], if provided, the Anthropic API is used with this API key.
+        
+        If neither API key is provided and use_unsloth is False, then a local model (via transformers) is used.
         """
-        self.use_openai_api = use_openai_api
-        self.use_anthropic_api = use_anthropic_api
-
-        if self.use_openai_api:
+        self.openai_api_key = openai_api_key
+        self.anthropic_api_key = anthropic_api_key
+        
+        if self.openai_api_key:
             print("Using OpenAI API for GPT model")
             self.model_name = model_name  # e.g., "gpt-3.5-turbo", "gpt-4o-mini", etc.
-            # Instantiate the new OpenAI client using your API key
+            # Instantiate the OpenAI client using the provided API key
             from openai import OpenAI
-            self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-        elif self.use_anthropic_api:
+            self.client = OpenAI(api_key=self.openai_api_key)
+        elif self.anthropic_api_key:
             print("Using Anthropic API for GPT model")
             self.model_name = model_name  # e.g., "claude-v1"
             # Delay the import until it's needed
             import anthropic
-            self.client = anthropic.Anthropic()
+            # Pass the API key to the Anthropic client (ensure your anthropic package supports this)
+            self.client = anthropic.Anthropic(api_key=self.anthropic_api_key)
         elif use_unsloth:
-            # Delay the unsloth import until it's needed
             from unsloth import FastLanguageModel
             print("Using unsloth with GPU")
             model, tokenizer = FastLanguageModel.from_pretrained(
@@ -83,19 +86,18 @@ class LLMagent:
         # Combine conversation history with the current prompt
         full_prompt = self.conversation_history + prompt
         
-        if self.use_openai_api:
-            # Use the new OpenAI client interface for chat completions
+        if self.openai_api_key:
+            # Use the OpenAI API for chat completions
             response = self.client.chat.completions.create(
                 model=self.model_name,
                 messages=[{"role": "user", "content": full_prompt}],
                 temperature=1.0,
-                max_tokens=1,     # adjust if necessary; the local pipeline was set to generate 1 token
+                max_tokens=1,     # adjust if necessary
                 stop=["<<"]       # customize stop tokens if needed
             )
-            # Extract the generated text from the response
             generated_text = response.choices[0].message.content.strip()
-        elif self.use_anthropic_api:
-            # Set a system prompt as needed for your application.
+        elif self.anthropic_api_key:
+            # Use the Anthropic API for completions
             response = self.client.messages.create(
                 model=self.model_name,
                 max_tokens=1,  # adjust based on your needs
@@ -105,7 +107,7 @@ class LLMagent:
             )    
             generated_text = response.content[0].text.strip()
         else:
-            # Use local pipeline (unsloth or transformers)
+            # Use the local pipeline (unsloth or transformers)
             generated_text = self.pipe(full_prompt)[0]["generated_text"][len(full_prompt):].strip()
         return generated_text
 
