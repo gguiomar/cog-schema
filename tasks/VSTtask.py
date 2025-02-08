@@ -2,27 +2,27 @@
 # from typing import List, Dict, Optional, Tuple
 
 # class VSTtask:
-#     def __init__(self, n_rounds: int, n_quadrants: int = 2, n_queues: int = 1):
+#     def __init__(self, n_rounds: int, n_quadrants: int = 2, n_cues: int = 1):
 #         if not 2 <= n_quadrants <= 4:
 #             raise ValueError("Number of quadrants must be between 2 and 4")
-#         if n_queues < 1:
-#             raise ValueError("Number of queues per quadrant must be at least 1")
+#         if n_cues < 1:
+#             raise ValueError("Number of cues per quadrant must be at least 1")
             
 #         self.n_rounds = n_rounds
 #         self.n_quadrants = n_quadrants
-#         self.n_queues = n_queues
+#         self.n_cues = n_cues
 #         self.current_round = 0
         
-#         # Generate unique queue letters and quadrant mapping
-#         self.letters = [chr(65 + i) for i in range(n_quadrants * n_queues)]
-#         self.queue_map = {
-#             q: self.letters[q*n_queues:(q+1)*n_queues]
+#         # Generate unique cue letters and quadrant mapping
+#         self.letters = [chr(65 + i) for i in range(n_quadrants * n_cues)]
+#         self.cue_map = {
+#             q: self.letters[q*n_cues:(q+1)*n_cues]
 #             for q in range(n_quadrants)
 #         }
-#         self.queue_to_quadrant = {
-#             queue: q 
-#             for q in self.queue_map 
-#             for queue in self.queue_map[q]
+#         self.cue_to_quadrant = {
+#             cue: q 
+#             for q in self.cue_map 
+#             for cue in self.cue_map[q]
 #         }
         
 #         self.quadrants = list(range(n_quadrants))
@@ -40,42 +40,42 @@
 #         """Generate all rounds upfront for validation"""
 #         self.pregen_rounds = []
 #         for _ in range(self.n_rounds):
-#             round_queues = []
+#             round_cues = []
             
-#             # Generate active queues for this round
+#             # Generate active cues for this round
 #             for q in self.quadrants:
-#                 for queue in self.queue_map[q]:
+#                 for cue in self.cue_map[q]:
 #                     if random.random() < 0.5:
-#                         color = self._get_queue_color(q)
-#                         round_queues.append({
-#                             'name': queue,
+#                         color = self._get_cue_color(q)
+#                         round_cues.append({
+#                             'name': cue,
 #                             'color': color,
 #                             'quadrant': q,
 #                             'rounds_remaining': random.randint(1, self.n_rounds)
 #                         })
             
-#             # Ensure at least one queue per round
-#             if not round_queues:
+#             # Ensure at least one cue per round
+#             if not round_cues:
 #                 q = random.choice(self.quadrants)
-#                 queue = random.choice(self.queue_map[q])
-#                 round_queues.append({
-#                     'name': queue,
-#                     'color': self._get_queue_color(q),
+#                 cue = random.choice(self.cue_map[q])
+#                 round_cues.append({
+#                     'name': cue,
+#                     'color': self._get_cue_color(q),
 #                     'quadrant': q,
 #                     'rounds_remaining': random.randint(1, self.n_rounds)
 #                 })
             
-#             self.pregen_rounds.append(round_queues)
+#             self.pregen_rounds.append(round_cues)
 
 #     def _validate_task(self) -> bool:
 #         """Check if the generated task is solvable through potential observations"""
 #         color_counts = {q: {'RED': 0, 'GREEN': 0} for q in self.quadrants}
         
-#         # Simulate perfect sampling of all queues in all rounds
+#         # Simulate perfect sampling of all cues in all rounds
 #         for round_data in self.pregen_rounds:
-#             for queue in round_data:
-#                 q = queue['quadrant']
-#                 color = queue['color']
+#             for cue in round_data:
+#                 q = cue['quadrant']
+#                 color = cue['color']
 #                 color_counts[q][color] += 1
 
 #         # Calculate color ratios for each quadrant
@@ -110,7 +110,7 @@
 #         ]
 #         return biased_count > max(other_counts, default=0)
 
-#     def _get_queue_color(self, quadrant: int) -> str:
+#     def _get_cue_color(self, quadrant: int) -> str:
 #         """Generate color based on quadrant probability"""
 #         if quadrant == self.biased_quadrant:
 #             return self.biased_color if random.random() < 0.9 else \
@@ -119,16 +119,16 @@
 
 #     def generate_task_description(self) -> str:
 #         quadrant_descs = [
-#             f"Quadrant {q+1} with queues {', '.join(self.queue_map[q])}"
+#             f"Quadrant {q+1} with cues {', '.join(self.cue_map[q])}"
 #             for q in self.quadrants
 #         ]
 #         return (
-#             f"Visual Sampling Task ({self.n_quadrants} quadrants, {self.n_queues} queues/quadrant)\n"
+#             f"Visual Sampling Task ({self.n_quadrants} quadrants, {self.n_cues} cues/quadrant)\n"
 #             f"You will play a game with {self.n_rounds} rounds.\n"
 #             "One quadrant has a 90% bias to one color while the  other quadrants have 50/50 distribution\n"
-#             "There's at least one active queue per round\n"
-#             "Active queues disappear after random duration\n\n"
-#             f"After {self.n_rounds} rounds, identify the biased quadrant by pressing {np.arange(1, self.n_queues+1, 1)}.\n"
+#             "There's at least one active cue per round\n"
+#             "Active cues disappear after random duration\n\n"
+#             f"After {self.n_rounds} rounds, identify the biased quadrant by pressing {np.arange(1, self.n_cues+1, 1)}.\n"
 #             "Correct: +100 points, Wrong: -100 points."
 #         )
 
@@ -139,15 +139,15 @@
 #         current_data = self.pregen_rounds[self.current_round]
 #         available = ', '.join(q['name'] for q in current_data)
 #         print(f"\nRound {self.current_round+1}/{self.n_rounds}")
-#         print(f"Active queues: {available}")
+#         print(f"Active cues: {available}")
 #         print("You press <<")
 
 #     def process_choice(self, choice: str) -> Optional[str]:
 #         current_data = self.pregen_rounds[self.current_round]
-#         for queue in current_data:
-#             if queue['name'] == choice.upper():
-#                 print(f"{choice.upper()} >> shows {queue['color']}")
-#                 return queue['color']
+#         for cue in current_data:
+#             if cue['name'] == choice.upper():
+#                 print(f"{choice.upper()} >> shows {cue['color']}")
+#                 return cue['color']
 #         print(f"Invalid choice: {choice}")
 #         return None
 
@@ -169,7 +169,7 @@
 #         for self.current_round in range(self.n_rounds):
 #             self.play_round()
 #             while True:
-#                 choice = input("Choose queue: ").strip().upper()
+#                 choice = input("Choose cue: ").strip().upper()
 #                 if any(q['name'] == choice for q in self.pregen_rounds[self.current_round]):
 #                     break
 #                 print("Invalid choice, try again")
@@ -181,7 +181,7 @@
 #     # Example validation test
 #     valid = False
 #     while not valid:
-#         task = VSTtask(n_rounds=10, n_quadrants=2, n_queues=1)
+#         task = VSTtask(n_rounds=10, n_quadrants=2, n_cues=1)
 #         valid = task._validate_task()
     
 #     task.run_game()
@@ -196,22 +196,22 @@ import transformers
 from tqdm import tqdm
 
 class VSTtask:
-    def __init__(self, n_rounds: int, n_quadrants: int = 2, n_queues: int = 1):
+    def __init__(self, n_rounds: int, n_quadrants: int = 2, n_cues: int = 1):
         """Initialize VST task with specified parameters."""
         if not 2 <= n_quadrants <= 4:
             raise ValueError("Number of quadrants must be between 2 and 4")
-        if n_queues < 1:
-            raise ValueError("Number of queues per quadrant must be at least 1")
+        if n_cues < 1:
+            raise ValueError("Number of cues per quadrant must be at least 1")
             
         self.n_rounds = n_rounds
         self.n_quadrants = n_quadrants
-        self.n_queues = n_queues
+        self.n_cues = n_cues
         self.current_round = 0
         
-        # Setup quadrants and queues
-        self.letters = [chr(65 + i) for i in range(n_quadrants * n_queues)]
-        self.queue_map = {
-            q: self.letters[q*n_queues:(q+1)*n_queues]
+        # Setup quadrants and cues
+        self.letters = [chr(65 + i) for i in range(n_quadrants * n_cues)]
+        self.cue_map = {
+            q: self.letters[q*n_cues:(q+1)*n_cues]
             for q in range(n_quadrants)
         }
         
@@ -227,30 +227,30 @@ class VSTtask:
         return random.choice(['RED', 'GREEN'])
         
     def _generate_rounds(self) -> List[List[Dict]]:
-        """Generate all rounds with queue colors and validations."""
+        """Generate all rounds with cue colors and validations."""
         while True:
             rounds = []
             for _ in range(self.n_rounds):
-                round_queues = []
+                round_cues = []
                 for q in self.quadrants:
-                    for queue in self.queue_map[q]:
+                    for cue in self.cue_map[q]:
                         if random.random() < 0.5:
-                            round_queues.append({
-                                'name': queue,
+                            round_cues.append({
+                                'name': cue,
                                 'color': self._get_color(q),
                                 'quadrant': q
                             })
                 
-                # Ensure at least one queue per round
-                if not round_queues:
+                # Ensure at least one cue per round
+                if not round_cues:
                     q = random.choice(self.quadrants)
-                    queue = random.choice(self.queue_map[q])
-                    round_queues.append({
-                        'name': queue,
+                    cue = random.choice(self.cue_map[q])
+                    round_cues.append({
+                        'name': cue,
                         'color': self._get_color(q),
                         'quadrant': q
                     })
-                rounds.append(round_queues)
+                rounds.append(round_cues)
                 
             if self._validate_rounds(rounds):
                 return rounds
@@ -261,9 +261,9 @@ class VSTtask:
         
         # Count colors for each quadrant
         for round_data in rounds:
-            for queue in round_data:
-                q = queue['quadrant']
-                color = queue['color']
+            for cue in round_data:
+                q = cue['quadrant']
+                color = cue['color']
                 color_counts[q][color] += 1
                 
         # Check ratios and conditions
@@ -289,18 +289,18 @@ class VSTtask:
         """Generate task description."""
         return (
             f"You will play a game with {self.n_rounds} rounds.\n"
-            "In each round you'll see active queues (chooseable):\n" +
+            "In each round you'll see active cues (chooseable):\n" +
             "One quadrant has 90% one color/10% other\n"
             "Other quadrants have 50/50 color distribution\n"
-            "At least one queue active per round\n"
-            "Active queues disappear after random duration\n\n"
+            "At least one cue active per round\n"
+            "Active cues disappear after random duration\n\n"
             f"After {self.n_rounds} rounds, identify the biased quadrant.\n"
             "Correct: +100 points, Wrong: -100 points."
         )
     
     def process_choice(self, choice: str, round_data: List[Dict]) -> Optional[str]:
         """Process choice and return color if valid."""
-        for queue in round_data:
-            if queue['name'] == choice:
-                return queue['color']
+        for cue in round_data:
+            if cue['name'] == choice:
+                return cue['color']
         return None

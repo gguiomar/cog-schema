@@ -8,13 +8,13 @@ from tasks.VSTtask import VSTtask
 from agents.LLMagent import LLMagent
 
 class TaskManager:
-    def __init__(self, n_simulations: int, n_rounds: int, num_quadrants: int, num_queues: int,
+    def __init__(self, n_simulations: int, n_rounds: int, num_quadrants: int, num_cues: int,
                  pipe: LLMagent, output_dir: str = "simulation_results", verbose: bool = False):
         """Initialize task manager with simulation parameters."""
         self.n_simulations = n_simulations
         self.n_rounds = n_rounds
         self.num_quadrants = num_quadrants
-        self.n_queues = num_queues
+        self.n_cues = num_cues
         self.agent = pipe
         self.output_dir = output_dir
         self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -23,21 +23,21 @@ class TaskManager:
         
         os.makedirs(output_dir, exist_ok=True)
     
-    def build_prompt(self, available_queues: str, round_num: int) -> str:
+    def build_prompt(self, available_cues: str, round_num: int) -> str:
         """Build prompt including conversation history."""
         # Add the current round information
         current_prompt = (
-            f"Round {round_num + 1}: Available queues {available_queues}. "
-            f"Based on previous observations, choose one queue by responding with just the letter. You press <<"
+            f"Round {round_num + 1}: Available cues {available_cues}. "
+            f"Based on previous observations, choose one cue by responding with just the letter. You press <<"
         )
         
         return self.conversation_history + current_prompt
         
-    def update_history(self, queues: str, choice: str, result: Optional[str], round_num: int) -> None:
+    def update_history(self, cues: str, choice: str, result: Optional[str], round_num: int) -> None:
         """Update conversation history with round results."""
         result_text = result if result is not None else "Invalid choice"
         round_text = (
-            f"Round {round_num + 1}: Available queues {queues}. "
+            f"Round {round_num + 1}: Available cues {cues}. "
             f"You chose {choice} and saw {result_text}.\n"
         )
         self.conversation_history += round_text
@@ -55,7 +55,7 @@ class TaskManager:
         
     def run_single_task(self) -> Dict:
         """Run a single VST task and return results."""
-        self.task = VSTtask(self.n_rounds, self.num_quadrants, self.n_queues)
+        self.task = VSTtask(self.n_rounds, self.num_quadrants, self.n_cues)
         self.conversation_history = ""
         self.agent.reset_history()
 
@@ -84,10 +84,10 @@ class TaskManager:
                 print(f"\n--- Round {round_num + 1} ---")
 
             round_data = self.task.get_round_data(round_num)
-            available_queues = [q['name'] for q in round_data]
+            available_cues = [q['name'] for q in round_data]
 
             # Build and show prompt with accumulated history
-            prompt = self.build_prompt(', '.join(available_queues), round_num)
+            prompt = self.build_prompt(', '.join(available_cues), round_num)
 
             if self.verbose:
                 print("\nAccumulated prompt shown to LLM:")
@@ -110,16 +110,16 @@ class TaskManager:
                     # Show quadrant info in verbose mode
                     for q in round_data:
                         if q['name'] == choice:
-                            print(f"(Queue {choice} was from Quadrant {q['quadrant'] + 1})")
+                            print(f"(cue {choice} was from Quadrant {q['quadrant'] + 1})")
                 else:
                     print("Invalid choice!")
 
             # Always update conversation history, even if the choice is invalid.
             # (You might want to modify update_history to handle a None result gracefully.)
-            self.update_history(', '.join(available_queues), choice, result, round_num)
+            self.update_history(', '.join(available_cues), choice, result, round_num)
                     
             stats['rounds'].append({
-                'available_queues': available_queues,
+                'available_cues': available_cues,
                 'choice': choice,
                 'result': result,
                 'full_prompt': prompt  # Store the full accumulated prompt
@@ -207,7 +207,7 @@ class TaskManager:
         """Analyze simulation results and generate metrics."""
         metrics = {
             'n_rounds': int(self.n_rounds),  # Convert to native Python int
-            'n_queues': int(self.n_queues),  # Convert to native Python int
+            'n_cues': int(self.n_cues),  # Convert to native Python int
             'n_simulations': int(self.n_simulations),  # Convert to native Python int
             'success_rate': float(np.mean([r['success'] for r in results])),  # Convert to float
             'quadrant_distribution': {},
