@@ -100,17 +100,30 @@ class LLMagent:
         """Get response from the LLM."""
         # Combine conversation history with the current prompt
         full_prompt = self.conversation_history + prompt
-        
+
         if self.openai_api_key:
             # Use the OpenAI API for chat completions
-            response = self.client.chat.completions.create(
-                model=self.model_name,
-                messages=[{"role": "user", "content": full_prompt}],
-                temperature=1.0,
-                max_tokens=1,  # adjust if necessary
-                stop=["<<"]    # customize stop tokens if needed
-            )
+            # Build a dictionary of parameters for the API call
+            params = {
+                "model": self.model_name,
+                "messages": [{"role": "user", "content": full_prompt}],
+                "temperature": 1.0,
+                "stop": ["<<"],
+            }
+            
+            # Select the appropriate token parameter based on the model name
+            if self.model_name in ["gpt-4o", "gpt-4o-mini"]:
+                params["max_tokens"] = 1  # Use max_tokens for GPT-4O models
+            elif self.model_name in ["o1-mini", "o3-mini"]:
+                params["max_completion_tokens"] = 1  # Use max_completion_tokens for O-mini models
+            else:
+                # Fallback behavior if the model name isn't one of the above.
+                # You can choose to default to one of the parameters or raise an error.
+                params["max_tokens"] = 1
+
+            response = self.client.chat.completions.create(**params)
             generated_text = response.choices[0].message.content.strip()
+        
         elif self.anthropic_api_key:
             # Use the Anthropic API for completions
             response = self.client.messages.create(
@@ -119,12 +132,15 @@ class LLMagent:
                 temperature=1.0,
                 stop_sequences=["<<"],
                 messages=[{"role": "user", "content": full_prompt}],
-            )    
+            )
             generated_text = response.content[0].text.strip()
+    
         else:
             # Use the local pipeline (unsloth or transformers)
             generated_text = self.pipe(full_prompt)[0]["generated_text"][len(full_prompt):].strip()
+
         return generated_text
+
 
     def update_history(self, text: str):
         """Update conversation history."""
