@@ -2,6 +2,8 @@ import time
 import numpy as np
 import pickle
 import pandas as pd
+import matplotlib.pyplot as plt
+from matplotlib.patches import Patch
 from agents.LLMagent import LLMagent
 from manager.TaskManager import TaskManager
 
@@ -81,7 +83,8 @@ class BenchmarkRunner:
     def results_to_dataframe(self):
         """
         Transform the results dictionary into a pandas DataFrame.
-        Each row contains Model, Rounds, Quadrants, Performance (mean) and Std (std).
+        Each row contains Model, Rounds, Quadrants, Performance (mean over runs),
+        Std (std over runs) and also stores the raw run values.
         """
         rows = []
         for model, rounds_dict in self.results.items():
@@ -94,7 +97,8 @@ class BenchmarkRunner:
                         "Rounds": rounds_label,
                         "Quadrants": quadrant_label,
                         "Performance": performance,
-                        "Std": std
+                        "Std": std,
+                        "raw": runs  # store raw run values for later aggregation
                     }
                     rows.append(row)
         df = pd.DataFrame(rows)
@@ -108,6 +112,105 @@ class BenchmarkRunner:
         with open(filepath, "wb") as f:
             pickle.dump(df, f)
         print(f"Results saved to {filepath}")
+
+    def plot_results(self):
+        """
+        Create a horizontal bar chart of aggregated benchmark results per model.
+        Aggregates the raw run values for each model across rounds and quadrants.
+        """
+        # Convert stored results to a DataFrame.
+        df = self.results_to_dataframe()
+        
+        # Aggregate the raw values per model.
+        aggregated_data = {}
+        for model, group in df.groupby("Model"):
+            # For each configuration row for this model, extract the list of raw values
+            all_runs = np.concatenate(group["raw"].values)
+            aggregated_data[model] = {"mean": np.mean(all_runs), "std": np.std(all_runs)}
+        
+        # Create arrays for models, means, and stds.
+        model_names = list(aggregated_data.keys())
+        model_means = np.array([aggregated_data[model]["mean"] for model in model_names])
+        model_stds  = np.array([aggregated_data[model]["std"] for model in model_names])
+        
+        # ----------------------------------------------------
+        # 1) Sort the data from largest mean to smallest mean
+        # ----------------------------------------------------
+        sorted_indices = np.argsort(model_means)[::-1]  # descending order
+        sorted_means = model_means[sorted_indices]
+        sorted_stds  = model_stds[sorted_indices]
+        sorted_names = [model_names[i] for i in sorted_indices]
+        
+        # ----------------------------------------------------
+        # 2) Categorize each model so we can color them
+        # ----------------------------------------------------
+        model_category = {
+            "Deepseek_R1_1B_Qwen":     "Open Source (<= 1.5B)",
+            "Deepseek_R1_7B_Qwen":     "Open Source (> 1.5B)",
+            "Deepseek_R1_8B_Llama":    "Open Source (> 1.5B)",
+            "Qwen_1B":                 "Open Source (<= 1.5B)",
+            "Qwen_3B":                 "Open Source (> 1.5B)",
+            "Qwen_7B":                 "Open Source (> 1.5B)",
+            "Qwen_1B_Instruct":        "Open Source (<= 1.5B)",
+            "Qwen_3B_Instruct":        "Open Source (> 1.5B)",
+            "Qwen_7B_Instruct":        "Open Source (> 1.5B)",
+            "Centaur_8B":              "Open Source (> 1.5B)",
+            "gpt4o":                   "API",
+            "gpt4o_mini":              "API",
+        }
+        
+        category_colors = {
+            "API":                   "royalblue",
+            "Open Source (> 1.5B)":    "darkred",
+            "Open Source (<= 1.5B)":   "darkgreen"
+        }
+        
+        # Build list of colors based on category.
+        bar_colors = [category_colors.get(model_category.get(name, "API"), "gray")
+                      for name in sorted_names]
+        
+        # ----------------------------------------------------
+        # 3) Prepare asymmetric error bars so that the left error
+        #    does not push below 0.
+        # ----------------------------------------------------
+        lower_errors = np.where(sorted_means - sorted_stds < 0, sorted_means, sorted_stds)
+        upper_errors = sorted_stds  # full std on the right
+        
+        # ----------------------------------------------------
+        # 4) Plot the horizontal bar chart with slimmer bars (height=0.5)
+        #    and the asymmetric error bars.
+        # ----------------------------------------------------
+        plt.figure(figsize=(6, 5))
+        y_positions = np.arange(len(sorted_means))  # positions for each bar
+        
+        plt.barh(
+            y_positions,
+            sorted_means,
+            height=0.5,  # slimmer bars
+            xerr=[lower_errors, upper_errors],
+            color=bar_colors,
+            edgecolor='black',
+            capsize=0
+        )
+        
+        plt.yticks(ticks=y_positions, labels=sorted_names)
+        plt.gca().invert_yaxis()  # best model on top
+        plt.subplots_adjust(left=0.32)
+        plt.xlabel("Aggregated Mean Score")
+        plt.title("G1Bbon benchmark")
+        
+        # ----------------------------------------------------
+        # 5) Create a legend for the categories.
+        # ----------------------------------------------------
+        legend_handles = [
+            Patch(facecolor='royalblue',  label='API',                   edgecolor='black'),
+            Patch(facecolor='darkred',     label='Open Source (> 1.5B)',    edgecolor='black'),
+            Patch(facecolor='darkgreen',   label='Open Source (<= 1.5B)',   edgecolor='black'),
+        ]
+        plt.legend(handles=legend_handles, loc="lower right")
+        
+        plt.tight_layout()
+        plt.show()
 
 # Example usage:
 if __name__ == "__main__":
@@ -141,5 +244,7 @@ if __name__ == "__main__":
     
     # Run all benchmarks.
     benchmark.multiple_benchmarks()
-    # Transform results into a DataFrame and save to bench.pkl.
+    # Save the DataFrame of results to a pickle file.
     benchmark.save_results("bench.pkl")
+    # Plot the aggregated results.
+    benchmark.plot_results()

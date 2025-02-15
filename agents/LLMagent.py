@@ -152,7 +152,10 @@ class LLMagent:
                 stop_sequences=["<<"],
                 messages=[{"role": "user", "content": full_prompt}],
             )
-            generated_text = response.content[0].text.strip()
+            if response.content and len(response.content) > 0:
+                generated_text = response.content[0].text.strip()
+            else:
+                generated_text = "X" # Anthropic API returned an empty response.
     
         else:
             # Use the local pipeline (unsloth or transformers)
