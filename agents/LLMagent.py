@@ -57,7 +57,9 @@ class LLMagent:
             "haiku": "claude-3-5-haiku-latest"
         }
 
-        model_reasoning = ["Deepseek_R1_1B_Qwen", "Deepseek_R1_7B_Qwen", "Deepseek_R1_8B_Llama", "o1-mini"]
+        # Define which models are expected to support internal chain-of-thought
+        reasoning_models = ["Deepseek_R1_1B_Qwen", "Deepseek_R1_7B_Qwen", "Deepseek_R1_8B_Llama", "o1-mini"]
+        self.is_reasoning_model = model_name in reasoning_models
 
         if model_name in model_openai:
             self.openai_flag = True
@@ -93,7 +95,7 @@ class LLMagent:
                 pad_token_id=0,
                 do_sample=True,
                 temperature=1.0,
-                max_new_tokens=1,
+                max_new_tokens=150,
             )
         elif model_name in model_aliases and device_map == "cpu": 
             model_name = model_aliases[model_name]
