@@ -1,6 +1,9 @@
 import os
 import transformers
+import anthropic
 from typing import Optional
+from openai import OpenAI
+from unsloth import FastLanguageModel
 
 class LLMagent:
     def __init__(self, 
@@ -27,6 +30,7 @@ class LLMagent:
         """
         self.openai_api_key = openai_api_key
         self.anthropic_api_key = anthropic_api_key
+        self.openai_flag, self.anthropic_flag = False, False
 
         # Map friendly model names to their corresponding Hugging Face repository strings.
         model_aliases = {
@@ -41,22 +45,35 @@ class LLMagent:
             "Qwen_7B_Instruct": "Qwen/Qwen2.5-7B-Instruct",
             "Centaur_8B":    "marcelbinz/Llama-3.1-Centaur-8B-adapter"
         }
-        # Use the mapped repository string if available
-        if model_name in model_aliases:
-            model_name = model_aliases[model_name]
-        self.model_name = model_name
 
-        if self.openai_api_key:
-            print("Using OpenAI API for GPT model")
-            from openai import OpenAI
+        model_openai = {
+            "gpt4o": "gpt-4o",
+            "gpt4o-mini": "gpt-4o-mini",
+            "o1-mini": "o1-mini"
+        }
+
+        model_anthropic = {
+            "sonnet": "claude-3-5-sonnet-latest",
+            "haiku": "claude-3-5-haiku-latest"
+        }
+
+        model_reasoning = ["Deepseek_R1_1B_Qwen", "Deepseek_R1_7B_Qwen", "Deepseek_R1_8B_Llama", "o1-mini"]
+
+        if model_name in model_openai:
+            self.openai_flag = True
+            model_name = model_openai[model_name]
+            self.model_name = model_name
+            print("Using OpenAI API")
             self.client = OpenAI(api_key=self.openai_api_key)
-        elif self.anthropic_api_key:
-            print("Using Anthropic API for GPT model")
-            import anthropic
+        elif model_name in model_anthropic:
+            self.anthropic_flag = True
+            model_name = model_anthropic[model_name]
+            self.model_name = model_name
+            print("Using Anthropic API")
             self.client = anthropic.Anthropic(api_key=self.anthropic_api_key)
-        elif use_unsloth:
-            from unsloth import FastLanguageModel
+        elif model_name in model_aliases and device_map == "cuda:0" and use_unsloth:
             print("Using unsloth with GPU")
+            model_name = model_aliases[model_name]
             # Optionally adjust parameters based on model (e.g., max_seq_length)
             if "qwen" in model_name.lower():
                 max_seq_length = 4096  # adjust if Qwen requires a different sequence length
@@ -67,6 +84,7 @@ class LLMagent:
                 load_in_4bit=load_in_4bit,
             )
             FastLanguageModel.for_inference(model)
+
             self.pipe = transformers.pipeline(
                 "text-generation",
                 model=model,
@@ -77,7 +95,8 @@ class LLMagent:
                 temperature=1.0,
                 max_new_tokens=1,
             )
-        else:
+        elif model_name in model_aliases and device_map == "cpu": 
+            model_name = model_aliases[model_name]
             print("Using transformers with CPU")
             model = transformers.AutoModelForCausalLM.from_pretrained(
                 model_name, 
@@ -101,7 +120,7 @@ class LLMagent:
         # Combine conversation history with the current prompt
         full_prompt = self.conversation_history + prompt
 
-        if self.openai_api_key:
+        if self.openai_flag:
             # Use the OpenAI API for chat completions
             # Build a dictionary of parameters for the API call
             params = {
@@ -113,9 +132,9 @@ class LLMagent:
             
             # Select the appropriate token parameter based on the model name
             if self.model_name in ["gpt-4o", "gpt-4o-mini"]:
-                params["max_tokens"] = 1  # Use max_tokens for GPT-4O models
+                params["max_tokens"] = 1  # Use max_tokens for GPT-4o models
             elif self.model_name in ["o1-mini", "o3-mini"]:
-                params["max_completion_tokens"] = 1  # Use max_completion_tokens for O-mini models
+                params["max_completion_tokens"] = 1  # Use max_completion_tokens for O-models
             else:
                 # Fallback behavior if the model name isn't one of the above.
                 # You can choose to default to one of the parameters or raise an error.
@@ -124,7 +143,7 @@ class LLMagent:
             response = self.client.chat.completions.create(**params)
             generated_text = response.choices[0].message.content.strip()
         
-        elif self.anthropic_api_key:
+        elif self.anthropic_flag:
             # Use the Anthropic API for completions
             response = self.client.messages.create(
                 model=self.model_name,

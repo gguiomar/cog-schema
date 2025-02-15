@@ -2,8 +2,7 @@ from tasks.VSTtask import VSTtask
 from agents.LLMagent import LLMagent
 from manager.TaskManager import TaskManager
 
-
-# fix this for local cpu
+# Run Single Instance
 model_name = "marcelbinz/Llama-3.1-Centaur-8B-adapter"
 pipe = LLMagent(
     model_name=model_name, 
@@ -15,4 +14,7 @@ pipe = LLMagent(
 
 manager = TaskManager(n_simulations=100, nrounds=10, num_quadrants=2, num_queues=1, pipe=pipe, verbose=False)
 metrics = manager.run_simulations()
+
+
+
 
