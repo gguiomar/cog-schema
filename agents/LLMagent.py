@@ -4,6 +4,7 @@ import anthropic
 from typing import Optional
 from openai import OpenAI
 from unsloth import FastLanguageModel
+from unsloth.chat_templates import get_chat_template
 
 class LLMagent:
     def __init__(self, 
@@ -34,8 +35,10 @@ class LLMagent:
 
         # Map friendly model names to their corresponding Hugging Face repository strings.
         model_aliases = {
-            "Deepseek_R1_1B_Qwen": "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
-            "Deepseek_R1_7B_Qwen": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+            "Deepseek_R1_1B_Qwen": "unsloth/DeepSeek-R1-Distill-Qwen-1.5B-unsloth-bnb-4bit",
+            #"Deepseek_R1_1B_Qwen": "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
+            "Deepseek_R1_7B_Qwen" : "unsloth/DeepSeek-R1-Distill-Qwen-7B-unsloth-bnb-4bit",
+            #"Deepseek_R1_7B_Qwen": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
             "Deepseek_R1_8B_Llama": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
             "Qwen_1B": "Qwen/Qwen2.5-1.5B",
             "Qwen_3B": "Qwen/Qwen2.5-3B",
@@ -60,6 +63,7 @@ class LLMagent:
         # Define which models are expected to support internal chain-of-thought
         reasoning_models = ["Deepseek_R1_1B_Qwen", "Deepseek_R1_7B_Qwen", "Deepseek_R1_8B_Llama", "o1-mini"]
         self.is_reasoning_model = model_name in reasoning_models
+        #self.SYSTEM_PROMPT = """Respond in the following format:<think>...</think><answer>...</answer>"""
 
         if model_name in model_openai:
             self.openai_flag = True
@@ -79,24 +83,27 @@ class LLMagent:
             # Optionally adjust parameters based on model (e.g., max_seq_length)
             if "qwen" in model_name.lower():
                 max_seq_length = 4096  # adjust if Qwen requires a different sequence length
-            model, tokenizer = FastLanguageModel.from_pretrained(
+
+            self.model, self.tokenizer = FastLanguageModel.from_pretrained(
                 model_name=model_name,
                 max_seq_length=max_seq_length,
+                fast_inference=True,
                 dtype=None,
-                load_in_4bit=load_in_4bit,
             )
-            FastLanguageModel.for_inference(model)
 
-            self.pipe = transformers.pipeline(
-                "text-generation",
-                model=model,
-                tokenizer=tokenizer,
-                trust_remote_code=True,
-                pad_token_id=0,
-                do_sample=True,
-                temperature=1.0,
-                max_new_tokens=150,
-            )
+            #FastLanguageModel.for_inference(model)
+
+            #self.pipe = transformers.pipeline(
+                #"text-generation",
+                #model=model,
+                #tokenizer=tokenizer,
+                #trust_remote_code=True,
+                #pad_token_id=0,
+                #do_sample=True,
+                #temperature=1.0,
+                #max_new_tokens=1,
+            #)
+
         elif model_name in model_aliases and device_map == "cpu": 
             model_name = model_aliases[model_name]
             print("Using transformers with CPU")
@@ -160,8 +167,28 @@ class LLMagent:
                 generated_text = "X" # Anthropic API returned an empty response.
     
         else:
+            #tokenized_prompt = self.tokenizer.apply_chat_template([
+                #{"role" : "user", "content" : full_prompt},
+            #], tokenize = False, add_generation_prompt = True)
+
+            tokenized_prompt = f"<｜begin▁of▁sentence｜><｜User｜>{full_prompt}<｜Assistant｜>"
+
+            from vllm import SamplingParams
+            sampling_params = SamplingParams(
+                temperature = 0.8,
+                top_p = 0.95,
+                max_tokens = 1000,
+            )
+
+            generated_text = self.model.fast_generate(
+                tokenized_prompt,
+                sampling_params = sampling_params,
+            )[0].outputs[0].text
+
+            print(generated_text)
+
             # Use the local pipeline (unsloth or transformers)
-            generated_text = self.pipe(full_prompt)[0]["generated_text"][len(full_prompt):].strip()
+            #generated_text = self.pipe(full_prompt)[0]["generated_text"][len(full_prompt):].strip()
 
         return generated_text
 

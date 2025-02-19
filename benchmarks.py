@@ -99,6 +99,7 @@ class BenchmarkRunner:
                         "Performance": performance,
                         "Std": std,
                         "raw": runs  # store raw run values for later aggregation
+                        #Add average time per round
                     }
                     rows.append(row)
         df = pd.DataFrame(rows)
