@@ -1,10 +1,11 @@
 import os
 import transformers
+import torch
+import time
 import anthropic
 from typing import Optional
 from openai import OpenAI
 from unsloth import FastLanguageModel
-from unsloth.chat_templates import get_chat_template
 
 class LLMagent:
     def __init__(self, 
@@ -36,10 +37,8 @@ class LLMagent:
         # Map friendly model names to their corresponding Hugging Face repository strings.
         model_aliases = {
             "Deepseek_R1_1B_Qwen": "unsloth/DeepSeek-R1-Distill-Qwen-1.5B-unsloth-bnb-4bit",
-            #"Deepseek_R1_1B_Qwen": "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
             "Deepseek_R1_7B_Qwen" : "unsloth/DeepSeek-R1-Distill-Qwen-7B-unsloth-bnb-4bit",
-            #"Deepseek_R1_7B_Qwen": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
-            "Deepseek_R1_8B_Llama": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+            "Deepseek_R1_8B_Llama": "unsloth/DeepSeek-R1-Distill-Llama-8B-unsloth-bnb-4bit",
             "Qwen_1B": "Qwen/Qwen2.5-1.5B",
             "Qwen_3B": "Qwen/Qwen2.5-3B",
             "Qwen_7B": "Qwen/Qwen2.5-7B",
@@ -61,9 +60,8 @@ class LLMagent:
         }
 
         # Define which models are expected to support internal chain-of-thought
-        reasoning_models = ["Deepseek_R1_1B_Qwen", "Deepseek_R1_7B_Qwen", "Deepseek_R1_8B_Llama", "o1-mini"]
+        reasoning_models = ["Deepseek_R1_1B_Qwen", "Deepseek_R1_7B_Qwen", "Deepseek_R1_8B_Llama"]
         self.is_reasoning_model = model_name in reasoning_models
-        #self.SYSTEM_PROMPT = """Respond in the following format:<think>...</think><answer>...</answer>"""
 
         if model_name in model_openai:
             self.openai_flag = True
@@ -80,48 +78,20 @@ class LLMagent:
         elif model_name in model_aliases and device_map == "cuda:0" and use_unsloth:
             print("Using unsloth with GPU")
             model_name = model_aliases[model_name]
-            # Optionally adjust parameters based on model (e.g., max_seq_length)
             if "qwen" in model_name.lower():
                 max_seq_length = 4096  # adjust if Qwen requires a different sequence length
-
-            self.model, self.tokenizer = FastLanguageModel.from_pretrained(
-                model_name=model_name,
-                max_seq_length=max_seq_length,
-                fast_inference=True,
-                dtype=None,
-            )
-
-            #FastLanguageModel.for_inference(model)
-
-            #self.pipe = transformers.pipeline(
-                #"text-generation",
-                #model=model,
-                #tokenizer=tokenizer,
-                #trust_remote_code=True,
-                #pad_token_id=0,
-                #do_sample=True,
-                #temperature=1.0,
-                #max_new_tokens=1,
-            #)
+            self.model, self.tokenizer = FastLanguageModel.from_pretrained(model_name=model_name, max_seq_length=max_seq_length)
+            FastLanguageModel.for_inference(self.model)
 
         elif model_name in model_aliases and device_map == "cpu": 
             model_name = model_aliases[model_name]
             print("Using transformers with CPU")
-            model = transformers.AutoModelForCausalLM.from_pretrained(
+            self.model = transformers.AutoModelForCausalLM.from_pretrained(
                 model_name, 
                 device_map=device_map
             )
-            tokenizer = transformers.AutoTokenizer.from_pretrained(model_name)
-            self.pipe = transformers.pipeline(
-                "text-generation",
-                model=model,
-                tokenizer=tokenizer,
-                trust_remote_code=True,
-                pad_token_id=0,
-                do_sample=True,
-                temperature=1.0,
-                max_new_tokens=1,
-            )
+            self.tokenizer = transformers.AutoTokenizer.from_pretrained(model_name)
+        
         self.conversation_history = ""
 
     def get_response(self, prompt: str) -> str:
@@ -165,30 +135,73 @@ class LLMagent:
                 generated_text = response.content[0].text.strip()
             else:
                 generated_text = "X" # Anthropic API returned an empty response.
-    
+
+        elif self.is_reasoning_model:
+            tokenized_prompt = self.tokenizer.encode(f"<｜begin▁of▁sentence｜><｜User｜>{full_prompt}<｜Assistant｜>", return_tensors="pt", add_special_tokens=False).to(self.model.device)
+
+            ## REASONING PHASE
+            min_thinking_time = 10   # minimum thinking time in seconds
+            max_thinking_time = 20   # maximum thinking time in seconds
+            batch_tokens = 20        # Generate tokens in small batches
+            replacement_text = "Wait"  # Replacement text if end is prematurely detected
+            #start_think_token = self.tokenizer.encode("<think>", add_special_tokens=False)[0]
+            end_think_token = self.tokenizer.encode("</think>", add_special_tokens=False)[0]
+            replacement_ids = self.tokenizer.encode(replacement_text, add_special_tokens=False)
+
+            is_thinking = True       # Are we in the thinking phase?
+            finished = False
+            final_tokens = tokenized_prompt
+
+            start_time = time.time()  # Record the start time
+
+            while not finished:
+                outputs = self.model.generate(input_ids=final_tokens,max_new_tokens=batch_tokens,do_sample=True,temperature=0.6,top_p=0.95)
+                new_tokens = outputs[:, final_tokens.shape[1]:]  # Only newly generated tokens
+                for token in new_tokens[0]:  # Iterate over tokens
+                    elapsed_time = time.time() - start_time # Check if the maximum thinking time has been reached
+                    if elapsed_time >= max_thinking_time: # Append end-of-think token and break out of the loop
+                        final_tokens = torch.cat([final_tokens, torch.tensor([[end_think_token]]).to(final_tokens.device)], dim=1)
+                        finished = True
+                        break
+                    token_id = token.item()
+                    if token_id == end_think_token and is_thinking:  # Detect </think> token
+                        elapsed_time = time.time() - start_time
+                        if elapsed_time < min_thinking_time:  # If we haven't "thought" long enough
+                            final_tokens = torch.cat([final_tokens, torch.tensor([replacement_ids]).to(final_tokens.device)], dim=1) # Replace premature </think> with replacement text.
+                            continue
+                        else:  # If we have "thought" long enough
+                            is_thinking = False
+                            finished = True
+                    final_tokens = torch.cat([final_tokens, token.unsqueeze(0).unsqueeze(0)], dim=1)
+                    if token_id == end_think_token:
+                        finished = True
+                        break
+                if finished:
+                    break
+
+            output_text = self.tokenizer.decode(final_tokens[0], skip_special_tokens=True)
+
+            ## GENERATION PHASE
+            # Use the output_text as the new prompt to generate a single answer token.
+            conclusive_text = "\nThe answer is <<"
+            input_ids = self.tokenizer.encode(output_text+conclusive_text, return_tensors="pt").to(final_tokens.device)
+            answer_output = self.model.generate(input_ids=input_ids, max_new_tokens=2, do_sample=True, temperature=0.6, top_p=0.95)
+            generated_text = self.tokenizer.decode(answer_output[0, -2], skip_special_tokens=True)
+
         else:
-            #tokenized_prompt = self.tokenizer.apply_chat_template([
-                #{"role" : "user", "content" : full_prompt},
-            #], tokenize = False, add_generation_prompt = True)
-
-            tokenized_prompt = f"<｜begin▁of▁sentence｜><｜User｜>{full_prompt}<｜Assistant｜>"
-
-            from vllm import SamplingParams
-            sampling_params = SamplingParams(
-                temperature = 0.8,
-                top_p = 0.95,
-                max_tokens = 1000,
+            self.pipe = transformers.pipeline(
+                "text-generation",
+                model=self.model,
+                tokenizer=self.tokenizer,
+                trust_remote_code=True,
+                pad_token_id=0,
+                do_sample=True,
+                temperature=1.0,
+                max_new_tokens=1,
             )
 
-            generated_text = self.model.fast_generate(
-                tokenized_prompt,
-                sampling_params = sampling_params,
-            )[0].outputs[0].text
-
-            print(generated_text)
-
             # Use the local pipeline (unsloth or transformers)
-            #generated_text = self.pipe(full_prompt)[0]["generated_text"][len(full_prompt):].strip()
+            generated_text = self.pipe(full_prompt)[0]["generated_text"][len(full_prompt):].strip()
 
         return generated_text
 

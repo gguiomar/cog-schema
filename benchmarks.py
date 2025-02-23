@@ -63,9 +63,18 @@ class BenchmarkRunner:
                         pipe=pipe,
                         verbose=self.verbose
                     )
+                    # Start timer before running simulations.
+                    start_run = time.time()
                     metrics = manager.run_simulations()
-                    # Append the success rate (or 0 if not found) to the list.
-                    agent_results[rounds_label][quadrant_label].append(metrics.get('success_rate', 0))
+                    elapsed = time.time() - start_run
+                    # Compute time per round
+                    time_per_round = elapsed / n_rounds
+                    # Store both success_rate and time_per_round as a dictionary.
+                    run_metrics = {
+                        "success_rate": metrics.get('success_rate', 0),
+                        "time_per_round": time_per_round
+                    }
+                    agent_results[rounds_label][quadrant_label].append(run_metrics)
         return agent_results
 
     def multiple_benchmarks(self):
@@ -83,23 +92,30 @@ class BenchmarkRunner:
     def results_to_dataframe(self):
         """
         Transform the results dictionary into a pandas DataFrame.
-        Each row contains Model, Rounds, Quadrants, Performance (mean over runs),
-        Std (std over runs) and also stores the raw run values.
+        Each row contains Model, Rounds, Quadrants, Performance (mean success rate over runs),
+        Std (std of success rates), Time_Per_Round (mean time per round), Time_Std (std of time per round),
+        and also stores the raw run dictionaries.
         """
         rows = []
         for model, rounds_dict in self.results.items():
             for rounds_label, quadrants_dict in rounds_dict.items():
                 for quadrant_label, runs in quadrants_dict.items():
-                    performance = np.mean(runs)
-                    std = np.std(runs)
+                    # Extract success rates and time metrics from the run dictionaries.
+                    success_rates = [r["success_rate"] for r in runs]
+                    time_per_rounds = [r["time_per_round"] for r in runs]
+                    performance = np.mean(success_rates)
+                    std = np.std(success_rates)
+                    time_mean = np.mean(time_per_rounds)
+                    time_std = np.std(time_per_rounds)
                     row = {
                         "Model": model,
                         "Rounds": rounds_label,
                         "Quadrants": quadrant_label,
                         "Performance": performance,
                         "Std": std,
+                        "Time_Per_Round": time_mean,
+                        "Time_Std": time_std,
                         "raw": runs  # store raw run values for later aggregation
-                        #Add average time per round
                     }
                     rows.append(row)
         df = pd.DataFrame(rows)
@@ -122,12 +138,12 @@ class BenchmarkRunner:
         # Convert stored results to a DataFrame.
         df = self.results_to_dataframe()
         
-        # Aggregate the raw values per model.
+        # Aggregate the raw success_rate values per model.
         aggregated_data = {}
         for model, group in df.groupby("Model"):
-            # For each configuration row for this model, extract the list of raw values
-            all_runs = np.concatenate(group["raw"].values)
-            aggregated_data[model] = {"mean": np.mean(all_runs), "std": np.std(all_runs)}
+            # Extract success_rate from each run in group["raw"]
+            all_success_rates = [run["success_rate"] for runs in group["raw"].values for run in runs]
+            aggregated_data[model] = {"mean": np.mean(all_success_rates), "std": np.std(all_success_rates)}
         
         # Create arrays for models, means, and stds.
         model_names = list(aggregated_data.keys())
@@ -212,6 +228,8 @@ class BenchmarkRunner:
         
         plt.tight_layout()
         plt.show()
+
+        return df
 
 # Example usage:
 if __name__ == "__main__":
