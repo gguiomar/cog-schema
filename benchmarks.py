@@ -7,7 +7,7 @@ from matplotlib.patches import Patch
 from agents.LLMagent import LLMagent
 from manager.TaskManager import TaskManager
 
-class BenchmarkRunner:
+class BenchmarkRunner():
     def __init__(self, agents, rounds, quadrants, n_simulations=10, n_runs=5, 
                  num_cues=1, device="cuda:0", verbose=False,
                  openai_api_key=None, anthropic_api_key=None, use_unsloth=True):
@@ -68,7 +68,7 @@ class BenchmarkRunner:
                     metrics = manager.run_simulations()
                     elapsed = time.time() - start_run
                     # Compute time per round
-                    time_per_round = elapsed / n_rounds
+                    time_per_round = elapsed / (n_rounds)
                     # Store both success_rate and time_per_round as a dictionary.
                     run_metrics = {
                         "success_rate": metrics.get('success_rate', 0),
@@ -165,15 +165,23 @@ class BenchmarkRunner:
             "Deepseek_R1_1B_Qwen":     "Open Source (<= 1.5B)",
             "Deepseek_R1_7B_Qwen":     "Open Source (> 1.5B)",
             "Deepseek_R1_8B_Llama":    "Open Source (> 1.5B)",
-            "Qwen_1B":                 "Open Source (<= 1.5B)",
+            "Qwen_0.5B":               "Open Source (<= 1.5B)",
+            "Qwen_1.5B":               "Open Source (<= 1.5B)",
             "Qwen_3B":                 "Open Source (> 1.5B)",
             "Qwen_7B":                 "Open Source (> 1.5B)",
-            "Qwen_1B_Instruct":        "Open Source (<= 1.5B)",
+            "Qwen_0.5B_Instruct":      "Open Source (<= 1.5B)",
+            "Qwen_1.5B_Instruct":      "Open Source (<= 1.5B)",
             "Qwen_3B_Instruct":        "Open Source (> 1.5B)",
             "Qwen_7B_Instruct":        "Open Source (> 1.5B)",
             "Centaur_8B":              "Open Source (> 1.5B)",
             "gpt4o":                   "API",
             "gpt4o_mini":              "API",
+            "Mistral_7B_Instruct":     "Open Source (> 1.5B)",
+            "Mistral_7B":              "Open Source (> 1.5B)",
+            "Phi_mini_2B_Instruct":    "Open Source (> 1.5B)",
+            "Gemma_2B_Instruct":       "Open Source (> 1.5B)",
+            "Gemma_2B":                "Open Source (> 1.5B)",
+
         }
         
         category_colors = {

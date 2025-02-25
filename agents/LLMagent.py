@@ -39,13 +39,20 @@ class LLMagent:
             "Deepseek_R1_1B_Qwen": "unsloth/DeepSeek-R1-Distill-Qwen-1.5B-unsloth-bnb-4bit",
             "Deepseek_R1_7B_Qwen" : "unsloth/DeepSeek-R1-Distill-Qwen-7B-unsloth-bnb-4bit",
             "Deepseek_R1_8B_Llama": "unsloth/DeepSeek-R1-Distill-Llama-8B-unsloth-bnb-4bit",
-            "Qwen_1B": "Qwen/Qwen2.5-1.5B",
-            "Qwen_3B": "Qwen/Qwen2.5-3B",
-            "Qwen_7B": "Qwen/Qwen2.5-7B",
-            "Qwen_1B_Instruct": "Qwen/Qwen2.5-1.5B-Instruct",
-            "Qwen_3B_Instruct": "Qwen/Qwen2.5-3B-Instruct",
-            "Qwen_7B_Instruct": "Qwen/Qwen2.5-7B-Instruct",
-            "Centaur_8B":    "marcelbinz/Llama-3.1-Centaur-8B-adapter"
+            "Qwen_0.5B": "unsloth/Qwen2.5-0.5B-bnb-4bit",
+            "Qwen_1.5B": "unsloth/Qwen2.5-1.5B-bnb-4bit",
+            "Qwen_3B": "unsloth/Qwen2.5-3B-bnb-4bit",
+            "Qwen_7B": "unsloth/Qwen2.5-7B-bnb-4bit",
+            "Qwen_0.5B_Instruct": "unsloth/Qwen2.5-0.5B-Instruct-bnb-4bit",
+            "Qwen_1.5B_Instruct": "unsloth/Qwen2.5-1.5B-Instruct-bnb-4bit",
+            "Qwen_3B_Instruct": "unsloth/Qwen2.5-3B-Instruct-bnb-4bit",
+            "Qwen_7B_Instruct": "unsloth/Qwen2.5-7B-Instruct-bnb-4bit",
+            "Centaur_8B":    "marcelbinz/Llama-3.1-Centaur-8B-adapter",
+            "Mistral_7B_Instruct": "unsloth/mistral-7b-instruct-v0.3-bnb-4bit",
+            "Mistral_7B": "unsloth/mistral-7b-v0.3-bnb-4bit",
+            "Phi_mini_2B_Instruct": "unsloth/Phi-3.5-mini-instruct-bnb-4bit",
+            "Gemma_2B": "unsloth/gemma-2-2b-bnb-4bit",
+            "Gemma_2B_Instruct": "unsloth/gemma-2-2b-it-bnb-4bit",
         }
 
         model_openai = {
@@ -82,7 +89,6 @@ class LLMagent:
                 max_seq_length = 4096  # adjust if Qwen requires a different sequence length
             self.model, self.tokenizer = FastLanguageModel.from_pretrained(model_name=model_name, max_seq_length=max_seq_length)
             FastLanguageModel.for_inference(self.model)
-
         elif model_name in model_aliases and device_map == "cpu": 
             model_name = model_aliases[model_name]
             print("Using transformers with CPU")
@@ -140,8 +146,8 @@ class LLMagent:
             tokenized_prompt = self.tokenizer.encode(f"<｜begin▁of▁sentence｜><｜User｜>{full_prompt}<｜Assistant｜>", return_tensors="pt", add_special_tokens=False).to(self.model.device)
 
             ## REASONING PHASE
-            min_thinking_time = 10   # minimum thinking time in seconds
-            max_thinking_time = 20   # maximum thinking time in seconds
+            min_thinking_time = 5    # minimum thinking time in seconds
+            max_thinking_time = 10   # maximum thinking time in seconds
             batch_tokens = 20        # Generate tokens in small batches
             replacement_text = "Wait"  # Replacement text if end is prematurely detected
             #start_think_token = self.tokenizer.encode("<think>", add_special_tokens=False)[0]
