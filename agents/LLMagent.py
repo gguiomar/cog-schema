@@ -186,11 +186,11 @@ class LLMagent:
                         break
                 if finished:
                     break
-
-            output_text = self.tokenizer.decode(final_tokens[0], skip_special_tokens=True)
             
             # Record the thinking time
             self.thinking_time = time.time() - start_time
+            
+            output_text = self.tokenizer.decode(final_tokens[0], skip_special_tokens=True)
 
             ## GENERATION PHASE
             # Use the output_text as the new prompt to generate a single answer token.
