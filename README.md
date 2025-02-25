@@ -1,9 +1,217 @@
-# LLM Cognitive Schemas
+# G1Bbon: Large Language Model Perceptual-Inference Benchmark
 
-Solving a Visual Sampling task with LLMs.
+![G1Bbon Benchmark Results](images/benchmark_sample.png)
 
-## Code structure
+G1Bbon is a benchmark for evaluating Large Language Models (LLMs) on perceptual inference tasks. It tests an LLM's ability to maintain and update beliefs about the world based on limited, noisy observations.
 
-LLMAgent - Loader for pretrained models (currently supports Centaur-8B)
-VSTtask - Visual Sampling Task generator and runner
-TaskManager - runs the tasks with the LLMAgent as subject
+This repository contains the code to run the Visual Sampling Task (VST) benchmark on LLMs and compare their performance across different model sizes and architectures.
+
+## Repository Structure
+
+```
+├── agents/                  # Agent implementations
+│   ├── LLMagent.py          # Base LLM agent interface
+│   └── ...
+├── tasks/                   # Task implementations
+│   ├── VSTtask.py           # Visual Sampling Task implementation
+│   └── ...
+├── manager/                 # Task and benchmark management
+│   ├── TaskManager.py       # Manages running tasks and benchmarks
+│   └── ...
+├── simulation_results/      # Output directory for results
+├── logs/                    # Logging directory 
+├── main.ipynb               # Entry point notebook
+├── README.md                # This file
+└── requirements.txt         # Dependencies
+```
+
+## Components
+
+### 1. Visual Sampling Task (VST)
+
+The Visual Sampling Task is a multi-armed bandit problem designed to test an agent's ability to infer hidden properties from limited observations:
+
+- The task presents multiple quadrants (2-4), each with cues (typically 1 per quadrant).
+- One quadrant is biased (90% one color, 10% the other), while others have a 50/50 distribution.
+- The agent must sample different cues across a fixed number of rounds.
+- After all rounds, the agent must identify which quadrant had the biased distribution.
+
+This tests the agent's ability to:
+- Balance exploration vs. exploitation
+- Maintain belief updates based on observations
+- Make inferences about hidden properties
+
+### 2. LLM Agent
+
+The `LLMagent` class provides a unified interface for different types of LLMs:
+
+- Supports local models via Hugging Face transformers
+- Supports unsloth-optimized models
+- Supports API-based models (OpenAI, Anthropic)
+- Handles reasoning-specialized models with internal chain-of-thought
+
+For reasoning models, it:
+- Enables internal chain-of-thought reasoning
+- Tracks thinking time for performance analysis
+- Sets minimum and maximum thinking durations
+
+### 3. Task Manager
+
+The `TaskManager` class orchestrates running the tasks and benchmarks:
+
+- Manages running single tasks or multiple simulations
+- Handles conversation history and prompt construction
+- Performs comprehensive benchmarking across models/configurations
+- Records metrics including success rates, timing, and thinking time
+- Generates visualizations and exports results
+
+## Supported Models
+
+The benchmark supports various model types:
+
+### Local Models
+- Deepseek: R1-1B-Qwen, R1-7B-Qwen, R1-8B-Llama
+- Qwen: 0.5B, 1.5B, 3B, 7B (base and instruct versions)
+- Mistral: 7B, 7B-Instruct
+- Phi-mini: 2B-Instruct
+- Gemma: 2B, 2B-Instruct
+- Centaur: 8B
+
+### API Models
+- OpenAI: GPT-4o, GPT-4o-mini, o1-mini
+- Anthropic: Claude 3.5 Sonnet, Claude 3.5 Haiku
+
+## Benchmark Metrics
+
+The benchmark collects the following metrics:
+
+- **Success Rate**: Percentage of correctly identified biased quadrants
+- **Time Per Round**: Average time spent on each round
+- **Thinking Time**: For reasoning models, time spent in internal thinking
+- **Quadrant Distribution**: Analysis of which quadrants were chosen
+- **Raw Interactions**: Full conversation logs for each simulation
+
+## Result Format
+
+Benchmark results are saved in JSON format with the following structure:
+
+```json
+{
+  "results": {
+    "MODEL_NAME": {
+      "ROUNDS rounds": {
+        "QUADRANTS quadrant": [
+          {
+            "success_rate": 0.6,
+            "time_per_round": 2.5,
+            "thinking_time": 0.8
+          },
+          ...
+        ]
+      }
+    }
+  },
+  "metadata": {
+    "timestamp": "20240225_123456",
+    "agents": ["MODEL1", "MODEL2"],
+    "rounds": [4, 6, 8],
+    "quadrants": [2, 3, 4],
+    ...
+  }
+}
+```
+
+Individual simulation logs contain detailed information about each run, including full conversation history, thinking times for each round, and analysis of success patterns.
+
+## Usage
+
+### Basic Usage
+
+To run a benchmark with a single model:
+
+```python
+from manager.TaskManager import TaskManager
+
+# Create a task manager with specific configuration
+manager = TaskManager(
+    agents=["Deepseek_R1_7B_Qwen"],
+    rounds=[4, 6],
+    quadrants=[2, 4],
+    n_simulations=10,
+    n_runs=3,
+    device="cuda:0",
+    verbose=False
+)
+
+# Run the benchmark
+results = manager.multiple_benchmarks()
+
+# Plot the results
+df = manager.plot_results()
+```
+
+### Comparing Multiple Models
+
+To benchmark and compare multiple models:
+
+```python
+manager = TaskManager(
+    agents=[
+        "Deepseek_R1_1B_Qwen", 
+        "Deepseek_R1_7B_Qwen",
+        "gpt4o-mini"
+    ],
+    rounds=[4, 6, 8],
+    quadrants=[2, 3, 4],
+    n_simulations=10,
+    n_runs=3,
+    device="cuda:0",
+    openai_api_key="YOUR_API_KEY",  # Only needed for API models
+    verbose=False
+)
+
+# Run benchmarks
+results = manager.multiple_benchmarks()
+
+# Save and visualize results
+df = manager.save_results()
+manager.plot_results()
+```
+
+## Advanced Analysis
+
+The benchmark supports advanced analysis including:
+
+- Thinking time correlation with performance
+- Per-round analysis of model behavior
+- Examination of full conversation logs
+- Integration with model introspection tools
+
+## Requirements
+
+- Python 3.8+
+- PyTorch 2.0+
+- Transformers 4.30+
+- Unsloth (for optimized models)
+- CUDA-capable GPU (recommended)
+
+See `requirements.txt` for the full list of dependencies.
+
+## Citation
+
+If you use this benchmark in your research, please cite:
+
+```
+@misc{g1bbon2024,
+  author = {Your Name},
+  title = {G1Bbon: A Benchmark for Large Language Model Perceptual Inference},
+  year = {2024},
+  publisher = {GitHub},
+  journal = {GitHub Repository},
+  howpublished = {\url{https://github.com/yourusername/g1bbon}}
+}
+```
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.

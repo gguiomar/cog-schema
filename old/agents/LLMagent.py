@@ -33,13 +33,13 @@ class LLMagent:
         self.openai_api_key = openai_api_key
         self.anthropic_api_key = anthropic_api_key
         self.openai_flag, self.anthropic_flag = False, False
-        self.thinking_time = 0  # Track thinking time for reasoning models
 
         # Map friendly model names to their corresponding Hugging Face repository strings.
         model_aliases = {
             "Deepseek_R1_1B_Qwen": "unsloth/DeepSeek-R1-Distill-Qwen-1.5B-unsloth-bnb-4bit",
             "Deepseek_R1_7B_Qwen" : "unsloth/DeepSeek-R1-Distill-Qwen-7B-unsloth-bnb-4bit",
             "Deepseek_R1_8B_Llama": "unsloth/DeepSeek-R1-Distill-Llama-8B-unsloth-bnb-4bit",
+            "Deepseek_R1_14B_Qwen": "unsloth/DeepSeek-R1-Distill-Qwen-14B-unsloth-bnb-4bit", 
             "Qwen_0.5B": "unsloth/Qwen2.5-0.5B-bnb-4bit",
             "Qwen_1.5B": "unsloth/Qwen2.5-1.5B-bnb-4bit",
             "Qwen_3B": "unsloth/Qwen2.5-3B-bnb-4bit",
@@ -68,7 +68,7 @@ class LLMagent:
         }
 
         # Define which models are expected to support internal chain-of-thought
-        reasoning_models = ["Deepseek_R1_1B_Qwen", "Deepseek_R1_7B_Qwen", "Deepseek_R1_8B_Llama"]
+        reasoning_models = ["Deepseek_R1_1B_Qwen", "Deepseek_R1_7B_Qwen", "Deepseek_R1_8B_Llama", "Deepseek_R1_14B_Qwen"]
         self.is_reasoning_model = model_name in reasoning_models
 
         if model_name in model_openai:
@@ -105,7 +105,6 @@ class LLMagent:
         """Get response from the LLM."""
         # Combine conversation history with the current prompt
         full_prompt = self.conversation_history + prompt
-        self.thinking_time = 0  # Reset thinking time for this prompt
 
         if self.openai_flag:
             # Use the OpenAI API for chat completions
@@ -188,9 +187,6 @@ class LLMagent:
                     break
 
             output_text = self.tokenizer.decode(final_tokens[0], skip_special_tokens=True)
-            
-            # Record the thinking time
-            self.thinking_time = time.time() - start_time
 
             ## GENERATION PHASE
             # Use the output_text as the new prompt to generate a single answer token.
