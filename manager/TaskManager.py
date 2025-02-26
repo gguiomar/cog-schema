@@ -13,7 +13,7 @@ from tasks.VSTtask import VSTtask
 
 class TaskManager:
     def __init__(self, agents=None, rounds=None, quadrants=None, n_simulations=10, 
-                 n_runs=5, num_cues=1, device="cuda:0", verbose=False,
+                 n_trials=1, n_runs=5, num_cues=1, device="cuda:0", verbose=False,
                  output_dir="simulation_results", openai_api_key=None, 
                  anthropic_api_key=None, use_unsloth=True,
                  reasoning_mode="time", min_thinking_time=5.0, max_thinking_time=10.0,
@@ -31,6 +31,8 @@ class TaskManager:
             List of quadrant counts or a single quadrant count to test
         n_simulations : int
             Number of simulations per configuration
+        n_trials : int
+            Number of trials to run for each simulation
         n_runs : int
             Number of runs for each configuration
         num_cues : int
@@ -66,6 +68,7 @@ class TaskManager:
         self.quadrants = [quadrants] if isinstance(quadrants, int) else quadrants
         
         self.n_simulations = n_simulations
+        self.n_trials = n_trials
         self.n_runs = n_runs
         self.num_cues = num_cues
         self.device = device
@@ -127,97 +130,106 @@ class TaskManager:
         
         return self.agent
     
-    def build_prompt(self, available_cues: str, round_num: int) -> str:
-        """Build prompt including conversation history."""
-        # Add the current round information
+    def build_prompt(self, available_cues: str, round_num: int, trial_num: int) -> str:
+        """Build prompt including conversation history and trial number."""
+        # Add the current round information with trial number
         current_prompt = (
-            f"Round {round_num + 1}: Available cues {available_cues}. "
+            f"Trial {trial_num + 1}, Round {round_num + 1}: Available cues {available_cues}. "
             f"Based on previous observations, choose one cue by responding with just the letter. You press <<"
         )
         
         return self.conversation_history + current_prompt
         
-    def update_history(self, cues: str, choice: str, result: Optional[str], round_num: int) -> None:
-        """Update conversation history with round results."""
+    def update_history(self, cues: str, choice: str, result: Optional[str], round_num: int, trial_num: int) -> None:
+        """Update conversation history with round results including trial number."""
         result_text = result if result is not None else "Invalid choice"
         round_text = (
-            f"Round {round_num + 1}: Available cues {cues}. "
+            f"Trial {trial_num + 1}, Round {round_num + 1}: Available cues {cues}. "
             f"You chose {choice} and saw {result_text}.\n"
         )
         self.conversation_history += round_text
         
-    def get_final_prompt(self, num_quadrants) -> str:
-        """Build final prompt including full conversation history."""
+    def get_final_prompt(self, num_quadrants: int, trial_num: int) -> str:
+        """Build final prompt for a trial including conversation history."""
         prompt = (
             self.conversation_history +
-            "Based on all observed colors, which quadrant (1"
+            f"Trial {trial_num + 1}: Based on all observed colors, which quadrant (1"
             f"{', ' + ', '.join(str(i) for i in range(2, num_quadrants + 1))}"
             ") do you think had the highest ratio of RED? "
             "Respond with just the number. You choose <<"
         )
         return prompt
     
-    def run_single_task(self, n_rounds: int, num_quadrants: int) -> Dict:
+    def run_single_trial(self, n_rounds: int, num_quadrants: int, trial_num: int) -> Dict:
         """
-        Run a single VST task and return results.
+        Run a single trial of the VST task and return results.
         
         Parameters:
         -----------
         n_rounds : int
-            Number of rounds for this task
+            Number of rounds for this trial
         num_quadrants : int
-            Number of quadrants for this task
+            Number of quadrants for this trial
+        trial_num : int
+            Current trial number (0-indexed)
         
         Returns:
         --------
         dict
-            Dictionary containing task results and statistics
+            Dictionary containing trial results and statistics
         """
         self.task = VSTtask(n_rounds, num_quadrants, self.num_cues)
-        self.conversation_history = ""
         self.agent.reset_history()
-        self.thinking_times = []  # Reset thinking times for this task
-
-        stats = {
+        self.thinking_times = []  # Reset thinking times for this trial
+        
+        trial_stats = {
             'rounds': [],
             'final_choice': None,
             'correct_quadrant': self.task.biased_quadrant + 1,
             'success': False,
             'agent': self.current_agent,
+            'round_times': [],
             'thinking_times': []
         }
-
-        # Initialize conversation with task description
-        task_description = self.task.get_task_description()
-        self.conversation_history = task_description + "\n\n"
-
-        if self.verbose:
-            print("\n=== Task Description ===")
-            print(task_description)
-            print("\n=== Beginning Rounds ===")
-
+        
+        # Add a trial separator in the conversation history if this is not the first trial
+        if trial_num > 0:
+            self.conversation_history += f"\n==== Trial {trial_num + 1} ====\n\n"
+        
+        # If this is the first trial or we want to start fresh, initialize conversation with task description
+        if not self.conversation_history:
+            task_description = self.task.get_task_description()
+            self.conversation_history = task_description + f"\n\n==== Trial {trial_num + 1} ====\n\n"
+            
+            if self.verbose:
+                print("\n=== Task Description ===")
+                print(task_description)
+                print(f"\n=== Beginning Trial {trial_num + 1} ===")
+        elif self.verbose:
+            print(f"\n=== Beginning Trial {trial_num + 1} ===")
+        
         # Run all rounds
-        total_time_start = time.time()
         for round_num in range(self.task.n_rounds):
             if self.verbose:
-                print(f"\n--- Round {round_num + 1} ---")
-
+                print(f"\n--- Trial {trial_num + 1}, Round {round_num + 1} ---")
+            
             round_data = self.task.get_round_data(round_num)
             available_cues = [q['name'] for q in round_data]
-
+            
             # Build and show prompt with accumulated history
-            prompt = self.build_prompt(', '.join(available_cues), round_num)
-
+            prompt = self.build_prompt(', '.join(available_cues), round_num, trial_num)
+            
             if self.verbose:
                 print("\nAccumulated prompt shown to LLM:")
                 print("--------------------")
                 print(prompt)
                 print("--------------------")
-
-            # Get agent's choice
+            
+            # Get agent's choice and track round time
             round_start_time = time.time()
             choice = self.agent.get_response(prompt)
             round_time = time.time() - round_start_time
+            trial_stats['round_times'].append(round_time)
             
             # Extract thinking time if this is a reasoning model
             thinking_time = 0
@@ -227,12 +239,13 @@ class TaskManager:
                 if hasattr(self.agent, 'last_thinking_tokens'):
                     thinking_tokens = self.agent.last_thinking_tokens
                 self.thinking_times.append(thinking_time)
+                trial_stats['thinking_times'].append(thinking_time)
             
             if self.verbose:
                 print(f"\nLLM chose: {choice}")
                 if self.is_reasoning_model:
                     print(f"Thinking time: {thinking_time:.2f} seconds")
-
+            
             # Process choice
             result = self.task.process_choice(choice, round_data)
             quadrant = None
@@ -241,7 +254,7 @@ class TaskManager:
             if result is not None:  # Only try to identify quadrant if choice was valid
                 for q in round_data:
                     if q['name'].lower() == choice.lower():
-                        quadrant = q['quadrant'] + 1  # +1 because quadrants are 0-indexed in code but 1-indexed for user
+                        quadrant = q['quadrant'] + 1  # +1 because quadrants are 0-indexed in code
                         break
             
             if self.verbose:
@@ -251,54 +264,96 @@ class TaskManager:
                         print(f"(cue {choice} was from Quadrant {quadrant})")
                 else:
                     print("Invalid choice!")
-
-            # Update conversation history
-            self.update_history(', '.join(available_cues), choice, result, round_num)
             
-            # Create round stats - for reasoning models, save thinking tokens instead of prompt
+            # Update conversation history
+            self.update_history(', '.join(available_cues), choice, result, round_num, trial_num)
+            
+            # Create round stats 
             round_stats = {
                 'available_cues': available_cues,
                 'choice': choice,
+                'quadrant': quadrant,
                 'result': result,
                 'round_time': round_time,
-                'thinking_time': thinking_time,
-                'quadrant': quadrant
+                'thinking_time': thinking_time
             }
             
             # For reasoning models, add thinking tokens
             if self.is_reasoning_model and thinking_tokens:
                 round_stats['thinking_tokens'] = thinking_tokens
-                
-            stats['rounds'].append(round_stats)
-            stats['thinking_times'].append(thinking_time)
-
+            
+            trial_stats['rounds'].append(round_stats)
+        
         # Get final answer
         if self.verbose:
-            print("\n=== Final Decision ===")
-
-        final_prompt = self.get_final_prompt(num_quadrants)
-
+            print(f"\n=== Trial {trial_num + 1} Final Decision ===")
+        
+        final_prompt = self.get_final_prompt(num_quadrants, trial_num)
+        
         if self.verbose:
             print("\nFinal accumulated prompt shown to LLM:")
             print("-------------------------")
             print(final_prompt)
             print("-------------------------")
-
+        
         final_choice = self.agent.get_response(final_prompt)
-        total_time = time.time() - total_time_start
-
+        
         if self.verbose:
             print(f"\nLLM's final choice: Quadrant {final_choice}")
-            print("\n=== Game Results ===")
+            print(f"\n=== Trial {trial_num + 1} Results ===")
             print(f"Correct quadrant: {self.task.biased_quadrant + 1}")
             print(f"LLM chose: {final_choice}")
             print(f"Success: {str(self.task.biased_quadrant + 1) == final_choice}")
-
-        stats['final_choice'] = final_choice
-        stats['success'] = str(self.task.biased_quadrant + 1) == final_choice
         
-        # Removed time_per_round and avg_thinking_time from individual stats
-        return stats
+        trial_stats['final_choice'] = final_choice
+        trial_stats['success'] = str(self.task.biased_quadrant + 1) == final_choice
+        
+        return trial_stats
+    
+    def run_trials(self, n_rounds: int, num_quadrants: int) -> Dict:
+        """
+        Run multiple trials of the VST task and return results.
+        
+        Parameters:
+        -----------
+        n_rounds : int
+            Number of rounds for each trial
+        num_quadrants : int
+            Number of quadrants for each trial
+        
+        Returns:
+        --------
+        dict
+            Dictionary containing aggregated trial results and statistics
+        """
+        all_trials = []
+        trial_times = []
+        success_rates = []
+        
+        # Reset conversation history for new set of trials
+        self.conversation_history = ""
+        
+        for trial_num in range(self.n_trials):
+            # Run a single trial and track time
+            trial_start_time = time.time()
+            trial_stats = self.run_single_trial(n_rounds, num_quadrants, trial_num)
+            trial_time = time.time() - trial_start_time
+            
+            # Add trial time to stats
+            trial_stats['trial_time'] = trial_time
+            trial_times.append(trial_time)
+            success_rates.append(1 if trial_stats['success'] else 0)
+            
+            # Add to trials
+            all_trials.append(trial_stats)
+        
+        # Calculate aggregate trial statistics
+        return {
+            'trials': all_trials,
+            'avg_trial_time': float(np.mean(trial_times)),
+            'std_trial_time': float(np.std(trial_times)),
+            'success_rate': float(np.mean(success_rates))
+        }
     
     def run_simulations(self, n_rounds: int, num_quadrants: int) -> Dict:
         """
@@ -323,16 +378,17 @@ class TaskManager:
         agent_log_dir = os.path.join(self.logs_dir, self.current_agent)
         os.makedirs(agent_log_dir, exist_ok=True)
         
-        # Create a unique log filename based on agent, rounds, quadrants
-        log_filename = f"{agent_log_dir}/{self.current_agent}_{n_rounds}r_{num_quadrants}q_{self.timestamp}.json"
+        # Create a unique log filename based on agent, rounds, quadrants, trials
+        log_filename = f"{agent_log_dir}/{self.current_agent}_{n_rounds}r_{num_quadrants}q_{self.n_trials}t_{self.timestamp}.json"
         
         for sim_num in tqdm(range(self.n_simulations), disable=self.verbose):
             if self.verbose:
                 print(f"\nSimulation {sim_num + 1}/{self.n_simulations}")
                 print("=" * 50)
             
-            stats = self.run_single_task(n_rounds, num_quadrants)
-            all_results.append(stats)
+            # Run multiple trials for this simulation
+            sim_stats = self.run_trials(n_rounds, num_quadrants)
+            all_results.append(sim_stats)
         
         # Calculate the total time for all simulations
         total_time = time.time() - total_time_start
@@ -340,7 +396,7 @@ class TaskManager:
         # Calculate metrics for this configuration
         metrics = self.analyze_simulations(all_results, n_rounds, num_quadrants, total_time)
         
-        # Save detailed results including the raw data but without the redundant fields
+        # Save detailed results including the raw data
         results_data = {
             'metrics': metrics,
             'raw_results': all_results
@@ -353,67 +409,111 @@ class TaskManager:
     
     def analyze_simulations(self, results, n_rounds, num_quadrants, total_time=0) -> Dict:
         """Analyze simulation results and generate metrics."""
-        # Calculate the standard deviation properly with all run times from individual rounds
+        # Collect all time metrics across simulations and trials
+        all_trial_times = []
         all_round_times = []
-        for r in results:
-            for round_data in r['rounds']:
-                all_round_times.append(round_data['round_time'])
+        all_thinking_times = []
+        all_success_rates = []
         
-        # Reorganized timing metrics to be together
+        # Collect quadrant distribution data
+        quadrant_distribution = {q: {'times_chosen': 0, 'times_correct': 0, 'success_count': 0} 
+                               for q in range(1, num_quadrants + 1)}
+        
+        # Process all simulations
+        for sim in results:
+            for trial in sim['trials']:
+                all_trial_times.append(trial.get('trial_time', 0))
+                all_success_rates.append(1 if trial.get('success', False) else 0)
+                
+                # Process each round in the trial
+                for round_data in trial.get('rounds', []):
+                    all_round_times.append(round_data.get('round_time', 0))
+                    thinking_time = round_data.get('thinking_time', 0)
+                    if thinking_time > 0:
+                        all_thinking_times.append(thinking_time)
+                
+                # Update quadrant distribution
+                choice = trial.get('final_choice', '')
+                correct = trial.get('correct_quadrant', 0)
+                
+                if isinstance(choice, str) and choice.isdigit():
+                    choice = int(choice)
+                    if 1 <= choice <= num_quadrants:
+                        quadrant_distribution[choice]['times_chosen'] += 1
+                        if choice == correct:
+                            quadrant_distribution[choice]['success_count'] += 1
+                
+                # Record correct quadrant for metrics
+                if 1 <= correct <= num_quadrants:
+                    quadrant_distribution[correct]['times_correct'] += 1
+        
+        # Calculate success rate
+        success_rate = np.mean(all_success_rates) if all_success_rates else 0
+        
+        # Calculate time metrics
+        avg_trial_time = np.mean(all_trial_times) if all_trial_times else 0
+        std_trial_time = np.std(all_trial_times) if all_trial_times else 0
+        avg_round_time = np.mean(all_round_times) if all_round_times else 0
+        std_round_time = np.std(all_round_times) if all_round_times else 0
+        
+        # Calculate thinking time metrics for reasoning models
+        avg_thinking_time = np.mean(all_thinking_times) if all_thinking_times and self.is_reasoning_model else None
+        std_thinking_time = np.std(all_thinking_times) if all_thinking_times and self.is_reasoning_model else None
+        
+        # Calculate accuracy for each quadrant
+        for q in quadrant_distribution:
+            times_chosen = quadrant_distribution[q]['times_chosen']
+            if times_chosen > 0:
+                quadrant_distribution[q]['accuracy_when_chosen'] = float(quadrant_distribution[q]['success_count'] / times_chosen)
+            else:
+                quadrant_distribution[q]['accuracy_when_chosen'] = 0.0
+        
+        # Reorganized metrics according to specified order
         metrics = {
             'agent': self.current_agent,
+            'timestamp': self.timestamp,
             'is_reasoning_model': self.is_reasoning_model,
+            'n_simulations': int(self.n_simulations),
+            'n_trials': int(self.n_trials),
             'n_rounds': int(n_rounds),
             'n_quadrants': int(num_quadrants),
             'n_cues': int(self.num_cues),
-            'n_simulations': int(self.n_simulations),
-            'success_rate': float(np.mean([r['success'] for r in results])),
-            'total_time': float(total_time),  # Added to metrics section
-            'avg_time_per_round': float(np.mean(all_round_times)) if all_round_times else 0.0,
-            'std_time_per_round': float(np.std(all_round_times)) if all_round_times else 0.0,
+            'success_rate': float(success_rate),
+            'total_time': float(total_time),
+            'avg_trial_time': float(avg_trial_time),
+            'std_trial_time': float(std_trial_time),
+            'avg_round_time': float(avg_round_time),
+            'std_round_time': float(std_round_time),
         }
         
-        # Add thinking time metrics for reasoning models
+        # Add reasoning model specific metrics
         if self.is_reasoning_model:
-            all_thinking_times = []
-            for r in results:
-                for time_val in r['thinking_times']:
-                    if time_val > 0:
-                        all_thinking_times.append(time_val)
-            
-            metrics['avg_thinking_time'] = float(np.mean(all_thinking_times)) if all_thinking_times else 0
-            metrics['std_thinking_time'] = float(np.std(all_thinking_times)) if all_thinking_times else 0
-            
-            # Add reasoning parameters from agent
-            metrics['reasoning_mode'] = self.reasoning_params['reasoning_mode']
-            metrics['min_thinking_time'] = self.reasoning_params['min_thinking_time']
-            metrics['max_thinking_time'] = self.reasoning_params['max_thinking_time']
-            metrics['min_thinking_tokens'] = self.reasoning_params['min_thinking_tokens']
-            metrics['max_thinking_tokens'] = self.reasoning_params['max_thinking_tokens']
+            metrics.update({
+                'avg_thinking_time': float(avg_thinking_time) if avg_thinking_time is not None else None,
+                'std_thinking_time': float(std_thinking_time) if std_thinking_time is not None else None,
+                'reasoning_mode': self.reasoning_params['reasoning_mode'],
+                'min_thinking_time': self.reasoning_params['min_thinking_time'],
+                'max_thinking_time': self.reasoning_params['max_thinking_time'],
+                'min_thinking_tokens': self.reasoning_params['min_thinking_tokens'],
+                'max_thinking_tokens': self.reasoning_params['max_thinking_tokens']
+            })
         else:
-            # Add null reasoning parameters for non-reasoning models
-            metrics['reasoning_mode'] = None
-            metrics['min_thinking_time'] = None
-            metrics['max_thinking_time'] = None
-            metrics['min_thinking_tokens'] = None
-            metrics['max_thinking_tokens'] = None
+            metrics.update({
+                'avg_thinking_time': None,
+                'std_thinking_time': None,
+                'reasoning_mode': None,
+                'min_thinking_time': None,
+                'max_thinking_time': None,
+                'min_thinking_tokens': None,
+                'max_thinking_tokens': None
+            })
         
-        # Add other metrics
-        metrics['timestamp'] = self.timestamp
-        metrics['quadrant_distribution'] = {}
-            
-        # Calculate quadrant selection frequencies
-        for q in range(1, num_quadrants + 1):
-            times_chosen = len([r for r in results if r['final_choice'] == str(q)])
-            times_correct = len([r for r in results if int(r['correct_quadrant']) == q])
-            
-            metrics['quadrant_distribution'][f'quadrant_{q}'] = {
-                'times_chosen': int(times_chosen),
-                'times_correct': int(times_correct),
-                'accuracy_when_chosen': float(sum([1 for r in results 
-                                               if r['final_choice'] == str(q) and r['success']]) / times_chosen) 
-                                               if times_chosen > 0 else 0
-            }
+        # Add quadrant distribution
+        metrics['quadrant_distribution'] = {f'quadrant_{q}': {
+            'times_chosen': int(quadrant_distribution[q]['times_chosen']),
+            'times_correct': int(quadrant_distribution[q]['times_correct']),
+            'accuracy_when_chosen': float(quadrant_distribution[q]['accuracy_when_chosen'])
+        } for q in quadrant_distribution}
         
         return metrics
     
@@ -425,7 +525,7 @@ class TaskManager:
         -----------
         agent_name : str
             Name of the agent model to benchmark
-            
+                
         Returns:
         --------
         dict
@@ -452,7 +552,7 @@ class TaskManager:
                 
                 for run in range(self.n_runs):
                     if self.verbose:
-                        print(f"Running benchmark for {agent_name}, {n_rounds} rounds, {num_quadrants} quadrants, run {run+1}/{self.n_runs}")
+                        print(f"Running benchmark for {agent_name}, {n_rounds} rounds, {num_quadrants} quadrants, {self.n_trials} trials, run {run+1}/{self.n_runs}")
                     
                     # Run simulations for this configuration
                     metrics = self.run_simulations(n_rounds, num_quadrants)
@@ -460,7 +560,8 @@ class TaskManager:
                     # Store metrics for this run
                     run_metrics = {
                         "success_rate": metrics.get('success_rate', 0),
-                        "time_per_round": metrics.get('avg_time_per_round', 0),
+                        "trial_time": metrics.get('avg_trial_time', 0),
+                        "round_time": metrics.get('avg_round_time', 0),
                         "thinking_time": metrics.get('avg_thinking_time', 0) if self.is_reasoning_model else 0
                     }
                     agent_results[rounds_label][quadrant_label].append(run_metrics)
@@ -498,16 +599,18 @@ class TaskManager:
         """
         rows = []
         
-        # Collect all round times across all agents/configs for std calculation
+        # Collect all time metrics across all agents/configs
+        all_agent_trial_times = {}
         all_agent_round_times = {}
         all_agent_thinking_times = {}
         
-        # First pass: collect all round times for each agent
+        # First pass: collect all time metrics for each agent
         for model, rounds_dict in self.results.items():
+            all_agent_trial_times[model] = []
             all_agent_round_times[model] = []
             all_agent_thinking_times[model] = []
             
-            # For each config, collect the round times
+            # For each config, collect the time metrics
             for agent_dir in os.listdir(self.logs_dir):
                 if agent_dir != model:
                     continue
@@ -518,49 +621,69 @@ class TaskManager:
                         continue
                     
                     file_path = os.path.join(agent_path, filename)
-                    with open(file_path, 'r') as f:
-                        data = json.load(f)
-                        
-                        # Extract round times from all simulations
-                        for result in data.get('raw_results', []):
-                            for round_data in result.get('rounds', []):
-                                all_agent_round_times[model].append(round_data.get('round_time', 0))
-                                
-                                # If reasoning model, collect thinking times
-                                if round_data.get('thinking_time', 0) > 0:
-                                    all_agent_thinking_times[model].append(round_data.get('thinking_time', 0))
+                    try:
+                        with open(file_path, 'r') as f:
+                            data = json.load(f)
+                            
+                            # Extract time metrics from all simulations and trials
+                            for sim in data.get('raw_results', []):
+                                for trial in sim.get('trials', []):
+                                    # Add trial time
+                                    trial_time = trial.get('trial_time', 0)
+                                    if trial_time > 0:
+                                        all_agent_trial_times[model].append(trial_time)
+                                    
+                                    # Process each round in the trial
+                                    for round_data in trial.get('rounds', []):
+                                        round_time = round_data.get('round_time', 0)
+                                        if round_time > 0:
+                                            all_agent_round_times[model].append(round_time)
+                                        
+                                        # If reasoning model, collect thinking times
+                                        thinking_time = round_data.get('thinking_time', 0)
+                                        if thinking_time > 0:
+                                            all_agent_thinking_times[model].append(thinking_time)
+                    except Exception as e:
+                        if self.verbose:
+                            print(f"Error reading {file_path}: {e}")
         
         # Second pass: create the dataframe rows
         for model, rounds_dict in self.results.items():
             for rounds_label, quadrants_dict in rounds_dict.items():
                 for quadrant_label, runs in quadrants_dict.items():
                     # Extract metrics from the run dictionaries
-                    success_rates = [r["success_rate"] for r in runs]
-                    time_per_rounds = [r["time_per_round"] for r in runs]
-                    thinking_times = [r.get("thinking_time", 0) for r in runs]
+                    success_rates = [r.get("success_rate", 0) for r in runs]
+                    trial_times = [r.get("trial_time", 0) for r in runs]
+                    round_times = [r.get("round_time", 0) for r in runs]
+                    thinking_times = [r.get("thinking_time", 0) for r in runs if r.get("thinking_time", 0) > 0]
                     
                     # Calculate averages and standard deviations
                     performance = np.mean(success_rates)
-                    std = np.std(success_rates)
-                    time_mean = np.mean(time_per_rounds)
+                    performance_std = np.std(success_rates)
                     
-                    # Use collected round times for std calculation
-                    time_std = np.std(all_agent_round_times[model]) if all_agent_round_times[model] else 0
+                    # Use collected time metrics for calculations
+                    trial_time_mean = np.mean(all_agent_trial_times[model]) if all_agent_trial_times[model] else 0
+                    trial_time_std = np.std(all_agent_trial_times[model]) if all_agent_trial_times[model] else 0
                     
-                    # Use collected thinking times for mean and std
-                    thinking_mean = np.mean(thinking_times)
-                    thinking_std = np.std(all_agent_thinking_times[model]) if all_agent_thinking_times[model] else 0
+                    round_time_mean = np.mean(all_agent_round_times[model]) if all_agent_round_times[model] else 0
+                    round_time_std = np.std(all_agent_round_times[model]) if all_agent_round_times[model] else 0
+                    
+                    thinking_time_mean = np.mean(all_agent_thinking_times[model]) if all_agent_thinking_times[model] else 0
+                    thinking_time_std = np.std(all_agent_thinking_times[model]) if all_agent_thinking_times[model] else 0
                     
                     row = {
                         "Model": model,
                         "Rounds": rounds_label,
                         "Quadrants": quadrant_label,
+                        "Trials": self.n_trials,
                         "Performance": performance,
-                        "Std": std,
-                        "Time_Per_Round": time_mean,
-                        "Time_Std": time_std,
-                        "Thinking_Time": thinking_mean,
-                        "Thinking_Time_Std": thinking_std,
+                        "Performance_Std": performance_std,
+                        "Trial_Time": trial_time_mean,
+                        "Trial_Time_Std": trial_time_std,
+                        "Round_Time": round_time_mean,
+                        "Round_Time_Std": round_time_std,
+                        "Thinking_Time": thinking_time_mean,
+                        "Thinking_Time_Std": thinking_time_std,
                         "raw": runs  # store raw run values for later aggregation
                     }
                     rows.append(row)
@@ -570,8 +693,7 @@ class TaskManager:
     
     def save_results(self):
         """
-        Do not save benchmark results to separate JSON files.
-        Just return the DataFrame.
+        Return the DataFrame containing benchmark results.
         
         Returns:
         --------
@@ -590,7 +712,7 @@ class TaskManager:
         -----------
         output_path : str, optional
             Path to save the plot image, defaults to "benchmark_plot_TIMESTAMP.png"
-            
+                
         Returns:
         --------
         pandas.DataFrame
@@ -670,7 +792,7 @@ class TaskManager:
         upper_errors = sorted_stds  # full std on the right
         
         # Plot the horizontal bar chart
-        plt.figure(figsize=(6, 5))
+        plt.figure(figsize=(7, 5))
         y_positions = np.arange(len(sorted_means))  # positions for each bar
         
         plt.barh(
@@ -686,8 +808,13 @@ class TaskManager:
         plt.yticks(ticks=y_positions, labels=sorted_names)
         plt.gca().invert_yaxis()  # best model on top
         plt.subplots_adjust(left=0.32)
-        plt.xlabel("Aggregated Mean Score")
-        plt.title("G1Bbon benchmark")
+        plt.xlabel("Aggregated Mean Success Rate")
+        
+        # Include parameters in title for clarity
+        title_params = f"r={self.rounds[0] if len(self.rounds)==1 else self.rounds}, " \
+                      f"q={self.quadrants[0] if len(self.quadrants)==1 else self.quadrants}, " \
+                      f"t={self.n_trials}"
+        plt.title(f"G1Bbon benchmark ({title_params})")
         
         # Create a legend for the categories
         legend_handles = [
@@ -701,13 +828,13 @@ class TaskManager:
         
         # Save the plot in the benchmarks_plots directory
         if output_path is None:
-            output_path = f"{self.benchmarks_plots_dir}/benchmark_plot_{self.timestamp}.png"
+            config_str = f"_r{self.rounds[0]}_q{self.quadrants[0]}_t{self.n_trials}"
+            output_path = f"{self.benchmarks_plots_dir}/benchmark_plot{config_str}_{self.timestamp}.png"
         else:
             output_path = f"{self.benchmarks_plots_dir}/{output_path}"
-            
+                
         plt.savefig(output_path, dpi=300)
         print(f"Benchmark plot saved to {output_path}")
-        plt.show()
         
         # Set a flag to indicate plot has been generated
         self.plot_generated = True
