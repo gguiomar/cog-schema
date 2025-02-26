@@ -23,8 +23,8 @@ def parse_args():
     # Experiment setup
     parser.add_argument('--simulations', type=int, default=10, 
                         help='Number of simulations per configuration')
-    parser.add_argument('--runs', type=int, default=1, 
-                        help='Number of runs per configuration')
+    parser.add_argument('--trials', type=int, default=1, 
+                        help='Number of trials per simulation')
     
     # Hardware settings
     parser.add_argument('--device', type=str, default='cuda:0', 
@@ -38,7 +38,7 @@ def parse_args():
     parser.add_argument('--anthropic-key', type=str, default=None, 
                         help='Anthropic API key')
     
-    # Output settings - kept for backward compatibility but not used
+    # Output settings
     parser.add_argument('--output-dir', type=str, default='simulation_results', 
                         help='Legacy directory parameter (not used)')
     parser.add_argument('--verbose', action='store_true', 
@@ -53,17 +53,17 @@ def parse_args():
 def main():
     args = parse_args()
     
-    # Create task manager with parameters
+    # Create task manager with parameters (without n_runs)
     manager = TaskManager(
         agents=args.models,
         rounds=args.rounds,
         quadrants=args.quadrants,
         n_simulations=args.simulations,
-        n_runs=args.runs,
+        n_trials=args.trials,
         num_cues=args.cues,
         device=args.device,
         verbose=args.verbose,
-        output_dir=args.output_dir,  # kept for backward compatibility
+        output_dir=args.output_dir,
         openai_api_key=args.openai_key,
         anthropic_api_key=args.anthropic_key,
         use_unsloth=args.use_unsloth

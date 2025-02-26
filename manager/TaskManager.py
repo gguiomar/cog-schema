@@ -13,7 +13,7 @@ from tasks.VSTtask import VSTtask
 
 class TaskManager:
     def __init__(self, agents=None, rounds=None, quadrants=None, n_simulations=10, 
-                 n_trials=1, n_runs=5, num_cues=1, device="cuda:0", verbose=False,
+                 n_trials=1, num_cues=1, device="cuda:0", verbose=False,
                  output_dir="simulation_results", openai_api_key=None, 
                  anthropic_api_key=None, use_unsloth=True,
                  reasoning_mode="time", min_thinking_time=5.0, max_thinking_time=10.0,
@@ -33,8 +33,6 @@ class TaskManager:
             Number of simulations per configuration
         n_trials : int
             Number of trials to run for each simulation
-        n_runs : int
-            Number of runs for each configuration
         num_cues : int
             Number of cues per quadrant
         device : str
@@ -69,7 +67,6 @@ class TaskManager:
         
         self.n_simulations = n_simulations
         self.n_trials = n_trials
-        self.n_runs = n_runs
         self.num_cues = num_cues
         self.device = device
         self.verbose = verbose
@@ -534,10 +531,6 @@ class TaskManager:
         # Initialize the LLM agent
         self.initialize_agent(agent_name)
         
-        # Create agent-specific log directory
-        agent_log_dir = os.path.join(self.logs_dir, agent_name)
-        os.makedirs(agent_log_dir, exist_ok=True)
-        
         # Dictionary to store results for this agent
         agent_results = {}
         
@@ -547,24 +540,20 @@ class TaskManager:
             
             for num_quadrants in self.quadrants:
                 quadrant_label = f"{num_quadrants} quadrant"
-                # Initialize an empty list for the runs
-                agent_results[rounds_label][quadrant_label] = []
                 
-                for run in range(self.n_runs):
-                    if self.verbose:
-                        print(f"Running benchmark for {agent_name}, {n_rounds} rounds, {num_quadrants} quadrants, {self.n_trials} trials, run {run+1}/{self.n_runs}")
-                    
-                    # Run simulations for this configuration
-                    metrics = self.run_simulations(n_rounds, num_quadrants)
-                    
-                    # Store metrics for this run
-                    run_metrics = {
-                        "success_rate": metrics.get('success_rate', 0),
-                        "trial_time": metrics.get('avg_trial_time', 0),
-                        "round_time": metrics.get('avg_round_time', 0),
-                        "thinking_time": metrics.get('avg_thinking_time', 0) if self.is_reasoning_model else 0
-                    }
-                    agent_results[rounds_label][quadrant_label].append(run_metrics)
+                if self.verbose:
+                    print(f"Running benchmark for {agent_name}, {n_rounds} rounds, {num_quadrants} quadrants, {self.n_trials} trials")
+                
+                # Run simulations for this configuration
+                metrics = self.run_simulations(n_rounds, num_quadrants)
+                
+                # Store metrics directly
+                agent_results[rounds_label][quadrant_label] = {
+                    "success_rate": metrics.get('success_rate', 0),
+                    "trial_time": metrics.get('avg_trial_time', 0),
+                    "round_time": metrics.get('avg_round_time', 0),
+                    "thinking_time": metrics.get('avg_thinking_time', 0) if self.is_reasoning_model else 0
+                }
         
         return agent_results
     
@@ -650,16 +639,9 @@ class TaskManager:
         # Second pass: create the dataframe rows
         for model, rounds_dict in self.results.items():
             for rounds_label, quadrants_dict in rounds_dict.items():
-                for quadrant_label, runs in quadrants_dict.items():
-                    # Extract metrics from the run dictionaries
-                    success_rates = [r.get("success_rate", 0) for r in runs]
-                    trial_times = [r.get("trial_time", 0) for r in runs]
-                    round_times = [r.get("round_time", 0) for r in runs]
-                    thinking_times = [r.get("thinking_time", 0) for r in runs if r.get("thinking_time", 0) > 0]
-                    
-                    # Calculate averages and standard deviations
-                    performance = np.mean(success_rates)
-                    performance_std = np.std(success_rates)
+                for quadrant_label, metrics in quadrants_dict.items():
+                    # Get metrics directly
+                    performance = metrics.get("success_rate", 0)
                     
                     # Use collected time metrics for calculations
                     trial_time_mean = np.mean(all_agent_trial_times[model]) if all_agent_trial_times[model] else 0
@@ -677,14 +659,13 @@ class TaskManager:
                         "Quadrants": quadrant_label,
                         "Trials": self.n_trials,
                         "Performance": performance,
-                        "Performance_Std": performance_std,
                         "Trial_Time": trial_time_mean,
                         "Trial_Time_Std": trial_time_std,
                         "Round_Time": round_time_mean,
                         "Round_Time_Std": round_time_std,
                         "Thinking_Time": thinking_time_mean,
                         "Thinking_Time_Std": thinking_time_std,
-                        "raw": runs  # store raw run values for later aggregation
+                        "raw_metrics": metrics  # Store raw metrics for later
                     }
                     rows.append(row)
         
@@ -721,11 +702,11 @@ class TaskManager:
         # Convert stored results to a DataFrame
         df = self.results_to_dataframe()
         
-        # Aggregate the raw success_rate values per model
+        # Aggregate the success rates per model
         aggregated_data = {}
         for model, group in df.groupby("Model"):
-            # Extract success_rate from each run
-            all_success_rates = [run["success_rate"] for runs in group["raw"].values for run in runs]
+            # Extract success_rate directly from raw_metrics
+            all_success_rates = [metrics.get("success_rate", 0) for metrics in group["raw_metrics"]]
             aggregated_data[model] = {"mean": np.mean(all_success_rates), "std": np.std(all_success_rates)}
         
         # Create arrays for models, means, and stds
