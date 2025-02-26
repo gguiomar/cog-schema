@@ -9,7 +9,8 @@ from unsloth import FastLanguageModel
 
 class LLMagent:
     # Define reasoning models as a class variable
-    REASONING_MODELS = ["Deepseek_R1_1.5B_Qwen", "Deepseek_R1_7B_Qwen", "Deepseek_R1_8B_Llama"]
+    REASONING_MODELS = ["Deepseek_R1_1.5B_Qwen", "Deepseek_R1_7B_Qwen", "Deepseek_R1_8B_Llama"
+                        "Deepseek_R1_14B_Qwen", "Deepseek_R1_32B_Qwen"]
     
     def __init__(self, 
                  model_name: str, 
@@ -59,21 +60,34 @@ class LLMagent:
         model_aliases = {
             "Deepseek_R1_1.5B_Qwen": "unsloth/DeepSeek-R1-Distill-Qwen-1.5B-unsloth-bnb-4bit",
             "Deepseek_R1_7B_Qwen" : "unsloth/DeepSeek-R1-Distill-Qwen-7B-unsloth-bnb-4bit",
-            "Deepseek_R1_8B_Llama": "unsloth/DeepSeek-R1-Distill-Llama-8B-unsloth-bnb-4bit",
+            "Deepseek_R1_8B_Llama": "unsloth/DeepSeek-R1-Distill-Llama-8B-unsloth-bnb-4bit", 
+            "Deepseek_R1_14B_Qwen": "unsloth/DeepSeek-R1-Distill-Qwen-14B-unsloth-bnb-4bit",
+            "Deepseek_R1_32B_Qwen": "unsloth/DeepSeek-R1-Distill-Qwen-32B-bnb-4bit",
             "Qwen_0.5B": "unsloth/Qwen2.5-0.5B-bnb-4bit",
             "Qwen_1.5B": "unsloth/Qwen2.5-1.5B-bnb-4bit",
             "Qwen_3B": "unsloth/Qwen2.5-3B-bnb-4bit",
             "Qwen_7B": "unsloth/Qwen2.5-7B-bnb-4bit",
+            "Qwen_14B": "unsloth/Qwen2.5-14B-bnb-4bit",
+            "Qwen_32B": "unsloth/Qwen2.5-32B-bnb-4bit",
             "Qwen_0.5B_Instruct": "unsloth/Qwen2.5-0.5B-Instruct-bnb-4bit",
             "Qwen_1.5B_Instruct": "unsloth/Qwen2.5-1.5B-Instruct-bnb-4bit",
             "Qwen_3B_Instruct": "unsloth/Qwen2.5-3B-Instruct-bnb-4bit",
             "Qwen_7B_Instruct": "unsloth/Qwen2.5-7B-Instruct-bnb-4bit",
+            "Qwen_14B_Instruct": "unsloth/Qwen2.5-14B-Instruct-bnb-4bit",
+            "Qwen_32B_Instruct": "unsloth/Qwen2.5-32B-Instruct-bnb-4bit",
             "Centaur_8B":    "marcelbinz/Llama-3.1-Centaur-8B-adapter",
             "Mistral_7B_Instruct": "unsloth/mistral-7b-instruct-v0.3-bnb-4bit",
             "Mistral_7B": "unsloth/mistral-7b-v0.3-bnb-4bit",
-            "Phi_mini_2B_Instruct": "unsloth/Phi-3.5-mini-instruct-bnb-4bit",
+            "Phi_4_8B": "unsloth/phi-4-bnb-4bit",
+            "Phi_3.5_mini_Instruct": "unsloth/Phi-3.5-mini-instruct-bnb-4bit",
+            "Phi_3_mini_Instruct": "unsloth/Phi-3-mini-4k-instruct-bnb-4bit",
+            "Phi_3_medium_Instruct": "unsloth/Phi-3-medium-4k-instruct-bnb-4bit",
             "Gemma_2B": "unsloth/gemma-2-2b-bnb-4bit",
+            "Gemma_9B": "unsloth/gemma-2-9b-bnb-4bit",
+            "Gemma_27B": "unsloth/gemma-2-27b-bnb-4bit",
             "Gemma_2B_Instruct": "unsloth/gemma-2-2b-it-bnb-4bit",
+            "Gemma_9B_Instruct": "unsloth/gemma-2-9b-it-bnb-4bit",
+            "Gemma_27B_Instruct": "unsloth/gemma-2-27b-it-bnb-4bit",
         }
 
         model_openai = {
