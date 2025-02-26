@@ -28,6 +28,21 @@ This repository contains the code to run the Visual Sampling Task (VST) benchmar
 └── requirements.txt         # Dependencies
 ```
 
+## Benchmark Structure
+
+The G1Bbon benchmark is organized in a hierarchical structure:
+
+1. **Simulations**: The outermost loop, representing independent benchmark runs
+2. **Trials**: Multiple iterations of a task within a simulation
+3. **Rounds**: Individual observation rounds within a trial
+4. **Quadrants**: The number of spatial regions for sampling
+5. **Cues**: Observable signals in each quadrant
+
+This hierarchical structure allows for more robust evaluation by:
+- Providing multiple trials with the same agent to test consistency
+- Maintaining conversation context across trials to test memory/learning
+- Aggregating metrics across multiple levels for reliable comparisons
+
 ## Components
 
 ### 1. Visual Sampling Task (VST)
@@ -63,10 +78,10 @@ For reasoning models, it:
 
 The `TaskManager` class orchestrates running the tasks and benchmarks:
 
-- Manages running single tasks or multiple simulations
-- Handles conversation history and prompt construction
+- Manages the hierarchical benchmark structure (simulations, trials, rounds)
+- Handles conversation history and prompt construction across trials
 - Performs comprehensive benchmarking across models/configurations
-- Records metrics including success rates, timing, and thinking time
+- Records detailed timing metrics at all levels (total, trial, round, thinking)
 - Generates visualizations and exports results
 - Organizes results in a structured folder hierarchy
 
@@ -88,11 +103,14 @@ The benchmark supports various model types:
 
 ## Benchmark Metrics
 
-The benchmark collects the following metrics:
+The benchmark collects the following metrics at different levels:
 
 - **Success Rate**: Percentage of correctly identified biased quadrants
-- **Time Per Round**: Average time spent on each round
-- **Thinking Time**: For reasoning models, time spent in internal thinking
+- **Time Metrics**:
+  - **Total Time**: Overall time for all simulations
+  - **Trial Time**: Time per trial (including multiple rounds)
+  - **Round Time**: Time per individual round
+  - **Thinking Time**: For reasoning models, time spent in internal thinking
 - **Quadrant Distribution**: Analysis of which quadrants were chosen
 - **Thinking Tokens**: For reasoning models, the internal reasoning process
 
@@ -102,35 +120,89 @@ Benchmark results are saved in JSON format with the following structure:
 
 ```json
 {
-  "results": {
-    "ROUNDS rounds": {
-      "QUADRANTS quadrant": [
-        {
-          "success_rate": 0.6,
-          "time_per_round": 2.5,
-          "thinking_time": 0.8
-        },
-        ...
-      ]
+  "metrics": {
+    "agent": "MODEL_NAME",
+    "timestamp": "20240225_123456",
+    "is_reasoning_model": false,
+    "n_simulations": 10,
+    "n_trials": 3,
+    "n_rounds": 5,
+    "n_quadrants": 4,
+    "n_cues": 1,
+    "success_rate": 0.65,
+    "total_time": 3600.5,
+    "avg_trial_time": 120.3,
+    "std_trial_time": 10.2,
+    "avg_round_time": 24.5,
+    "std_round_time": 3.1,
+    "avg_thinking_time": null,
+    "std_thinking_time": null,
+    "reasoning_mode": null,
+    "min_thinking_time": null,
+    "max_thinking_time": null,
+    "min_thinking_tokens": null,
+    "max_thinking_tokens": null,
+    "quadrant_distribution": {
+      "quadrant_1": {
+        "times_chosen": 15,
+        "times_correct": 5,
+        "accuracy_when_chosen": 0.33
+      },
+      "quadrant_2": {
+        "times_chosen": 20,
+        "times_correct": 10,
+        "accuracy_when_chosen": 0.5
+      },
+      "quadrant_3": {
+        "times_chosen": 25,
+        "times_correct": 15,
+        "accuracy_when_chosen": 0.6
+      },
+      "quadrant_4": {
+        "times_chosen": 30,
+        "times_correct": 20,
+        "accuracy_when_chosen": 0.67
+      }
     }
   },
-  "metadata": {
-    "timestamp": "20240225_123456",
-    "agent": "MODEL_NAME",
-    "rounds": [4, 6, 8],
-    "quadrants": [2, 3, 4],
+  "raw_results": [
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": ["A", "B"],
+              "choice": "A",
+              "quadrant": 1,
+              "result": "RED",
+              "round_time": 5.2,
+              "thinking_time": 0
+            },
+            ...
+          ],
+          "final_choice": "3",
+          "correct_quadrant": 3,
+          "success": true,
+          "trial_time": 25.6,
+          "round_times": [5.2, 4.8, 5.1, 5.3, 5.2],
+          "thinking_times": []
+        },
+        ...
+      ],
+      "avg_trial_time": 26.3,
+      "std_trial_time": 2.1,
+      "success_rate": 0.67
+    },
     ...
-  }
+  ]
 }
 ```
-
-Individual simulation logs contain detailed information about each run, including thinking times for each round, and for reasoning models, the thinking tokens used during inference.
 
 ## Output Structure
 
 Results are organized in the following directory structure:
 
-- **benchmarks_plots/**: Contains all benchmark plots, with one plot showing all models in a benchmark run
+- **benchmarks_plots/**: Contains all benchmark plots, with one plot per configuration
 - **logs/**: Contains agent-specific folders with JSON results
   - **logs/agent_name/**: Contains JSON files for each benchmark run with this agent
 
@@ -149,6 +221,7 @@ manager = TaskManager(
     rounds=[4, 6],
     quadrants=[2, 4],
     n_simulations=10,
+    n_trials=3,  # Run 3 trials per simulation
     n_runs=3,
     device="cuda:0",
     verbose=False
@@ -159,6 +232,14 @@ results = manager.multiple_benchmarks()
 
 # Save the results
 df = manager.save_results()
+```
+
+### Command-Line Usage
+
+You can also run the benchmark from the command line:
+
+```bash
+python main.py --models Deepseek_R1_7B_Qwen --rounds 4 6 --quadrants 2 4 --simulations 10 --trials 3
 ```
 
 ### Comparing Multiple Models
@@ -175,6 +256,7 @@ manager = TaskManager(
     rounds=[4, 6, 8],
     quadrants=[2, 3, 4],
     n_simulations=10,
+    n_trials=3,
     n_runs=3,
     device="cuda:0",
     openai_api_key="YOUR_API_KEY",  # Only needed for API models
@@ -184,9 +266,23 @@ manager = TaskManager(
 # Run benchmarks
 results = manager.multiple_benchmarks()
 
-# Save results
+# Save and visualize results
 df = manager.save_results()
+manager.plot_results()
 ```
+
+## Time Measurement Details
+
+The benchmark measures time at multiple levels:
+
+1. **Total Time**: Total wall-clock time for all simulations
+2. **Trial Time**: Time to complete a full trial (all rounds)
+3. **Round Time**: Time to complete a single round
+4. **Thinking Time**: For reasoning models, the time spent in the internal thinking phase
+
+For reasoning models, the thinking phase can be controlled by:
+- **Time-based reasoning**: Set minimum and maximum thinking times
+- **Token-based reasoning**: Set minimum and maximum token counts
 
 ## Advanced Analysis
 
@@ -195,6 +291,7 @@ The benchmark supports advanced analysis including:
 - Thinking time correlation with performance
 - Per-round analysis of model behavior
 - Examination of thinking tokens for reasoning models
+- Cross-trial learning analysis
 - Integration with model introspection tools
 
 ## Requirements
