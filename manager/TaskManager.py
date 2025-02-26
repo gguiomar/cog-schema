@@ -15,7 +15,9 @@ class TaskManager:
     def __init__(self, agents=None, rounds=None, quadrants=None, n_simulations=10, 
                  n_runs=5, num_cues=1, device="cuda:0", verbose=False,
                  output_dir="simulation_results", openai_api_key=None, 
-                 anthropic_api_key=None, use_unsloth=True):
+                 anthropic_api_key=None, use_unsloth=True,
+                 reasoning_mode="time", min_thinking_time=5.0, max_thinking_time=10.0,
+                 min_thinking_tokens=200, max_thinking_tokens=500):
         """
         Initialize task manager with benchmark capabilities.
         
@@ -38,13 +40,23 @@ class TaskManager:
         verbose : bool
             Whether to print detailed output
         output_dir : str
-            Directory to save results
+            Directory to save results (not used, kept for backward compatibility)
         openai_api_key : str
             OpenAI API key (if applicable)
         anthropic_api_key : str
             Anthropic API key (if applicable)
         use_unsloth : bool
             Whether to use Unsloth optimization
+        reasoning_mode : str
+            Mode for reasoning models: 'time' or 'tokens'
+        min_thinking_time : float
+            Minimum thinking time in seconds (for time mode)
+        max_thinking_time : float
+            Maximum thinking time in seconds (for time mode)
+        min_thinking_tokens : int
+            Minimum number of thinking tokens (for token mode)
+        max_thinking_tokens : int
+            Maximum number of thinking tokens (for token mode)
         """
         from agents.LLMagent import LLMagent  # Import here to avoid circular imports
         
@@ -58,10 +70,16 @@ class TaskManager:
         self.num_cues = num_cues
         self.device = device
         self.verbose = verbose
-        self.output_dir = output_dir
         self.openai_api_key = openai_api_key
         self.anthropic_api_key = anthropic_api_key
         self.use_unsloth = use_unsloth
+        
+        # Store reasoning parameters
+        self.reasoning_mode = reasoning_mode
+        self.min_thinking_time = min_thinking_time
+        self.max_thinking_time = max_thinking_time
+        self.min_thinking_tokens = min_thinking_tokens
+        self.max_thinking_tokens = max_thinking_tokens
         
         self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.conversation_history = ""
@@ -69,11 +87,17 @@ class TaskManager:
         self.is_reasoning_model = False
         self.thinking_times = []
         
-        # Create results directory if it doesn't exist
-        os.makedirs(output_dir, exist_ok=True)
+        # Create new directory structure
+        self.benchmarks_plots_dir = "benchmarks_plots"
+        self.logs_dir = "logs"
+        os.makedirs(self.benchmarks_plots_dir, exist_ok=True)
+        os.makedirs(self.logs_dir, exist_ok=True)
         
         # Initialize results storage
         self.results = {}
+        
+        # Get reasoning models list from LLMagent
+        self.reasoning_models = LLMagent.get_reasoning_models()
         
     def initialize_agent(self, agent_name):
         """Initialize an LLM agent with the specified model."""
@@ -81,19 +105,25 @@ class TaskManager:
         
         self.current_agent = agent_name
         
-        # Initialize the LLM agent
+        # Check if this is a reasoning model - using the list from LLMagent
+        self.is_reasoning_model = agent_name in self.reasoning_models
+        
+        # Initialize the LLM agent with reasoning parameters if applicable
         self.agent = LLMagent(
             model_name=agent_name,
             use_unsloth=self.use_unsloth,
             device_map=self.device,
             openai_api_key=self.openai_api_key,
-            anthropic_api_key=self.anthropic_api_key
+            anthropic_api_key=self.anthropic_api_key,
+            reasoning_mode=self.reasoning_mode,
+            min_thinking_time=self.min_thinking_time,
+            max_thinking_time=self.max_thinking_time,
+            min_thinking_tokens=self.min_thinking_tokens,
+            max_thinking_tokens=self.max_thinking_tokens
         )
         
-        # Check if this is a reasoning model
-        # (Based on LLMagent code, we know reasoning models are specific ones)
-        reasoning_models = ["Deepseek_R1_1B_Qwen", "Deepseek_R1_7B_Qwen", "Deepseek_R1_8B_Llama"]
-        self.is_reasoning_model = agent_name in reasoning_models
+        # Get the reasoning parameters that were actually set
+        self.reasoning_params = self.agent.get_reasoning_parameters()
         
         return self.agent
     
@@ -153,10 +183,8 @@ class TaskManager:
             'final_choice': None,
             'correct_quadrant': self.task.biased_quadrant + 1,
             'success': False,
-            'full_conversation': [],
             'agent': self.current_agent,
-            'thinking_times': [],
-            'avg_thinking_time': 0
+            'thinking_times': []
         }
 
         # Initialize conversation with task description
@@ -167,8 +195,6 @@ class TaskManager:
             print("\n=== Task Description ===")
             print(task_description)
             print("\n=== Beginning Rounds ===")
-
-        stats['full_conversation'].append(("INITIAL_DESCRIPTION", task_description))
 
         # Run all rounds
         total_time_start = time.time()
@@ -195,8 +221,11 @@ class TaskManager:
             
             # Extract thinking time if this is a reasoning model
             thinking_time = 0
+            thinking_tokens = ""
             if self.is_reasoning_model and hasattr(self.agent, 'thinking_time'):
                 thinking_time = self.agent.thinking_time
+                if hasattr(self.agent, 'last_thinking_tokens'):
+                    thinking_tokens = self.agent.last_thinking_tokens
                 self.thinking_times.append(thinking_time)
             
             if self.verbose:
@@ -208,38 +237,40 @@ class TaskManager:
             result = self.task.process_choice(choice, round_data)
             quadrant = None
             
+            # Find which quadrant the chosen cue belongs to
+            if result is not None:  # Only try to identify quadrant if choice was valid
+                for q in round_data:
+                    if q['name'].lower() == choice.lower():
+                        quadrant = q['quadrant'] + 1  # +1 because quadrants are 0-indexed in code but 1-indexed for user
+                        break
+            
             if self.verbose:
                 if result:
                     print(f"Result: {result}")
-                    # Show quadrant info in verbose mode
-                    for q in round_data:
-                        if q['name'] == choice:
-                            quadrant = q['quadrant'] + 1
-                            print(f"(cue {choice} was from Quadrant {quadrant})")
+                    if quadrant:
+                        print(f"(cue {choice} was from Quadrant {quadrant})")
                 else:
                     print("Invalid choice!")
 
             # Update conversation history
             self.update_history(', '.join(available_cues), choice, result, round_num)
-                    
-            stats['rounds'].append({
+            
+            # Create round stats - for reasoning models, save thinking tokens instead of prompt
+            round_stats = {
                 'available_cues': available_cues,
                 'choice': choice,
                 'result': result,
-                'full_prompt': prompt,
                 'round_time': round_time,
                 'thinking_time': thinking_time,
                 'quadrant': quadrant
-            })
+            }
             
+            # For reasoning models, add thinking tokens
+            if self.is_reasoning_model and thinking_tokens:
+                round_stats['thinking_tokens'] = thinking_tokens
+                
+            stats['rounds'].append(round_stats)
             stats['thinking_times'].append(thinking_time)
-
-            # Record the conversation details
-            stats['full_conversation'].extend([
-                ("ACCUMULATED_PROMPT", prompt),
-                ("LLM_CHOICE", choice),
-                ("RESULT", result if result is not None else "Invalid choice")
-            ])
 
         # Get final answer
         if self.verbose:
@@ -255,7 +286,6 @@ class TaskManager:
 
         final_choice = self.agent.get_response(final_prompt)
         total_time = time.time() - total_time_start
-        time_per_round = total_time / n_rounds
 
         if self.verbose:
             print(f"\nLLM's final choice: Quadrant {final_choice}")
@@ -266,15 +296,8 @@ class TaskManager:
 
         stats['final_choice'] = final_choice
         stats['success'] = str(self.task.biased_quadrant + 1) == final_choice
-        stats['total_time'] = total_time
-        stats['time_per_round'] = time_per_round
-        stats['avg_thinking_time'] = sum(stats['thinking_times']) / len(stats['thinking_times']) if stats['thinking_times'] else 0
-
-        stats['full_conversation'].extend([
-            ("FINAL_ACCUMULATED_PROMPT", final_prompt),
-            ("FINAL_CHOICE", final_choice)
-        ])
-
+        
+        # Removed time_per_round and avg_thinking_time from individual stats
         return stats
     
     def run_simulations(self, n_rounds: int, num_quadrants: int) -> Dict:
@@ -294,11 +317,14 @@ class TaskManager:
             Dictionary containing aggregated metrics from all simulations
         """
         all_results = []
-        rounds_label = f"{n_rounds} rounds"
-        quadrant_label = f"{num_quadrants} quadrant"
+        total_time_start = time.time()
+        
+        # Create agent-specific log directory
+        agent_log_dir = os.path.join(self.logs_dir, self.current_agent)
+        os.makedirs(agent_log_dir, exist_ok=True)
         
         # Create a unique log filename based on agent, rounds, quadrants
-        log_filename = f"{self.output_dir}/{self.current_agent}_{n_rounds}r_{num_quadrants}q_{self.timestamp}.json"
+        log_filename = f"{agent_log_dir}/{self.current_agent}_{n_rounds}r_{num_quadrants}q_{self.timestamp}.json"
         
         for sim_num in tqdm(range(self.n_simulations), disable=self.verbose):
             if self.verbose:
@@ -308,20 +334,16 @@ class TaskManager:
             stats = self.run_single_task(n_rounds, num_quadrants)
             all_results.append(stats)
         
-        # Calculate metrics for this configuration
-        metrics = self.analyze_simulations(all_results, n_rounds, num_quadrants)
+        # Calculate the total time for all simulations
+        total_time = time.time() - total_time_start
         
-        # Save detailed results including the raw data
+        # Calculate metrics for this configuration
+        metrics = self.analyze_simulations(all_results, n_rounds, num_quadrants, total_time)
+        
+        # Save detailed results including the raw data but without the redundant fields
         results_data = {
             'metrics': metrics,
-            'raw_results': all_results,
-            'config': {
-                'agent': self.current_agent,
-                'rounds': n_rounds,
-                'quadrants': num_quadrants,
-                'n_simulations': self.n_simulations,
-                'timestamp': self.timestamp
-            }
+            'raw_results': all_results
         }
         
         with open(log_filename, 'w') as f:
@@ -329,8 +351,15 @@ class TaskManager:
         
         return metrics
     
-    def analyze_simulations(self, results, n_rounds, num_quadrants) -> Dict:
+    def analyze_simulations(self, results, n_rounds, num_quadrants, total_time=0) -> Dict:
         """Analyze simulation results and generate metrics."""
+        # Calculate the standard deviation properly with all run times from individual rounds
+        all_round_times = []
+        for r in results:
+            for round_data in r['rounds']:
+                all_round_times.append(round_data['round_time'])
+        
+        # Reorganized timing metrics to be together
         metrics = {
             'agent': self.current_agent,
             'is_reasoning_model': self.is_reasoning_model,
@@ -339,17 +368,39 @@ class TaskManager:
             'n_cues': int(self.num_cues),
             'n_simulations': int(self.n_simulations),
             'success_rate': float(np.mean([r['success'] for r in results])),
-            'avg_time_per_round': float(np.mean([r['time_per_round'] for r in results])),
-            'std_time_per_round': float(np.std([r['time_per_round'] for r in results])),
-            'quadrant_distribution': {},
-            'timestamp': self.timestamp
+            'total_time': float(total_time),  # Added to metrics section
+            'avg_time_per_round': float(np.mean(all_round_times)) if all_round_times else 0.0,
+            'std_time_per_round': float(np.std(all_round_times)) if all_round_times else 0.0,
         }
         
         # Add thinking time metrics for reasoning models
         if self.is_reasoning_model:
-            all_thinking_times = [time for r in results for time in r['thinking_times'] if time > 0]
+            all_thinking_times = []
+            for r in results:
+                for time_val in r['thinking_times']:
+                    if time_val > 0:
+                        all_thinking_times.append(time_val)
+            
             metrics['avg_thinking_time'] = float(np.mean(all_thinking_times)) if all_thinking_times else 0
             metrics['std_thinking_time'] = float(np.std(all_thinking_times)) if all_thinking_times else 0
+            
+            # Add reasoning parameters from agent
+            metrics['reasoning_mode'] = self.reasoning_params['reasoning_mode']
+            metrics['min_thinking_time'] = self.reasoning_params['min_thinking_time']
+            metrics['max_thinking_time'] = self.reasoning_params['max_thinking_time']
+            metrics['min_thinking_tokens'] = self.reasoning_params['min_thinking_tokens']
+            metrics['max_thinking_tokens'] = self.reasoning_params['max_thinking_tokens']
+        else:
+            # Add null reasoning parameters for non-reasoning models
+            metrics['reasoning_mode'] = None
+            metrics['min_thinking_time'] = None
+            metrics['max_thinking_time'] = None
+            metrics['min_thinking_tokens'] = None
+            metrics['max_thinking_tokens'] = None
+        
+        # Add other metrics
+        metrics['timestamp'] = self.timestamp
+        metrics['quadrant_distribution'] = {}
             
         # Calculate quadrant selection frequencies
         for q in range(1, num_quadrants + 1):
@@ -382,6 +433,10 @@ class TaskManager:
         """
         # Initialize the LLM agent
         self.initialize_agent(agent_name)
+        
+        # Create agent-specific log directory
+        agent_log_dir = os.path.join(self.logs_dir, agent_name)
+        os.makedirs(agent_log_dir, exist_ok=True)
         
         # Dictionary to store results for this agent
         agent_results = {}
@@ -427,14 +482,8 @@ class TaskManager:
             print(f"Running benchmark for agent: {agent_name}")
             self.results[agent_name] = self.single_benchmark(agent_name)
             
-            # Save intermediate results after each agent
-            self.save_results(f"bench_{agent_name}_{self.timestamp}.json")
-        
         elapsed_time = time.time() - start_time
         print(f"Total elapsed time: {elapsed_time:.2f} seconds")
-        
-        # Save the complete results
-        self.save_results(f"bench_all_{self.timestamp}.json")
         
         return self.results
     
@@ -449,6 +498,39 @@ class TaskManager:
         """
         rows = []
         
+        # Collect all round times across all agents/configs for std calculation
+        all_agent_round_times = {}
+        all_agent_thinking_times = {}
+        
+        # First pass: collect all round times for each agent
+        for model, rounds_dict in self.results.items():
+            all_agent_round_times[model] = []
+            all_agent_thinking_times[model] = []
+            
+            # For each config, collect the round times
+            for agent_dir in os.listdir(self.logs_dir):
+                if agent_dir != model:
+                    continue
+                
+                agent_path = os.path.join(self.logs_dir, agent_dir)
+                for filename in os.listdir(agent_path):
+                    if not filename.endswith('.json'):
+                        continue
+                    
+                    file_path = os.path.join(agent_path, filename)
+                    with open(file_path, 'r') as f:
+                        data = json.load(f)
+                        
+                        # Extract round times from all simulations
+                        for result in data.get('raw_results', []):
+                            for round_data in result.get('rounds', []):
+                                all_agent_round_times[model].append(round_data.get('round_time', 0))
+                                
+                                # If reasoning model, collect thinking times
+                                if round_data.get('thinking_time', 0) > 0:
+                                    all_agent_thinking_times[model].append(round_data.get('thinking_time', 0))
+        
+        # Second pass: create the dataframe rows
         for model, rounds_dict in self.results.items():
             for rounds_label, quadrants_dict in rounds_dict.items():
                 for quadrant_label, runs in quadrants_dict.items():
@@ -461,9 +543,13 @@ class TaskManager:
                     performance = np.mean(success_rates)
                     std = np.std(success_rates)
                     time_mean = np.mean(time_per_rounds)
-                    time_std = np.std(time_per_rounds)
+                    
+                    # Use collected round times for std calculation
+                    time_std = np.std(all_agent_round_times[model]) if all_agent_round_times[model] else 0
+                    
+                    # Use collected thinking times for mean and std
                     thinking_mean = np.mean(thinking_times)
-                    thinking_std = np.std(thinking_times)
+                    thinking_std = np.std(all_agent_thinking_times[model]) if all_agent_thinking_times[model] else 0
                     
                     row = {
                         "Model": model,
@@ -482,67 +568,18 @@ class TaskManager:
         df = pd.DataFrame(rows)
         return df
     
-    def save_results(self, filepath=None):
+    def save_results(self):
         """
-        Save benchmark results to a JSON file.
+        Do not save benchmark results to separate JSON files.
+        Just return the DataFrame.
         
-        Parameters:
-        -----------
-        filepath : str, optional
-            Path to save the results file, defaults to "bench_TIMESTAMP.json"
+        Returns:
+        --------
+        pandas.DataFrame
+            DataFrame containing the results
         """
-        if filepath is None:
-            filepath = f"{self.output_dir}/bench_{self.timestamp}.json"
-        else:
-            filepath = f"{self.output_dir}/{filepath}"
-        
-        # Convert results to a serializable format
-        serializable_results = {}
-        
-        for model, rounds_dict in self.results.items():
-            serializable_results[model] = {}
-            for rounds_label, quadrants_dict in rounds_dict.items():
-                serializable_results[model][rounds_label] = {}
-                for quadrant_label, runs in quadrants_dict.items():
-                    # Ensure all values are Python native types for JSON serialization
-                    serializable_runs = []
-                    for run in runs:
-                        serializable_run = {
-                            "success_rate": float(run["success_rate"]),
-                            "time_per_round": float(run["time_per_round"])
-                        }
-                        if "thinking_time" in run:
-                            serializable_run["thinking_time"] = float(run["thinking_time"])
-                        serializable_runs.append(serializable_run)
-                    
-                    serializable_results[model][rounds_label][quadrant_label] = serializable_runs
-        
-        # Add metadata
-        benchmark_data = {
-            "results": serializable_results,
-            "metadata": {
-                "timestamp": self.timestamp,
-                "agents": self.agents,
-                "rounds": self.rounds,
-                "quadrants": self.quadrants,
-                "n_simulations": self.n_simulations,
-                "n_runs": self.n_runs,
-                "num_cues": self.num_cues,
-                "device": self.device,
-                "use_unsloth": self.use_unsloth
-            }
-        }
-        
-        with open(filepath, "w") as f:
-            json.dump(benchmark_data, f, indent=2)
-        
-        print(f"Results saved to {filepath}")
-        
-        # Also save as DataFrame for easier analysis
+        # Just return the DataFrame for analysis
         df = self.results_to_dataframe()
-        df_path = filepath.replace(".json", ".csv")
-        df.drop(columns=["raw"]).to_csv(df_path, index=False)
-        
         return df
     
     def plot_results(self, output_path=None):
@@ -582,7 +619,7 @@ class TaskManager:
         
         # Categorize each model for coloring
         model_category = {
-            "Deepseek_R1_1B_Qwen":     "Open Source (<= 1.5B)",
+            "Deepseek_R1_1.5B_Qwen":   "Open Source (<= 1.5B)",
             "Deepseek_R1_7B_Qwen":     "Open Source (> 1.5B)",
             "Deepseek_R1_8B_Llama":    "Open Source (> 1.5B)",
             "Qwen_0.5B":               "Open Source (<= 1.5B)",
@@ -649,13 +686,17 @@ class TaskManager:
         
         plt.tight_layout()
         
-        # Save the plot if requested
+        # Save the plot in the benchmarks_plots directory
         if output_path is None:
-            output_path = f"{self.output_dir}/benchmark_plot_{self.timestamp}.png"
+            output_path = f"{self.benchmarks_plots_dir}/benchmark_plot_{self.timestamp}.png"
         else:
-            output_path = f"{self.output_dir}/{output_path}"
+            output_path = f"{self.benchmarks_plots_dir}/{output_path}"
             
         plt.savefig(output_path, dpi=300)
+        print(f"Benchmark plot saved to {output_path}")
         plt.show()
+        
+        # Set a flag to indicate plot has been generated
+        self.plot_generated = True
         
         return df

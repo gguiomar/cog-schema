@@ -3,11 +3,14 @@ import transformers
 import torch
 import time
 import anthropic
-from typing import Optional
+from typing import Optional, List, Union
 from openai import OpenAI
 from unsloth import FastLanguageModel
 
 class LLMagent:
+    # Define reasoning models as a class variable
+    REASONING_MODELS = ["Deepseek_R1_1.5B_Qwen", "Deepseek_R1_7B_Qwen", "Deepseek_R1_8B_Llama"]
+    
     def __init__(self, 
                  model_name: str, 
                  device_map: str = "cpu", 
@@ -15,7 +18,12 @@ class LLMagent:
                  load_in_4bit: bool = True, 
                  use_unsloth: bool = False,
                  openai_api_key: Optional[str] = None,
-                 anthropic_api_key: Optional[str] = None):
+                 anthropic_api_key: Optional[str] = None,
+                 reasoning_mode: str = "time",  # 'time' or 'tokens'
+                 min_thinking_time: float = 5.0,
+                 max_thinking_time: float = 10.0,
+                 min_thinking_tokens: int = 200,
+                 max_thinking_tokens: int = 500):
         """
         Initialize LLM agent with specified model and backend.
         
@@ -27,6 +35,11 @@ class LLMagent:
         - use_unsloth: bool, whether to use unsloth or transformers.
         - openai_api_key: Optional[str], if provided, the OpenAI API is used with this API key.
         - anthropic_api_key: Optional[str], if provided, the Anthropic API is used with this API key.
+        - reasoning_mode: str, 'time' or 'tokens', controls how reasoning is limited
+        - min_thinking_time: float, minimum thinking time in seconds (used when reasoning_mode='time')
+        - max_thinking_time: float, maximum thinking time in seconds (used when reasoning_mode='time')
+        - min_thinking_tokens: int, minimum number of thinking tokens (used when reasoning_mode='tokens')
+        - max_thinking_tokens: int, maximum number of thinking tokens (used when reasoning_mode='tokens')
         
         If neither API key is provided and use_unsloth is False, then a local model (via transformers) is used.
         """
@@ -34,10 +47,17 @@ class LLMagent:
         self.anthropic_api_key = anthropic_api_key
         self.openai_flag, self.anthropic_flag = False, False
         self.thinking_time = 0  # Track thinking time for reasoning models
+        self.last_thinking_tokens = ""  # Store thinking tokens for reasoning models
+        self.reasoning_mode = reasoning_mode
+        self.min_thinking_time = min_thinking_time
+        self.max_thinking_time = max_thinking_time
+        self.min_thinking_tokens = min_thinking_tokens
+        self.max_thinking_tokens = max_thinking_tokens
+        self.token_count = 0  # Track token count for token-based reasoning
 
         # Map friendly model names to their corresponding Hugging Face repository strings.
         model_aliases = {
-            "Deepseek_R1_1B_Qwen": "unsloth/DeepSeek-R1-Distill-Qwen-1.5B-unsloth-bnb-4bit",
+            "Deepseek_R1_1.5B_Qwen": "unsloth/DeepSeek-R1-Distill-Qwen-1.5B-unsloth-bnb-4bit",
             "Deepseek_R1_7B_Qwen" : "unsloth/DeepSeek-R1-Distill-Qwen-7B-unsloth-bnb-4bit",
             "Deepseek_R1_8B_Llama": "unsloth/DeepSeek-R1-Distill-Llama-8B-unsloth-bnb-4bit",
             "Qwen_0.5B": "unsloth/Qwen2.5-0.5B-bnb-4bit",
@@ -67,60 +87,67 @@ class LLMagent:
             "haiku": "claude-3-5-haiku-latest"
         }
 
-        # Define which models are expected to support internal chain-of-thought
-        reasoning_models = ["Deepseek_R1_1B_Qwen", "Deepseek_R1_7B_Qwen", "Deepseek_R1_8B_Llama"]
-        self.is_reasoning_model = model_name in reasoning_models
+        # Check if this is a reasoning model
+        self.is_reasoning_model = model_name in self.REASONING_MODELS
+        self.model_name = model_name  # Store the friendly model name
 
         if model_name in model_openai:
             self.openai_flag = True
             model_name = model_openai[model_name]
-            self.model_name = model_name
+            self.api_model_name = model_name
             print("Using OpenAI API")
             self.client = OpenAI(api_key=self.openai_api_key)
         elif model_name in model_anthropic:
             self.anthropic_flag = True
             model_name = model_anthropic[model_name]
-            self.model_name = model_name
+            self.api_model_name = model_name
             print("Using Anthropic API")
             self.client = anthropic.Anthropic(api_key=self.anthropic_api_key)
         elif model_name in model_aliases and device_map == "cuda:0" and use_unsloth:
             print("Using unsloth with GPU")
-            model_name = model_aliases[model_name]
-            if "qwen" in model_name.lower():
+            model_alias = model_aliases[model_name]
+            if "qwen" in model_alias.lower():
                 max_seq_length = 4096  # adjust if Qwen requires a different sequence length
-            self.model, self.tokenizer = FastLanguageModel.from_pretrained(model_name=model_name, max_seq_length=max_seq_length)
+            self.model, self.tokenizer = FastLanguageModel.from_pretrained(model_name=model_alias, max_seq_length=max_seq_length)
             FastLanguageModel.for_inference(self.model)
         elif model_name in model_aliases and device_map == "cpu": 
-            model_name = model_aliases[model_name]
+            model_alias = model_aliases[model_name]
             print("Using transformers with CPU")
             self.model = transformers.AutoModelForCausalLM.from_pretrained(
-                model_name, 
+                model_alias, 
                 device_map=device_map
             )
-            self.tokenizer = transformers.AutoTokenizer.from_pretrained(model_name)
+            self.tokenizer = transformers.AutoTokenizer.from_pretrained(model_alias)
         
         self.conversation_history = ""
+
+    @classmethod
+    def get_reasoning_models(cls) -> List[str]:
+        """Return the list of models that support internal reasoning."""
+        return cls.REASONING_MODELS
 
     def get_response(self, prompt: str) -> str:
         """Get response from the LLM."""
         # Combine conversation history with the current prompt
         full_prompt = self.conversation_history + prompt
         self.thinking_time = 0  # Reset thinking time for this prompt
+        self.last_thinking_tokens = ""  # Reset thinking tokens
+        self.token_count = 0  # Reset token count
 
         if self.openai_flag:
             # Use the OpenAI API for chat completions
             # Build a dictionary of parameters for the API call
             params = {
-                "model": self.model_name,
+                "model": self.api_model_name,
                 "messages": [{"role": "user", "content": full_prompt}],
                 "temperature": 1.0,
                 "stop": ["<<"],
             }
             
             # Select the appropriate token parameter based on the model name
-            if self.model_name in ["gpt-4o", "gpt-4o-mini"]:
+            if self.api_model_name in ["gpt-4o", "gpt-4o-mini"]:
                 params["max_tokens"] = 1  # Use max_tokens for GPT-4o models
-            elif self.model_name in ["o1-mini", "o3-mini"]:
+            elif self.api_model_name in ["o1-mini", "o3-mini"]:
                 params["max_completion_tokens"] = 1  # Use max_completion_tokens for O-models
             else:
                 # Fallback behavior if the model name isn't one of the above.
@@ -133,7 +160,7 @@ class LLMagent:
         elif self.anthropic_flag:
             # Use the Anthropic API for completions
             response = self.client.messages.create(
-                model=self.model_name,
+                model=self.api_model_name,
                 max_tokens=1,  # adjust based on your needs
                 temperature=1.0,
                 stop_sequences=["<<"],
@@ -148,11 +175,8 @@ class LLMagent:
             tokenized_prompt = self.tokenizer.encode(f"<｜begin▁of▁sentence｜><｜User｜>{full_prompt}<｜Assistant｜>", return_tensors="pt", add_special_tokens=False).to(self.model.device)
 
             ## REASONING PHASE
-            min_thinking_time = 5    # minimum thinking time in seconds
-            max_thinking_time = 10   # maximum thinking time in seconds
             batch_tokens = 20        # Generate tokens in small batches
             replacement_text = "Wait"  # Replacement text if end is prematurely detected
-            #start_think_token = self.tokenizer.encode("<think>", add_special_tokens=False)[0]
             end_think_token = self.tokenizer.encode("</think>", add_special_tokens=False)[0]
             replacement_ids = self.tokenizer.encode(replacement_text, add_special_tokens=False)
 
@@ -162,35 +186,77 @@ class LLMagent:
 
             start_time = time.time()  # Record the start time
 
-            while not finished:
-                outputs = self.model.generate(input_ids=final_tokens,max_new_tokens=batch_tokens,do_sample=True,temperature=0.6,top_p=0.95)
-                new_tokens = outputs[:, final_tokens.shape[1]:]  # Only newly generated tokens
-                for token in new_tokens[0]:  # Iterate over tokens
-                    elapsed_time = time.time() - start_time # Check if the maximum thinking time has been reached
-                    if elapsed_time >= max_thinking_time: # Append end-of-think token and break out of the loop
-                        final_tokens = torch.cat([final_tokens, torch.tensor([[end_think_token]]).to(final_tokens.device)], dim=1)
-                        finished = True
-                        break
-                    token_id = token.item()
-                    if token_id == end_think_token and is_thinking:  # Detect </think> token
-                        elapsed_time = time.time() - start_time
-                        if elapsed_time < min_thinking_time:  # If we haven't "thought" long enough
-                            final_tokens = torch.cat([final_tokens, torch.tensor([replacement_ids]).to(final_tokens.device)], dim=1) # Replace premature </think> with replacement text.
-                            continue
-                        else:  # If we have "thought" long enough
-                            is_thinking = False
+            # Choose between time-based and token-based reasoning
+            if self.reasoning_mode == "time":
+                while not finished:
+                    outputs = self.model.generate(input_ids=final_tokens, max_new_tokens=batch_tokens, do_sample=True, temperature=0.6, top_p=0.95)
+                    new_tokens = outputs[:, final_tokens.shape[1]:]  # Only newly generated tokens
+                    for token in new_tokens[0]:  # Iterate over tokens
+                        elapsed_time = time.time() - start_time  # Check elapsed time
+                        if elapsed_time >= self.max_thinking_time:  # Maximum thinking time reached
+                            final_tokens = torch.cat([final_tokens, torch.tensor([[end_think_token]]).to(final_tokens.device)], dim=1)
                             finished = True
-                    final_tokens = torch.cat([final_tokens, token.unsqueeze(0).unsqueeze(0)], dim=1)
-                    if token_id == end_think_token:
-                        finished = True
+                            break
+                        token_id = token.item()
+                        if token_id == end_think_token and is_thinking:  # Detect </think> token
+                            elapsed_time = time.time() - start_time
+                            if elapsed_time < self.min_thinking_time:  # If we haven't "thought" long enough
+                                final_tokens = torch.cat([final_tokens, torch.tensor([replacement_ids]).to(final_tokens.device)], dim=1)
+                                continue
+                            else:  # If we have "thought" long enough
+                                is_thinking = False
+                                finished = True
+                        final_tokens = torch.cat([final_tokens, token.unsqueeze(0).unsqueeze(0)], dim=1)
+                        if token_id == end_think_token:
+                            finished = True
+                            break
+                    if finished:
                         break
-                if finished:
-                    break
             
-            # Record the thinking time
-            self.thinking_time = time.time() - start_time
+            elif self.reasoning_mode == "tokens":
+                # Token-based reasoning
+                while not finished:
+                    outputs = self.model.generate(input_ids=final_tokens, max_new_tokens=batch_tokens, do_sample=True, temperature=0.6, top_p=0.95)
+                    new_tokens = outputs[:, final_tokens.shape[1]:]  # Only newly generated tokens
+                    for token in new_tokens[0]:  # Iterate over tokens
+                        self.token_count += 1  # Increment token count
+                        if self.token_count >= self.max_thinking_tokens:  # Maximum token count reached
+                            final_tokens = torch.cat([final_tokens, torch.tensor([[end_think_token]]).to(final_tokens.device)], dim=1)
+                            finished = True
+                            break
+                        token_id = token.item()
+                        if token_id == end_think_token and is_thinking:  # Detect </think> token
+                            if self.token_count < self.min_thinking_tokens:  # If we haven't generated enough tokens
+                                final_tokens = torch.cat([final_tokens, torch.tensor([replacement_ids]).to(final_tokens.device)], dim=1)
+                                continue
+                            else:  # If we have generated enough tokens
+                                is_thinking = False
+                                finished = True
+                        final_tokens = torch.cat([final_tokens, token.unsqueeze(0).unsqueeze(0)], dim=1)
+                        if token_id == end_think_token:
+                            finished = True
+                            break
+                    if finished:
+                        break
             
             output_text = self.tokenizer.decode(final_tokens[0], skip_special_tokens=True)
+            
+            # Extract thinking tokens by removing the prompt
+            # First, format the prompt in the same way as it would appear in output_text
+            formatted_prompt = f"<｜User｜>{full_prompt}<｜Assistant｜>"
+            
+            # Extract thinking tokens
+            if formatted_prompt in output_text:
+                self.last_thinking_tokens = output_text[len(formatted_prompt):]
+            else:
+                # Try a simpler approach if the formatted prompt isn't found exactly
+                self.last_thinking_tokens = output_text[output_text.find("<｜Assistant｜>") + len("<｜Assistant｜>"):]
+            
+            # Further strip any <think> or </think> tags
+            self.last_thinking_tokens = self.last_thinking_tokens.replace("<think>", "").replace("</think>", "").strip()
+
+            # Record the thinking time
+            self.thinking_time = time.time() - start_time
 
             ## GENERATION PHASE
             # Use the output_text as the new prompt to generate a single answer token.
@@ -216,7 +282,6 @@ class LLMagent:
 
         return generated_text
 
-
     def update_history(self, text: str):
         """Update conversation history."""
         self.conversation_history += text
@@ -224,3 +289,35 @@ class LLMagent:
     def reset_history(self):
         """Reset conversation history."""
         self.conversation_history = ""
+        
+    def get_thinking_tokens(self):
+        """Get the most recent thinking tokens for reasoning models."""
+        return self.last_thinking_tokens
+        
+    def get_reasoning_parameters(self):
+        """Get the current reasoning parameters."""
+        if self.is_reasoning_model:
+            if self.reasoning_mode == "time":
+                return {
+                    "reasoning_mode": self.reasoning_mode,
+                    "min_thinking_time": self.min_thinking_time,
+                    "max_thinking_time": self.max_thinking_time,
+                    "min_thinking_tokens": None,
+                    "max_thinking_tokens": None
+                }
+            else:  # token mode
+                return {
+                    "reasoning_mode": self.reasoning_mode,
+                    "min_thinking_time": None,
+                    "max_thinking_time": None,
+                    "min_thinking_tokens": self.min_thinking_tokens,
+                    "max_thinking_tokens": self.max_thinking_tokens
+                }
+        else:
+            return {
+                "reasoning_mode": None,
+                "min_thinking_time": None,
+                "max_thinking_time": None,
+                "min_thinking_tokens": None,
+                "max_thinking_tokens": None
+            }

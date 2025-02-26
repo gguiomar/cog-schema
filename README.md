@@ -18,8 +18,11 @@ This repository contains the code to run the Visual Sampling Task (VST) benchmar
 ├── manager/                 # Task and benchmark management
 │   ├── TaskManager.py       # Manages running tasks and benchmarks
 │   └── ...
-├── simulation_results/      # Output directory for results
-├── logs/                    # Logging directory 
+├── benchmarks_plots/        # Output directory for benchmark plots
+├── logs/                    # Logs organized by agent name
+│   ├── agent1_name/         # JSON results for agent1
+│   ├── agent2_name/         # JSON results for agent2
+│   └── ...
 ├── main.ipynb               # Entry point notebook
 ├── README.md                # This file
 └── requirements.txt         # Dependencies
@@ -53,6 +56,7 @@ The `LLMagent` class provides a unified interface for different types of LLMs:
 For reasoning models, it:
 - Enables internal chain-of-thought reasoning
 - Tracks thinking time for performance analysis
+- Captures thinking tokens for analysis
 - Sets minimum and maximum thinking durations
 
 ### 3. Task Manager
@@ -64,6 +68,7 @@ The `TaskManager` class orchestrates running the tasks and benchmarks:
 - Performs comprehensive benchmarking across models/configurations
 - Records metrics including success rates, timing, and thinking time
 - Generates visualizations and exports results
+- Organizes results in a structured folder hierarchy
 
 ## Supported Models
 
@@ -89,7 +94,7 @@ The benchmark collects the following metrics:
 - **Time Per Round**: Average time spent on each round
 - **Thinking Time**: For reasoning models, time spent in internal thinking
 - **Quadrant Distribution**: Analysis of which quadrants were chosen
-- **Raw Interactions**: Full conversation logs for each simulation
+- **Thinking Tokens**: For reasoning models, the internal reasoning process
 
 ## Result Format
 
@@ -98,22 +103,20 @@ Benchmark results are saved in JSON format with the following structure:
 ```json
 {
   "results": {
-    "MODEL_NAME": {
-      "ROUNDS rounds": {
-        "QUADRANTS quadrant": [
-          {
-            "success_rate": 0.6,
-            "time_per_round": 2.5,
-            "thinking_time": 0.8
-          },
-          ...
-        ]
-      }
+    "ROUNDS rounds": {
+      "QUADRANTS quadrant": [
+        {
+          "success_rate": 0.6,
+          "time_per_round": 2.5,
+          "thinking_time": 0.8
+        },
+        ...
+      ]
     }
   },
   "metadata": {
     "timestamp": "20240225_123456",
-    "agents": ["MODEL1", "MODEL2"],
+    "agent": "MODEL_NAME",
     "rounds": [4, 6, 8],
     "quadrants": [2, 3, 4],
     ...
@@ -121,7 +124,15 @@ Benchmark results are saved in JSON format with the following structure:
 }
 ```
 
-Individual simulation logs contain detailed information about each run, including full conversation history, thinking times for each round, and analysis of success patterns.
+Individual simulation logs contain detailed information about each run, including thinking times for each round, and for reasoning models, the thinking tokens used during inference.
+
+## Output Structure
+
+Results are organized in the following directory structure:
+
+- **benchmarks_plots/**: Contains all benchmark plots, with one plot showing all models in a benchmark run
+- **logs/**: Contains agent-specific folders with JSON results
+  - **logs/agent_name/**: Contains JSON files for each benchmark run with this agent
 
 ## Usage
 
@@ -146,8 +157,8 @@ manager = TaskManager(
 # Run the benchmark
 results = manager.multiple_benchmarks()
 
-# Plot the results
-df = manager.plot_results()
+# Save the results
+df = manager.save_results()
 ```
 
 ### Comparing Multiple Models
@@ -173,9 +184,8 @@ manager = TaskManager(
 # Run benchmarks
 results = manager.multiple_benchmarks()
 
-# Save and visualize results
+# Save results
 df = manager.save_results()
-manager.plot_results()
 ```
 
 ## Advanced Analysis
@@ -184,7 +194,7 @@ The benchmark supports advanced analysis including:
 
 - Thinking time correlation with performance
 - Per-round analysis of model behavior
-- Examination of full conversation logs
+- Examination of thinking tokens for reasoning models
 - Integration with model introspection tools
 
 ## Requirements

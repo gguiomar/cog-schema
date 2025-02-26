@@ -38,9 +38,9 @@ def parse_args():
     parser.add_argument('--anthropic-key', type=str, default=None, 
                         help='Anthropic API key')
     
-    # Output settings
+    # Output settings - kept for backward compatibility but not used
     parser.add_argument('--output-dir', type=str, default='simulation_results', 
-                        help='Directory to save results')
+                        help='Legacy directory parameter (not used)')
     parser.add_argument('--verbose', action='store_true', 
                         help='Enable verbose output')
                         
@@ -53,9 +53,6 @@ def parse_args():
 def main():
     args = parse_args()
     
-    # Create output directory
-    os.makedirs(args.output_dir, exist_ok=True)
-    
     # Create task manager with parameters
     manager = TaskManager(
         agents=args.models,
@@ -66,7 +63,7 @@ def main():
         num_cues=args.cues,
         device=args.device,
         verbose=args.verbose,
-        output_dir=args.output_dir,
+        output_dir=args.output_dir,  # kept for backward compatibility
         openai_api_key=args.openai_key,
         anthropic_api_key=args.anthropic_key,
         use_unsloth=args.use_unsloth
@@ -76,14 +73,14 @@ def main():
     print(f"Running benchmarks for models: {args.models}")
     results = manager.multiple_benchmarks()
     
-    # Save results
+    # Get DataFrame but don't save additional files
     df = manager.save_results()
     
-    # Generate plots if requested
-    if args.plot:
+    # Generate plot if requested and not already generated
+    if args.plot and not hasattr(manager, 'plot_generated'):
         manager.plot_results()
     
-    print(f"Benchmark complete! Results saved to {args.output_dir}")
+    print(f"Benchmark complete! Results saved to logs/ and benchmark plot saved to benchmarks_plots/")
     
 if __name__ == "__main__":
     main()
