@@ -224,6 +224,7 @@ class TaskManager:
             
             # Get agent's choice and track round time
             round_start_time = time.time()
+            print(f'!!! {prompt} !!!')
             choice = self.agent.get_response(prompt)
             round_time = time.time() - round_start_time
             trial_stats['round_times'].append(round_time)
@@ -293,6 +294,7 @@ class TaskManager:
             print(final_prompt)
             print("-------------------------")
         
+        print(f'!!! {final_prompt} !!!')
         final_choice = self.agent.get_response(final_prompt)
         
         if self.verbose:
