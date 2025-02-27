@@ -4,7 +4,7 @@
 
 G1Bbon is a benchmark for evaluating Large Language Models (LLMs) on perceptual inference tasks. It tests an LLM's ability to maintain and update beliefs about the world based on limited, noisy observations.
 
-This repository contains the code to run the Visual Sampling Task (VST) benchmark on LLMs and compare their performance across different model sizes and architectures.
+This repository contains the code to run the Perceptual Sampling Task (VST) benchmark on LLMs and compare their performance across different model sizes and architectures.
 
 ## Repository Structure
 
@@ -13,7 +13,7 @@ This repository contains the code to run the Visual Sampling Task (VST) benchmar
 │   ├── LLMagent.py          # Base LLM agent interface
 │   └── ...
 ├── tasks/                   # Task implementations
-│   ├── VSTtask.py           # Visual Sampling Task implementation
+│   ├── VSTtask.py           # Perceptual Sampling Task implementation
 │   └── ...
 ├── manager/                 # Task and benchmark management
 │   ├── TaskManager.py       # Manages running tasks and benchmarks
@@ -45,9 +45,9 @@ This hierarchical structure allows for more robust evaluation by:
 
 ## Components
 
-### 1. Visual Sampling Task (VST)
+### 1. Perceptual Sampling Task (VST)
 
-The Visual Sampling Task is a multi-armed bandit problem designed to test an agent's ability to infer hidden properties from limited observations:
+The Perceptual Sampling Task is a multi-armed bandit problem designed to test an agent's ability to infer hidden properties from limited observations:
 
 - The task presents multiple quadrants (2-4), each with cues (typically 1 per quadrant).
 - One quadrant is biased (90% one color, 10% the other), while others have a 50/50 distribution.
