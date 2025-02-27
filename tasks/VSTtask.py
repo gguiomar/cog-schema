@@ -7,18 +7,23 @@ class VSTtask:
     TASK_BIAS_DETECTION = "bias_detection"
     TASK_PATTERN_DETECTION = "pattern_detection"
     TASK_CONDITIONAL_PROBABILITY = "conditional_probability"
+    TASK_CLASSICAL_CONDITIONING = "classical_conditioning"
     
     def __init__(self, n_rounds: int, n_quadrants: int = 2, n_cues: int = 1, 
                  task_type: str = TASK_BIAS_DETECTION):
         """Initialize VST task with specified parameters."""
-        if not 2 <= n_quadrants <= 4:
-            raise ValueError("Number of quadrants must be between 2 and 4")
-        if n_cues < 1:
-            raise ValueError("Number of cues per quadrant must be at least 1")
+        if task_type == self.TASK_CLASSICAL_CONDITIONING:
+            if n_quadrants != 1:
+                raise ValueError("For classical conditioning, number of quadrants must be 1")
+            n_cues = 1  # force one cue as well
+        else:
+            if not 2 <= n_quadrants <= 4:
+                raise ValueError("Number of quadrants must be between 2 and 4")
         
         # Validate task type
         valid_tasks = [self.TASK_BIAS_DETECTION, self.TASK_PATTERN_DETECTION, 
-                      self.TASK_CONDITIONAL_PROBABILITY]
+                      self.TASK_CONDITIONAL_PROBABILITY, self.TASK_CLASSICAL_CONDITIONING]
+
         if task_type not in valid_tasks:
             raise ValueError(f"Invalid task type. Must be one of: {', '.join(valid_tasks)}")
             
@@ -42,10 +47,12 @@ class VSTtask:
         self.pattern_quadrant = None  # Store the quadrant of the pattern cue
         self.conditional_cue_trigger = None
         self.conditional_cue_response = None
+        self.received_reward = None
         
         # Task-specific setup
         if task_type == self.TASK_BIAS_DETECTION:
             self.biased_quadrant = random.choice(self.quadrants)
+
         elif task_type == self.TASK_PATTERN_DETECTION:
             # Choose a random cue to show the pattern
             self.pattern_cue = random.choice(self.letters)
@@ -54,11 +61,30 @@ class VSTtask:
                 if self.pattern_cue in cues:
                     self.pattern_quadrant = q
                     break
+
         elif task_type == self.TASK_CONDITIONAL_PROBABILITY:
             # Choose two random different cues for the conditional relationship
-            cues = random.sample(self.letters, 2)
-            self.conditional_cue_trigger = cues[0]  # This cue triggers
-            self.conditional_cue_response = cues[1]  # This cue responds
+            cues_special = random.sample(self.letters, 2)
+            self.conditional_cue_uniform = cues_special[0]  # Uniform: displays colors uniformly
+            self.conditional_cue_biased = cues_special[1]   # Biased: if previous color was RED, likely BLUE; otherwise uniform
+            
+            for q, cues in self.cue_map.items():
+                if self.conditional_cue_uniform in cues:
+                    self.conditional_quadrant_uniform = q
+                if self.conditional_cue_biased in cues:
+                    self.conditional_quadrant_biased = q
+
+        elif task_type == self.TASK_CLASSICAL_CONDITIONING:
+            self.n_cues = 1
+            self.conditioned_stimulus = self.letters[0]
+            self.reward_probability = 0.9
+            self.rounds = self._generate_classical_conditioning_rounds()
+            self.received_reward = random.random() < self.reward_probability
+        else:
+            raise ValueError(f"Invalid task type. Must be one of: {self.TASK_BIAS_DETECTION}, "
+                             f"{self.TASK_PATTERN_DETECTION}, {self.TASK_CONDITIONAL_PROBABILITY}, "
+                             f"{self.TASK_CLASSICAL_CONDITIONING}")        
+
         
         self.rounds = self._generate_rounds()
 
@@ -70,8 +96,41 @@ class VSTtask:
             return self._generate_pattern_detection_rounds()
         elif self.task_type == self.TASK_CONDITIONAL_PROBABILITY:
             return self._generate_conditional_probability_rounds()
+        elif self.task_type == self.TASK_CLASSICAL_CONDITIONING:
+            return self._generate_classical_conditioning_rounds()
         else:
             raise ValueError(f"Unsupported task type: {self.task_type}")
+
+    def _generate_classical_conditioning_rounds(self) -> List[List[Dict]]:
+        """Generate rounds for classical conditioning task.
+           Each round shows a single cue (the conditioned stimulus) always in RED."""
+        rounds = []
+        for r in range(self.n_rounds):
+            if r < self.n_rounds - 1:
+                round_str = [{
+                    'name': self.conditioned_stimulus,
+                    'color': 'RED',
+                    'quadrant': 0  # since there's only one cue, assign quadrant 0
+                }]
+            else:
+                # Last round: show reward or no reward
+                if self.received_reward:
+                    reward_str = "REWARD +100 POINTS"
+                    round_str = [{
+                    'name': reward_str,
+                    'color': 'WHITE',
+                    'quadrant': 0  # since there's only one cue, assign quadrant 0
+                }]
+                else:
+                    reward_str = "PUNISHMENT -1000 POINTS"
+                    round_str = [{
+                    'name': reward_str,
+                    'color': 'PURPLE',
+                    'quadrant': 0  # since there's only one cue, assign quadrant 0
+                }]
+            rounds.append(round_str)
+        return rounds
+
 
     def _generate_bias_detection_rounds(self) -> List[List[Dict]]:
         """Generate rounds for bias detection task."""
@@ -184,6 +243,7 @@ class VSTtask:
             if not round_cues:
                 q = random.choice(self.quadrants)
                 available_cues = [c for c in self.cue_map[q] if c != self.pattern_cue]
+                
                 if available_cues:
                     cue = random.choice(available_cues)
                     round_cues.append({
@@ -233,180 +293,93 @@ class VSTtask:
         return True
 
     def _generate_conditional_probability_rounds(self) -> List[List[Dict]]:
-        """Generate rounds for conditional probability task."""
+        """Generate rounds for conditional probability task with new structure."""
         rounds = []
-        previous_trigger_color = None
-        
-        # Find quadrants for trigger and response cues
-        trigger_quadrant = None
-        response_quadrant = None
+        # Determine quadrants for special cues
+        uniform_quadrant = None
+        biased_quadrant = None
         for q, cues in self.cue_map.items():
-            if self.conditional_cue_trigger in cues:
-                trigger_quadrant = q
-            if self.conditional_cue_response in cues:
-                response_quadrant = q
+            if self.conditional_cue_uniform in cues:
+                uniform_quadrant = q
+            if self.conditional_cue_biased in cues:
+                biased_quadrant = q
         
+        prev_biased = None
         for _ in range(self.n_rounds):
             round_cues = []
-            
-            # Determine trigger cue first
-            trigger_available = random.random() < 0.7  # 70% chance trigger cue is available
-            
-            if trigger_available:
-                trigger_color = random.choice(['RED', 'BLUE'])
-                round_cues.append({
-                    'name': self.conditional_cue_trigger,
-                    'color': trigger_color,
-                    'quadrant': trigger_quadrant,
-                    'is_trigger': True
-                })
-                previous_trigger_color = trigger_color
-            
-            # Determine response cue
-            response_available = random.random() < 0.7  # 70% chance response cue is available
-            
-            if response_available:
-                # If previous trigger was BLUE, high chance of RED
-                if previous_trigger_color == 'BLUE':
-                    response_color = 'RED' if random.random() < 0.8 else 'GREEN'
+            # Always add the special cues.
+            # Uniform cue: always uniform.
+            color_uniform = random.choice(['RED', 'GREEN', 'BLUE'])
+            round_cues.append({
+                'name': self.conditional_cue_uniform,
+                'color': color_uniform,
+                'quadrant': uniform_quadrant,
+                'is_special': True,
+                'special_type': 'uniform'
+            })
+            # Biased cue: if previous color was RED, bias toward BLUE.
+            if prev_biased == 'RED':
+                r = random.random()
+                if r < 0.8:
+                    color_biased = 'BLUE'
+                elif r < 0.9:
+                    color_biased = 'RED'
                 else:
-                    # Otherwise random color
-                    response_color = random.choice(['RED', 'GREEN'])
-                
-                round_cues.append({
-                    'name': self.conditional_cue_response,
-                    'color': response_color,
-                    'quadrant': response_quadrant,
-                    'is_response': True
-                })
+                    color_biased = 'GREEN'
+            else:
+                color_biased = random.choice(['RED', 'GREEN', 'BLUE'])
+            round_cues.append({
+                'name': self.conditional_cue_biased,
+                'color': color_biased,
+                'quadrant': biased_quadrant,
+                'is_special': True,
+                'special_type': 'biased'
+            })
+            prev_biased = color_biased
             
-            # Add other random cues
-            for q in self.quadrants:
-                for cue in self.cue_map[q]:
-                    if (cue != self.conditional_cue_trigger and 
-                        cue != self.conditional_cue_response and 
-                        random.random() < 0.5):  # 50% chance other cues are available
-                        round_cues.append({
-                            'name': cue,
-                            'color': random.choice(['RED', 'GREEN', 'BLUE']),
-                            'quadrant': q,
-                            'is_trigger': False,
-                            'is_response': False
-                        })
-            
-            # Ensure at least one cue per round
-            if not round_cues:
-                q = random.choice(self.quadrants)
-                available_cues = [c for c in self.cue_map[q] 
-                                if c != self.conditional_cue_trigger 
-                                and c != self.conditional_cue_response]
-                if available_cues:
-                    cue = random.choice(available_cues)
-                    round_cues.append({
-                        'name': cue,
-                        'color': random.choice(['RED', 'GREEN', 'BLUE']),
-                        'quadrant': q,
-                        'is_trigger': False,
-                        'is_response': False
-                    })
-                else:
-                    # If no other cues, force one of the special cues
-                    cue = random.choice([self.conditional_cue_trigger, self.conditional_cue_response])
-                    is_trigger = cue == self.conditional_cue_trigger
-                    if is_trigger:
-                        color = random.choice(['RED', 'BLUE'])
-                        previous_trigger_color = color
-                        quadrant = trigger_quadrant
-                    else:
-                        if previous_trigger_color == 'BLUE':
-                            color = 'RED' if random.random() < 0.8 else 'GREEN'
-                        else:
-                            color = random.choice(['RED', 'GREEN'])
-                        quadrant = response_quadrant
-                    
-                    round_cues.append({
-                        'name': cue,
-                        'color': color,
-                        'quadrant': quadrant,
-                        'is_trigger': is_trigger,
-                        'is_response': not is_trigger
-                    })
-            
+            # Add extra (blocked) cues if n_cues > 2.
+            if self.n_cues > 2:
+                for q in self.quadrants:
+                    for cue in self.cue_map[q]:
+                        if cue not in [self.conditional_cue_uniform, self.conditional_cue_biased]:
+                            if random.random() < 0.5:
+                                round_cues.append({
+                                    'name': cue,
+                                    'color': random.choice(['RED', 'GREEN', 'BLUE']),
+                                    'quadrant': q,
+                                    'is_special': False
+                                })
             rounds.append(round_cues)
         
-        # Validate conditional probability is detectable
         if self._validate_conditional_probability_rounds(rounds):
             return rounds
         else:
-            # Try again if validation fails
             return self._generate_conditional_probability_rounds()
 
+
     def _validate_conditional_probability_rounds(self, rounds: List[List[Dict]]) -> bool:
-        """Validate that the conditional probability is detectable in the generated rounds."""
-        # Track sequence of trigger followed by response
-        trigger_blue_count = 0
-        response_after_blue_count = 0
-        response_red_after_blue_count = 0
-        
-        # Also track non-conditional appearance of red in response cue
-        total_response_appearances = 0
-        total_response_red = 0
-        
-        for i in range(len(rounds) - 1):  # Look at pairs of rounds
-            # Check if trigger was blue in current round
-            trigger_was_blue = False
+        """Validate that the biased cue shows a high chance of BLUE following RED."""
+        biased_blue_after_red = 0
+        biased_after_red_count = 0
+        for i in range(1, len(rounds)):
+            prev_biased_color = None
+            curr_biased_color = None
+            for cue in rounds[i-1]:
+                if cue.get('is_special') and cue.get('special_type') == 'biased':
+                    prev_biased_color = cue['color']
             for cue in rounds[i]:
-                if cue['name'] == self.conditional_cue_trigger and cue['color'] == 'BLUE':
-                    trigger_was_blue = True
-                    trigger_blue_count += 1
-                    break
-            
-            # Check response color in next round
-            if trigger_was_blue:
-                for cue in rounds[i+1]:
-                    if cue['name'] == self.conditional_cue_response:
-                        response_after_blue_count += 1
-                        if cue['color'] == 'RED':
-                            response_red_after_blue_count += 1
-                        break
-            
-            # Count all response cue appearances and colors
-            for cue in rounds[i]:
-                if cue['name'] == self.conditional_cue_response:
-                    total_response_appearances += 1
-                    if cue['color'] == 'RED':
-                        total_response_red += 1
-        
-        # Check final round for statistics
-        for cue in rounds[-1]:
-            if cue['name'] == self.conditional_cue_response:
-                total_response_appearances += 1
-                if cue['color'] == 'RED':
-                    total_response_red += 1
-        
-        # Validation criteria:
-        # 1. Trigger must show blue at least 3 times
-        if trigger_blue_count < 3:
-            return False
-        
-        # 2. Response must appear after blue trigger at least 3 times
-        if response_after_blue_count < 3:
-            return False
-        
-        # 3. Response must be red after blue trigger at least 70% of the time
-        if response_after_blue_count > 0:
-            red_after_blue_ratio = response_red_after_blue_count / response_after_blue_count
-            if red_after_blue_ratio < 0.7:
+                if cue.get('is_special') and cue.get('special_type') == 'biased':
+                    curr_biased_color = cue['color']
+            if prev_biased_color == 'RED':
+                biased_after_red_count += 1
+                if curr_biased_color == 'BLUE':
+                    biased_blue_after_red += 1
+        if biased_after_red_count > 0:
+            ratio = biased_blue_after_red / biased_after_red_count
+            if ratio < 0.7:
                 return False
-        
-        # 4. Overall red ratio in response should be lower than red-after-blue ratio
-        if total_response_appearances > 0 and response_after_blue_count > 0:
-            overall_red_ratio = total_response_red / total_response_appearances
-            red_after_blue_ratio = response_red_after_blue_count / response_after_blue_count
-            if overall_red_ratio >= red_after_blue_ratio:
-                return False
-        
         return True
+
 
     def get_round_data(self, round_num: int) -> List[Dict]:
         """Get data for specific round."""
@@ -422,8 +395,21 @@ class VSTtask:
             return self._get_pattern_detection_description()
         elif self.task_type == self.TASK_CONDITIONAL_PROBABILITY:
             return self._get_conditional_probability_description()
+        elif self.task_type == self.TASK_CLASSICAL_CONDITIONING:
+            return self._get_classical_conditioning_description()
         else:
             raise ValueError(f"Unsupported task type: {self.task_type}")
+
+    def _get_classical_conditioning_description(self) -> str:
+        """Get description for classical conditioning task."""
+        return (
+            f"You will play a classical conditioning task with {self.n_rounds} rounds.\n"
+            "In each round a single cue (the conditioned stimulus) will appear in RED.\n"
+            "After all rounds, a reward will be delivered with a 90% chance (and no reward with a 10% chance).\n"
+            "Your task is to report whether you received a reward.\n"
+            "Correct: +100 points if correct, -100 points if incorrect."
+        )
+
 
     def _get_bias_detection_description(self) -> str:
         """Get description for bias detection task."""
@@ -452,18 +438,18 @@ class VSTtask:
         )
 
     def _get_conditional_probability_description(self) -> str:
-        """Get description for conditional probability task."""
+        """Get description for conditional probability task with new structure."""
         return (
             f"You will play a game with {self.n_rounds} rounds.\n"
-            "In each round you'll see active cues (letters):\n" +
-            "There's a relationship between cues' colors across rounds\n"
-            "One cue is more likely to be RED after another cue shows BLUE\n"
-            "Cues can show RED, GREEN, or BLUE colors\n"
-            "Cues appear and disappear randomly each round\n"
-            "At least one cue active per round\n\n"
-            f"After {self.n_rounds} rounds, identify which cue was most likely to be RED after another cue showed BLUE.\n"
+            "In each round you'll see active cues (letters):\n"
+            "Two special cues are always present:\n"
+            " - One cue displays a color chosen uniformly at random from RED, GREEN, or BLUE.\n"
+            " - The other cue is biased: if its previous color was RED, it is highly likely (80%) to be BLUE next; otherwise, its color is chosen uniformly.\n"
+            "Additional blocked cues may appear if more than 2 cues per quadrant are configured.\n\n"
+            f"After {self.n_rounds} rounds, identify the cue that exhibited the biased behavior.\n"
             "Correct: +100 points, Wrong: -100 points."
         )
+
     
     def process_choice(self, choice: str, round_data: List[Dict]) -> Optional[str]:
         """Process choice and return color if valid."""
@@ -472,24 +458,49 @@ class VSTtask:
                 return cue['color']
         return None
     
-    def get_correct_answer(self) -> str:
-        """Get the correct answer based on task type."""
-        if self.task_type == self.TASK_BIAS_DETECTION:
-            return str(self.biased_quadrant + 1)  # +1 because quadrants are 0-indexed in code
-        elif self.task_type == self.TASK_PATTERN_DETECTION:
-            return self.pattern_cue
-        elif self.task_type == self.TASK_CONDITIONAL_PROBABILITY:
-            return self.conditional_cue_response
-        else:
-            raise ValueError(f"Unsupported task type: {self.task_type}")
-    
     def get_final_question(self) -> str:
         """Get the final question based on task type."""
         if self.task_type == self.TASK_BIAS_DETECTION:
-            return (f"Which quadrant (1-{self.n_quadrants}) had the highest ratio of RED?")
+            if self.n_cues == 1:
+                return f"Which cue showed the bias in RED appearance?"
+            else:
+                return f"Which quadrant (1-{self.n_quadrants}) had the highest ratio of RED?"
         elif self.task_type == self.TASK_PATTERN_DETECTION:
-            return ("Which cue showed the alternating pattern?")
+            if self.n_cues == 1:
+                return f"Which cue showed the alternating pattern?"
+            else:
+                return f"Which quadrant (1-{self.n_quadrants}) contained the cue with the alternating pattern?"
         elif self.task_type == self.TASK_CONDITIONAL_PROBABILITY:
-            return ("Which cue was most likely to be RED after another cue showed BLUE?")
+            if self.n_cues == 1:
+                return f"Which cue exhibited the biased behavior?"
+            else:
+                return f"Which quadrant (1-{self.n_quadrants}) contained the cue that was most likely to be RED after a cue showed BLUE?"
+        elif self.task_type == self.TASK_CLASSICAL_CONDITIONING:
+            return "Did you receive a reward? Respond with Y or N."
         else:
             raise ValueError(f"Unsupported task type: {self.task_type}")
+
+
+    def get_correct_answer(self) -> str:
+        """Get the correct answer based on task type."""
+        if self.task_type == self.TASK_BIAS_DETECTION:
+            if self.n_cues == 1:
+                return self.biased_cue
+            else:
+                return str(self.biased_quadrant + 1)
+        elif self.task_type == self.TASK_PATTERN_DETECTION:
+            if self.n_cues == 1:
+                return self.pattern_cue
+            else:
+                return str(self.pattern_quadrant + 1)
+        elif self.task_type == self.TASK_CONDITIONAL_PROBABILITY:
+            if self.n_cues == 1:
+                return self.conditional_cue_biased
+            else:
+                return str(self.conditional_quadrant_biased + 1)
+        elif self.task_type == self.TASK_CLASSICAL_CONDITIONING:
+            return "Y" if self.received_reward else "N"
+        else:
+            raise ValueError(f"Unsupported task type: {self.task_type}")
+
+

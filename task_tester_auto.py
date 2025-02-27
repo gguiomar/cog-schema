@@ -83,50 +83,48 @@ def test_pattern_detection():
 def test_conditional_probability():
     """Test the conditional probability task."""
     print("\n=== Testing Conditional Probability Task ===")
-    task = VSTtask(n_rounds=10, n_quadrants=2, n_cues=1, task_type=VSTtask.TASK_CONDITIONAL_PROBABILITY)
+    task = VSTtask(n_rounds=10, n_quadrants=2, n_cues=2, task_type=VSTtask.TASK_CONDITIONAL_PROBABILITY)
     
     print("Task Description:")
     print(task.get_task_description())
     
     print(f"\nCorrect Answer: Cue {task.get_correct_answer()}")
-    print(f"Trigger Cue: {task.conditional_cue_trigger}, Response Cue: {task.conditional_cue_response}")
+    print(f"Uniform Cue: {task.conditional_cue_uniform}, Biased Cue: {task.conditional_cue_biased}")
     
-    print("\nSimulating rounds:")
-    previous_trigger_color = None
+    # Simulate rounds by always selecting the biased cue to inspect its color behavior.
     for round_num in range(task.n_rounds):
         round_data = task.get_round_data(round_num)
         available_cues = ', '.join(cue['name'] for cue in round_data)
         print(f"Round {round_num + 1}: Available cues: {available_cues}")
-        
-        # First check if trigger cue is available and if so, select it
-        trigger_available = False
+        # Select the biased cue.
         for cue in round_data:
-            if cue['name'] == task.conditional_cue_trigger:
-                trigger_available = True
+            if cue['name'] == task.conditional_cue_biased:
+                print(f"  Biased Cue Color: {cue['color']}")
                 break
-        
-        if trigger_available:
-            chosen_cue = task.conditional_cue_trigger
-        else:
-            # Otherwise randomly choose one
-            chosen_cue = random.choice([cue['name'] for cue in round_data])
-        
-        result = task.process_choice(chosen_cue, round_data)
-        
-        # Track trigger colors for analysis
-        if chosen_cue == task.conditional_cue_trigger:
-            previous_trigger_color = result
-            print(f"  Selected: {chosen_cue} - Color: {result} (Trigger Cue)")
-        elif chosen_cue == task.conditional_cue_response:
-            if previous_trigger_color == 'BLUE':
-                print(f"  Selected: {chosen_cue} - Color: {result} (Response Cue, after BLUE trigger)")
-            else:
-                print(f"  Selected: {chosen_cue} - Color: {result} (Response Cue)")
-        else:
-            print(f"  Selected: {chosen_cue} - Color: {result}")
+
     
     print("\nFinal Question:")
     print(task.get_final_question())
+
+
+def test_classical_conditioning():
+    """Test the classical conditioning task."""
+    print("\n=== Testing Classical Conditioning Task ===")
+    task = VSTtask(n_rounds=10, n_quadrants=1, n_cues=1, task_type=VSTtask.TASK_CLASSICAL_CONDITIONING)
+    
+    print("Task Description:")
+    print(task.get_task_description())
+    
+    print("\nSimulating rounds:")
+    for round_num in range(task.n_rounds):
+        round_data = task.get_round_data(round_num)
+        available_cues = ', '.join(cue['name'] for cue in round_data)
+        print(f"Round {round_num + 1}: Available cue: {available_cues} (Color: {round_data[0]['color']})")
+    
+    print("\nFinal Question:")
+    print(task.get_final_question())
+    print(f"Correct Answer: {task.get_correct_answer()}")
+
 
 def summarize_statistics():
     """Run multiple trials and summarize statistics for each task type."""
