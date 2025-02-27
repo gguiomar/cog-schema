@@ -171,4 +171,4 @@ def final():
     return render_template('final.html', n_quadrants=game['n_quadrants'])
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="127.0.0.1", port=7000, debug=True)
