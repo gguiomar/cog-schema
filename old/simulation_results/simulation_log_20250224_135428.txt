@@ -1,0 +1,2464 @@
+Starting 20 simulations
+Rounds per simulation: 3
+Number of quadrants: 4
+
+
+=== Simulation 1 ===
+Correct quadrant: 4
+LLM choice: 
+Success: False
+
+=== Complete Conversation Log ===
+
+INITIAL_DESCRIPTION:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues B, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+Next
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues B, C, D. You chose Next and saw Invalid choice.
+Round 2: Available cues A, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+1
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues B, C, D. You chose Next and saw Invalid choice.
+Round 2: Available cues A, D. You chose 1 and saw Invalid choice.
+Round 3: Available cues A, B, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+Previous
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+FINAL_ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues B, C, D. You chose Next and saw Invalid choice.
+Round 2: Available cues A, D. You chose 1 and saw Invalid choice.
+Round 3: Available cues A, B, C, D. You chose Previous and saw Invalid choice.
+Based on all observed colors, which quadrant (1, 2, 3, 4) do you think had the highest ratio of RED? Respond with just the number. You choose <<
+----------------------------------------
+
+FINAL_CHOICE:
+----------------------------------------
+
+----------------------------------------
+
+==================================================
+
+=== Simulation 2 ===
+Correct quadrant: 2
+LLM choice: quad
+Success: False
+
+=== Complete Conversation Log ===
+
+INITIAL_DESCRIPTION:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+Enter
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, C, D. You chose Enter and saw Invalid choice.
+Round 2: Available cues C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+C
+----------------------------------------
+
+RESULT:
+----------------------------------------
+GREEN
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, C, D. You chose Enter and saw Invalid choice.
+Round 2: Available cues C, D. You chose C and saw GREEN.
+Round 3: Available cues A, B. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+Enter
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+FINAL_ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, C, D. You chose Enter and saw Invalid choice.
+Round 2: Available cues C, D. You chose C and saw GREEN.
+Round 3: Available cues A, B. You chose Enter and saw Invalid choice.
+Based on all observed colors, which quadrant (1, 2, 3, 4) do you think had the highest ratio of RED? Respond with just the number. You choose <<
+----------------------------------------
+
+FINAL_CHOICE:
+----------------------------------------
+quad
+----------------------------------------
+
+==================================================
+
+=== Simulation 3 ===
+Correct quadrant: 1
+LLM choice: quadrant
+Success: False
+
+=== Complete Conversation Log ===
+
+INITIAL_DESCRIPTION:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, B, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+submit
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, B, C, D. You chose submit and saw Invalid choice.
+Round 2: Available cues C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, B, C, D. You chose submit and saw Invalid choice.
+Round 2: Available cues C, D. You chose  and saw Invalid choice.
+Round 3: Available cues B. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+submit
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+FINAL_ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, B, C, D. You chose submit and saw Invalid choice.
+Round 2: Available cues C, D. You chose  and saw Invalid choice.
+Round 3: Available cues B. You chose submit and saw Invalid choice.
+Based on all observed colors, which quadrant (1, 2, 3, 4) do you think had the highest ratio of RED? Respond with just the number. You choose <<
+----------------------------------------
+
+FINAL_CHOICE:
+----------------------------------------
+quadrant
+----------------------------------------
+
+==================================================
+
+=== Simulation 4 ===
+Correct quadrant: 4
+LLM choice: Quadrant
+Success: False
+
+=== Complete Conversation Log ===
+
+INITIAL_DESCRIPTION:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, B, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+Start
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, B, D. You chose Start and saw Invalid choice.
+Round 2: Available cues A, B, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+.
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, B, D. You chose Start and saw Invalid choice.
+Round 2: Available cues A, B, C, D. You chose . and saw Invalid choice.
+Round 3: Available cues C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+and
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+FINAL_ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, B, D. You chose Start and saw Invalid choice.
+Round 2: Available cues A, B, C, D. You chose . and saw Invalid choice.
+Round 3: Available cues C, D. You chose and and saw Invalid choice.
+Based on all observed colors, which quadrant (1, 2, 3, 4) do you think had the highest ratio of RED? Respond with just the number. You choose <<
+----------------------------------------
+
+FINAL_CHOICE:
+----------------------------------------
+Quadrant
+----------------------------------------
+
+==================================================
+
+=== Simulation 5 ===
+Correct quadrant: 1
+LLM choice: the
+Success: False
+
+=== Complete Conversation Log ===
+
+INITIAL_DESCRIPTION:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, C. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+A
+----------------------------------------
+
+RESULT:
+----------------------------------------
+RED
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, C. You chose A and saw RED.
+Round 2: Available cues A, B, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+button
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, C. You chose A and saw RED.
+Round 2: Available cues A, B, C, D. You chose button and saw Invalid choice.
+Round 3: Available cues B, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+Invalid
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+FINAL_ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, C. You chose A and saw RED.
+Round 2: Available cues A, B, C, D. You chose button and saw Invalid choice.
+Round 3: Available cues B, D. You chose Invalid and saw Invalid choice.
+Based on all observed colors, which quadrant (1, 2, 3, 4) do you think had the highest ratio of RED? Respond with just the number. You choose <<
+----------------------------------------
+
+FINAL_CHOICE:
+----------------------------------------
+the
+----------------------------------------
+
+==================================================
+
+=== Simulation 6 ===
+Correct quadrant: 3
+LLM choice: Quadrant
+Success: False
+
+=== Complete Conversation Log ===
+
+INITIAL_DESCRIPTION:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+button
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, D. You chose button and saw Invalid choice.
+Round 2: Available cues A, B, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, D. You chose button and saw Invalid choice.
+Round 2: Available cues A, B, C, D. You chose  and saw Invalid choice.
+Round 3: Available cues B. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+and
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+FINAL_ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, D. You chose button and saw Invalid choice.
+Round 2: Available cues A, B, C, D. You chose  and saw Invalid choice.
+Round 3: Available cues B. You chose and and saw Invalid choice.
+Based on all observed colors, which quadrant (1, 2, 3, 4) do you think had the highest ratio of RED? Respond with just the number. You choose <<
+----------------------------------------
+
+FINAL_CHOICE:
+----------------------------------------
+Quadrant
+----------------------------------------
+
+==================================================
+
+=== Simulation 7 ===
+Correct quadrant: 1
+LLM choice: the
+Success: False
+
+=== Complete Conversation Log ===
+
+INITIAL_DESCRIPTION:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, B, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+enter
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, B, D. You chose enter and saw Invalid choice.
+Round 2: Available cues A, B, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+enter
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, B, D. You chose enter and saw Invalid choice.
+Round 2: Available cues A, B, C, D. You chose enter and saw Invalid choice.
+Round 3: Available cues C. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+and
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+FINAL_ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, B, D. You chose enter and saw Invalid choice.
+Round 2: Available cues A, B, C, D. You chose enter and saw Invalid choice.
+Round 3: Available cues C. You chose and and saw Invalid choice.
+Based on all observed colors, which quadrant (1, 2, 3, 4) do you think had the highest ratio of RED? Respond with just the number. You choose <<
+----------------------------------------
+
+FINAL_CHOICE:
+----------------------------------------
+the
+----------------------------------------
+
+==================================================
+
+=== Simulation 8 ===
+Correct quadrant: 3
+LLM choice: 
+Success: False
+
+=== Complete Conversation Log ===
+
+INITIAL_DESCRIPTION:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+Enter
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues C, D. You chose Enter and saw Invalid choice.
+Round 2: Available cues A, B, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+A
+----------------------------------------
+
+RESULT:
+----------------------------------------
+GREEN
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues C, D. You chose Enter and saw Invalid choice.
+Round 2: Available cues A, B, C, D. You chose A and saw GREEN.
+Round 3: Available cues A, B. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+A
+----------------------------------------
+
+RESULT:
+----------------------------------------
+RED
+----------------------------------------
+
+FINAL_ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues C, D. You chose Enter and saw Invalid choice.
+Round 2: Available cues A, B, C, D. You chose A and saw GREEN.
+Round 3: Available cues A, B. You chose A and saw RED.
+Based on all observed colors, which quadrant (1, 2, 3, 4) do you think had the highest ratio of RED? Respond with just the number. You choose <<
+----------------------------------------
+
+FINAL_CHOICE:
+----------------------------------------
+
+----------------------------------------
+
+==================================================
+
+=== Simulation 9 ===
+Correct quadrant: 2
+LLM choice: option
+Success: False
+
+=== Complete Conversation Log ===
+
+INITIAL_DESCRIPTION:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues B, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+submit
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues B, C, D. You chose submit and saw Invalid choice.
+Round 2: Available cues A, C. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+.
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues B, C, D. You chose submit and saw Invalid choice.
+Round 2: Available cues A, C. You chose . and saw Invalid choice.
+Round 3: Available cues A, B, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+and
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+FINAL_ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues B, C, D. You chose submit and saw Invalid choice.
+Round 2: Available cues A, C. You chose . and saw Invalid choice.
+Round 3: Available cues A, B, D. You chose and and saw Invalid choice.
+Based on all observed colors, which quadrant (1, 2, 3, 4) do you think had the highest ratio of RED? Respond with just the number. You choose <<
+----------------------------------------
+
+FINAL_CHOICE:
+----------------------------------------
+option
+----------------------------------------
+
+==================================================
+
+=== Simulation 10 ===
+Correct quadrant: 1
+LLM choice: 
+Success: False
+
+=== Complete Conversation Log ===
+
+INITIAL_DESCRIPTION:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+Enter
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, C, D. You chose Enter and saw Invalid choice.
+Round 2: Available cues B. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+>>
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, C, D. You chose Enter and saw Invalid choice.
+Round 2: Available cues B. You chose >> and saw Invalid choice.
+Round 3: Available cues B, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+and
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+FINAL_ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, C, D. You chose Enter and saw Invalid choice.
+Round 2: Available cues B. You chose >> and saw Invalid choice.
+Round 3: Available cues B, C, D. You chose and and saw Invalid choice.
+Based on all observed colors, which quadrant (1, 2, 3, 4) do you think had the highest ratio of RED? Respond with just the number. You choose <<
+----------------------------------------
+
+FINAL_CHOICE:
+----------------------------------------
+
+----------------------------------------
+
+==================================================
+
+=== Simulation 11 ===
+Correct quadrant: 1
+LLM choice: .
+Success: False
+
+=== Complete Conversation Log ===
+
+INITIAL_DESCRIPTION:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, B, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+>>
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, B, C, D. You chose >> and saw Invalid choice.
+Round 2: Available cues A, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+and
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, B, C, D. You chose >> and saw Invalid choice.
+Round 2: Available cues A, D. You chose and and saw Invalid choice.
+Round 3: Available cues A, B, C. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+and
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+FINAL_ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, B, C, D. You chose >> and saw Invalid choice.
+Round 2: Available cues A, D. You chose and and saw Invalid choice.
+Round 3: Available cues A, B, C. You chose and and saw Invalid choice.
+Based on all observed colors, which quadrant (1, 2, 3, 4) do you think had the highest ratio of RED? Respond with just the number. You choose <<
+----------------------------------------
+
+FINAL_CHOICE:
+----------------------------------------
+.
+----------------------------------------
+
+==================================================
+
+=== Simulation 12 ===
+Correct quadrant: 4
+LLM choice: <<<
+Success: False
+
+=== Complete Conversation Log ===
+
+INITIAL_DESCRIPTION:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, C. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+A
+----------------------------------------
+
+RESULT:
+----------------------------------------
+GREEN
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, C. You chose A and saw GREEN.
+Round 2: Available cues B, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+.
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, C. You chose A and saw GREEN.
+Round 2: Available cues B, C, D. You chose . and saw Invalid choice.
+Round 3: Available cues A, B, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+[
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+FINAL_ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, C. You chose A and saw GREEN.
+Round 2: Available cues B, C, D. You chose . and saw Invalid choice.
+Round 3: Available cues A, B, D. You chose [ and saw Invalid choice.
+Based on all observed colors, which quadrant (1, 2, 3, 4) do you think had the highest ratio of RED? Respond with just the number. You choose <<
+----------------------------------------
+
+FINAL_CHOICE:
+----------------------------------------
+<<<
+----------------------------------------
+
+==================================================
+
+=== Simulation 13 ===
+Correct quadrant: 3
+LLM choice: Red
+Success: False
+
+=== Complete Conversation Log ===
+
+INITIAL_DESCRIPTION:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues B. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+Submit
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues B. You chose Submit and saw Invalid choice.
+Round 2: Available cues A, B, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+[
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues B. You chose Submit and saw Invalid choice.
+Round 2: Available cues A, B, C, D. You chose [ and saw Invalid choice.
+Round 3: Available cues A, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+submit
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+FINAL_ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues B. You chose Submit and saw Invalid choice.
+Round 2: Available cues A, B, C, D. You chose [ and saw Invalid choice.
+Round 3: Available cues A, C, D. You chose submit and saw Invalid choice.
+Based on all observed colors, which quadrant (1, 2, 3, 4) do you think had the highest ratio of RED? Respond with just the number. You choose <<
+----------------------------------------
+
+FINAL_CHOICE:
+----------------------------------------
+Red
+----------------------------------------
+
+==================================================
+
+=== Simulation 14 ===
+Correct quadrant: 4
+LLM choice: 
+Success: False
+
+=== Complete Conversation Log ===
+
+INITIAL_DESCRIPTION:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+button
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, C, D. You chose button and saw Invalid choice.
+Round 2: Available cues B. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+>>
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, C, D. You chose button and saw Invalid choice.
+Round 2: Available cues B. You chose >> and saw Invalid choice.
+Round 3: Available cues A, B, C. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+and
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+FINAL_ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, C, D. You chose button and saw Invalid choice.
+Round 2: Available cues B. You chose >> and saw Invalid choice.
+Round 3: Available cues A, B, C. You chose and and saw Invalid choice.
+Based on all observed colors, which quadrant (1, 2, 3, 4) do you think had the highest ratio of RED? Respond with just the number. You choose <<
+----------------------------------------
+
+FINAL_CHOICE:
+----------------------------------------
+
+----------------------------------------
+
+==================================================
+
+=== Simulation 15 ===
+Correct quadrant: 3
+LLM choice: to
+Success: False
+
+=== Complete Conversation Log ===
+
+INITIAL_DESCRIPTION:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, B. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+>>
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, B. You chose >> and saw Invalid choice.
+Round 2: Available cues C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, B. You chose >> and saw Invalid choice.
+Round 2: Available cues C, D. You chose  and saw Invalid choice.
+Round 3: Available cues A, B, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+then
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+FINAL_ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, B. You chose >> and saw Invalid choice.
+Round 2: Available cues C, D. You chose  and saw Invalid choice.
+Round 3: Available cues A, B, D. You chose then and saw Invalid choice.
+Based on all observed colors, which quadrant (1, 2, 3, 4) do you think had the highest ratio of RED? Respond with just the number. You choose <<
+----------------------------------------
+
+FINAL_CHOICE:
+----------------------------------------
+to
+----------------------------------------
+
+==================================================
+
+=== Simulation 16 ===
+Correct quadrant: 1
+LLM choice: 
+Success: False
+
+=== Complete Conversation Log ===
+
+INITIAL_DESCRIPTION:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+A
+----------------------------------------
+
+RESULT:
+----------------------------------------
+RED
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, C, D. You chose A and saw RED.
+Round 2: Available cues B. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, C, D. You chose A and saw RED.
+Round 2: Available cues B. You chose  and saw Invalid choice.
+Round 3: Available cues A, B, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+A
+----------------------------------------
+
+RESULT:
+----------------------------------------
+RED
+----------------------------------------
+
+FINAL_ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, C, D. You chose A and saw RED.
+Round 2: Available cues B. You chose  and saw Invalid choice.
+Round 3: Available cues A, B, C, D. You chose A and saw RED.
+Based on all observed colors, which quadrant (1, 2, 3, 4) do you think had the highest ratio of RED? Respond with just the number. You choose <<
+----------------------------------------
+
+FINAL_CHOICE:
+----------------------------------------
+
+----------------------------------------
+
+==================================================
+
+=== Simulation 17 ===
+Correct quadrant: 2
+LLM choice: if
+Success: False
+
+=== Complete Conversation Log ===
+
+INITIAL_DESCRIPTION:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, B, C. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+key
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, B, C. You chose key and saw Invalid choice.
+Round 2: Available cues A, B, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, B, C. You chose key and saw Invalid choice.
+Round 2: Available cues A, B, D. You chose  and saw Invalid choice.
+Round 3: Available cues B, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+>>
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+FINAL_ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, B, C. You chose key and saw Invalid choice.
+Round 2: Available cues A, B, D. You chose  and saw Invalid choice.
+Round 3: Available cues B, C, D. You chose >> and saw Invalid choice.
+Based on all observed colors, which quadrant (1, 2, 3, 4) do you think had the highest ratio of RED? Respond with just the number. You choose <<
+----------------------------------------
+
+FINAL_CHOICE:
+----------------------------------------
+if
+----------------------------------------
+
+==================================================
+
+=== Simulation 18 ===
+Correct quadrant: 1
+LLM choice: for
+Success: False
+
+=== Complete Conversation Log ===
+
+INITIAL_DESCRIPTION:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues B, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+cue
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues B, D. You chose cue and saw Invalid choice.
+Round 2: Available cues C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+>>
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues B, D. You chose cue and saw Invalid choice.
+Round 2: Available cues C, D. You chose >> and saw Invalid choice.
+Round 3: Available cues A, B, C. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+and
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+FINAL_ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues B, D. You chose cue and saw Invalid choice.
+Round 2: Available cues C, D. You chose >> and saw Invalid choice.
+Round 3: Available cues A, B, C. You chose and and saw Invalid choice.
+Based on all observed colors, which quadrant (1, 2, 3, 4) do you think had the highest ratio of RED? Respond with just the number. You choose <<
+----------------------------------------
+
+FINAL_CHOICE:
+----------------------------------------
+for
+----------------------------------------
+
+==================================================
+
+=== Simulation 19 ===
+Correct quadrant: 2
+LLM choice: Your
+Success: False
+
+=== Complete Conversation Log ===
+
+INITIAL_DESCRIPTION:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues B, C. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+B
+----------------------------------------
+
+RESULT:
+----------------------------------------
+RED
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues B, C. You chose B and saw RED.
+Round 2: Available cues A, B, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+A
+----------------------------------------
+
+RESULT:
+----------------------------------------
+GREEN
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues B, C. You chose B and saw RED.
+Round 2: Available cues A, B, C, D. You chose A and saw GREEN.
+Round 3: Available cues A, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+A
+----------------------------------------
+
+RESULT:
+----------------------------------------
+RED
+----------------------------------------
+
+FINAL_ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues B, C. You chose B and saw RED.
+Round 2: Available cues A, B, C, D. You chose A and saw GREEN.
+Round 3: Available cues A, D. You chose A and saw RED.
+Based on all observed colors, which quadrant (1, 2, 3, 4) do you think had the highest ratio of RED? Respond with just the number. You choose <<
+----------------------------------------
+
+FINAL_CHOICE:
+----------------------------------------
+Your
+----------------------------------------
+
+==================================================
+
+=== Simulation 20 ===
+Correct quadrant: 4
+LLM choice: for
+Success: False
+
+=== Complete Conversation Log ===
+
+INITIAL_DESCRIPTION:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, B, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+reply
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, B, C, D. You chose reply and saw Invalid choice.
+Round 2: Available cues B, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+.
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, B, C, D. You chose reply and saw Invalid choice.
+Round 2: Available cues B, D. You chose . and saw Invalid choice.
+Round 3: Available cues A, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<
+----------------------------------------
+
+LLM_CHOICE:
+----------------------------------------
+>>
+----------------------------------------
+
+RESULT:
+----------------------------------------
+Invalid choice
+----------------------------------------
+
+FINAL_ACCUMULATED_PROMPT:
+----------------------------------------
+You will play a game with 3 rounds.
+In each round you'll see active cues (chooseable):
+One quadrant has 90% one color/10% other
+Other quadrants have 50/50 color distribution
+At least one cue active per round
+Active cues disappear after random duration
+
+After 3 rounds, identify the biased quadrant.
+Correct: +100 points, Wrong: -100 points.
+
+Round 1: Available cues A, B, C, D. You chose reply and saw Invalid choice.
+Round 2: Available cues B, D. You chose . and saw Invalid choice.
+Round 3: Available cues A, C, D. You chose >> and saw Invalid choice.
+Based on all observed colors, which quadrant (1, 2, 3, 4) do you think had the highest ratio of RED? Respond with just the number. You choose <<
+----------------------------------------
+
+FINAL_CHOICE:
+----------------------------------------
+for
+----------------------------------------
+
+==================================================

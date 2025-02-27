@@ -1,0 +1,1260 @@
+[
+  {
+    "rounds": [
+      {
+        "available_cues": [
+          "B"
+        ],
+        "choice": "END",
+        "result": null,
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues B. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "B"
+        ],
+        "choice": "<<",
+        "result": null,
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues B. You chose END and saw Invalid choice.\nRound 2: Available cues B. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "A",
+          "B"
+        ],
+        "choice": ".",
+        "result": null,
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues B. You chose END and saw Invalid choice.\nRound 2: Available cues B. You chose << and saw Invalid choice.\nRound 3: Available cues A, B. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "B",
+          "C",
+          "D"
+        ],
+        "choice": "in",
+        "result": null,
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues B. You chose END and saw Invalid choice.\nRound 2: Available cues B. You chose << and saw Invalid choice.\nRound 3: Available cues A, B. You chose . and saw Invalid choice.\nRound 4: Available cues B, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "A",
+          "B",
+          "C"
+        ],
+        "choice": "for",
+        "result": null,
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues B. You chose END and saw Invalid choice.\nRound 2: Available cues B. You chose << and saw Invalid choice.\nRound 3: Available cues A, B. You chose . and saw Invalid choice.\nRound 4: Available cues B, C, D. You chose in and saw Invalid choice.\nRound 5: Available cues A, B, C. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      }
+    ],
+    "final_choice": "in",
+    "correct_quadrant": 4,
+    "success": false,
+    "full_conversation": [
+      [
+        "INITIAL_DESCRIPTION",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points."
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues B. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "END"
+      ],
+      [
+        "RESULT",
+        "Invalid choice"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues B. You chose END and saw Invalid choice.\nRound 2: Available cues B. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "<<"
+      ],
+      [
+        "RESULT",
+        "Invalid choice"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues B. You chose END and saw Invalid choice.\nRound 2: Available cues B. You chose << and saw Invalid choice.\nRound 3: Available cues A, B. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "."
+      ],
+      [
+        "RESULT",
+        "Invalid choice"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues B. You chose END and saw Invalid choice.\nRound 2: Available cues B. You chose << and saw Invalid choice.\nRound 3: Available cues A, B. You chose . and saw Invalid choice.\nRound 4: Available cues B, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "in"
+      ],
+      [
+        "RESULT",
+        "Invalid choice"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues B. You chose END and saw Invalid choice.\nRound 2: Available cues B. You chose << and saw Invalid choice.\nRound 3: Available cues A, B. You chose . and saw Invalid choice.\nRound 4: Available cues B, C, D. You chose in and saw Invalid choice.\nRound 5: Available cues A, B, C. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "for"
+      ],
+      [
+        "RESULT",
+        "Invalid choice"
+      ],
+      [
+        "FINAL_ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues B. You chose END and saw Invalid choice.\nRound 2: Available cues B. You chose << and saw Invalid choice.\nRound 3: Available cues A, B. You chose . and saw Invalid choice.\nRound 4: Available cues B, C, D. You chose in and saw Invalid choice.\nRound 5: Available cues A, B, C. You chose for and saw Invalid choice.\nBased on all observed colors, which quadrant (1, 2, 3, 4) do you think had the highest ratio of RED? Respond with just the number. You choose <<"
+      ],
+      [
+        "FINAL_CHOICE",
+        "in"
+      ]
+    ]
+  },
+  {
+    "rounds": [
+      {
+        "available_cues": [
+          "A",
+          "B",
+          "C"
+        ],
+        "choice": "A",
+        "result": "RED",
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, C. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "A",
+          "C"
+        ],
+        "choice": "A",
+        "result": "RED",
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, C. You chose A and saw RED.\nRound 2: Available cues A, C. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "D"
+        ],
+        "choice": "D",
+        "result": "GREEN",
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, C. You chose A and saw RED.\nRound 2: Available cues A, C. You chose A and saw RED.\nRound 3: Available cues D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "A",
+          "B"
+        ],
+        "choice": "A",
+        "result": "RED",
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, C. You chose A and saw RED.\nRound 2: Available cues A, C. You chose A and saw RED.\nRound 3: Available cues D. You chose D and saw GREEN.\nRound 4: Available cues A, B. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "D"
+        ],
+        "choice": "think",
+        "result": null,
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, C. You chose A and saw RED.\nRound 2: Available cues A, C. You chose A and saw RED.\nRound 3: Available cues D. You chose D and saw GREEN.\nRound 4: Available cues A, B. You chose A and saw RED.\nRound 5: Available cues D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      }
+    ],
+    "final_choice": "<<",
+    "correct_quadrant": 1,
+    "success": false,
+    "full_conversation": [
+      [
+        "INITIAL_DESCRIPTION",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points."
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, C. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "A"
+      ],
+      [
+        "RESULT",
+        "RED"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, C. You chose A and saw RED.\nRound 2: Available cues A, C. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "A"
+      ],
+      [
+        "RESULT",
+        "RED"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, C. You chose A and saw RED.\nRound 2: Available cues A, C. You chose A and saw RED.\nRound 3: Available cues D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "D"
+      ],
+      [
+        "RESULT",
+        "GREEN"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, C. You chose A and saw RED.\nRound 2: Available cues A, C. You chose A and saw RED.\nRound 3: Available cues D. You chose D and saw GREEN.\nRound 4: Available cues A, B. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "A"
+      ],
+      [
+        "RESULT",
+        "RED"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, C. You chose A and saw RED.\nRound 2: Available cues A, C. You chose A and saw RED.\nRound 3: Available cues D. You chose D and saw GREEN.\nRound 4: Available cues A, B. You chose A and saw RED.\nRound 5: Available cues D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "think"
+      ],
+      [
+        "RESULT",
+        "Invalid choice"
+      ],
+      [
+        "FINAL_ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, C. You chose A and saw RED.\nRound 2: Available cues A, C. You chose A and saw RED.\nRound 3: Available cues D. You chose D and saw GREEN.\nRound 4: Available cues A, B. You chose A and saw RED.\nRound 5: Available cues D. You chose think and saw Invalid choice.\nBased on all observed colors, which quadrant (1, 2, 3, 4) do you think had the highest ratio of RED? Respond with just the number. You choose <<"
+      ],
+      [
+        "FINAL_CHOICE",
+        "<<"
+      ]
+    ]
+  },
+  {
+    "rounds": [
+      {
+        "available_cues": [
+          "A"
+        ],
+        "choice": "button",
+        "result": null,
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "A",
+          "C",
+          "D"
+        ],
+        "choice": "C",
+        "result": "GREEN",
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A. You chose button and saw Invalid choice.\nRound 2: Available cues A, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "A",
+          "B",
+          "C"
+        ],
+        "choice": "B",
+        "result": "GREEN",
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A. You chose button and saw Invalid choice.\nRound 2: Available cues A, C, D. You chose C and saw GREEN.\nRound 3: Available cues A, B, C. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "A",
+          "B",
+          "D"
+        ],
+        "choice": "previous",
+        "result": null,
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A. You chose button and saw Invalid choice.\nRound 2: Available cues A, C, D. You chose C and saw GREEN.\nRound 3: Available cues A, B, C. You chose B and saw GREEN.\nRound 4: Available cues A, B, D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "A"
+        ],
+        "choice": "button",
+        "result": null,
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A. You chose button and saw Invalid choice.\nRound 2: Available cues A, C, D. You chose C and saw GREEN.\nRound 3: Available cues A, B, C. You chose B and saw GREEN.\nRound 4: Available cues A, B, D. You chose previous and saw Invalid choice.\nRound 5: Available cues A. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      }
+    ],
+    "final_choice": "QU",
+    "correct_quadrant": 1,
+    "success": false,
+    "full_conversation": [
+      [
+        "INITIAL_DESCRIPTION",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points."
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "button"
+      ],
+      [
+        "RESULT",
+        "Invalid choice"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A. You chose button and saw Invalid choice.\nRound 2: Available cues A, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "C"
+      ],
+      [
+        "RESULT",
+        "GREEN"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A. You chose button and saw Invalid choice.\nRound 2: Available cues A, C, D. You chose C and saw GREEN.\nRound 3: Available cues A, B, C. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "B"
+      ],
+      [
+        "RESULT",
+        "GREEN"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A. You chose button and saw Invalid choice.\nRound 2: Available cues A, C, D. You chose C and saw GREEN.\nRound 3: Available cues A, B, C. You chose B and saw GREEN.\nRound 4: Available cues A, B, D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "previous"
+      ],
+      [
+        "RESULT",
+        "Invalid choice"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A. You chose button and saw Invalid choice.\nRound 2: Available cues A, C, D. You chose C and saw GREEN.\nRound 3: Available cues A, B, C. You chose B and saw GREEN.\nRound 4: Available cues A, B, D. You chose previous and saw Invalid choice.\nRound 5: Available cues A. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "button"
+      ],
+      [
+        "RESULT",
+        "Invalid choice"
+      ],
+      [
+        "FINAL_ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A. You chose button and saw Invalid choice.\nRound 2: Available cues A, C, D. You chose C and saw GREEN.\nRound 3: Available cues A, B, C. You chose B and saw GREEN.\nRound 4: Available cues A, B, D. You chose previous and saw Invalid choice.\nRound 5: Available cues A. You chose button and saw Invalid choice.\nBased on all observed colors, which quadrant (1, 2, 3, 4) do you think had the highest ratio of RED? Respond with just the number. You choose <<"
+      ],
+      [
+        "FINAL_CHOICE",
+        "QU"
+      ]
+    ]
+  },
+  {
+    "rounds": [
+      {
+        "available_cues": [
+          "A",
+          "B"
+        ],
+        "choice": "start",
+        "result": null,
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "A",
+          "B"
+        ],
+        "choice": "A",
+        "result": "RED",
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B. You chose start and saw Invalid choice.\nRound 2: Available cues A, B. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "A",
+          "B"
+        ],
+        "choice": "and",
+        "result": null,
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B. You chose start and saw Invalid choice.\nRound 2: Available cues A, B. You chose A and saw RED.\nRound 3: Available cues A, B. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "choice": "D",
+        "result": "RED",
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B. You chose start and saw Invalid choice.\nRound 2: Available cues A, B. You chose A and saw RED.\nRound 3: Available cues A, B. You chose and and saw Invalid choice.\nRound 4: Available cues A, B, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "A",
+          "B",
+          "C"
+        ],
+        "choice": "D",
+        "result": null,
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B. You chose start and saw Invalid choice.\nRound 2: Available cues A, B. You chose A and saw RED.\nRound 3: Available cues A, B. You chose and and saw Invalid choice.\nRound 4: Available cues A, B, C, D. You chose D and saw RED.\nRound 5: Available cues A, B, C. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      }
+    ],
+    "final_choice": "and",
+    "correct_quadrant": 4,
+    "success": false,
+    "full_conversation": [
+      [
+        "INITIAL_DESCRIPTION",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points."
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "start"
+      ],
+      [
+        "RESULT",
+        "Invalid choice"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B. You chose start and saw Invalid choice.\nRound 2: Available cues A, B. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "A"
+      ],
+      [
+        "RESULT",
+        "RED"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B. You chose start and saw Invalid choice.\nRound 2: Available cues A, B. You chose A and saw RED.\nRound 3: Available cues A, B. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "and"
+      ],
+      [
+        "RESULT",
+        "Invalid choice"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B. You chose start and saw Invalid choice.\nRound 2: Available cues A, B. You chose A and saw RED.\nRound 3: Available cues A, B. You chose and and saw Invalid choice.\nRound 4: Available cues A, B, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "D"
+      ],
+      [
+        "RESULT",
+        "RED"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B. You chose start and saw Invalid choice.\nRound 2: Available cues A, B. You chose A and saw RED.\nRound 3: Available cues A, B. You chose and and saw Invalid choice.\nRound 4: Available cues A, B, C, D. You chose D and saw RED.\nRound 5: Available cues A, B, C. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "D"
+      ],
+      [
+        "RESULT",
+        "Invalid choice"
+      ],
+      [
+        "FINAL_ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B. You chose start and saw Invalid choice.\nRound 2: Available cues A, B. You chose A and saw RED.\nRound 3: Available cues A, B. You chose and and saw Invalid choice.\nRound 4: Available cues A, B, C, D. You chose D and saw RED.\nRound 5: Available cues A, B, C. You chose D and saw Invalid choice.\nBased on all observed colors, which quadrant (1, 2, 3, 4) do you think had the highest ratio of RED? Respond with just the number. You choose <<"
+      ],
+      [
+        "FINAL_CHOICE",
+        "and"
+      ]
+    ]
+  },
+  {
+    "rounds": [
+      {
+        "available_cues": [
+          "C",
+          "D"
+        ],
+        "choice": "C",
+        "result": "RED",
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "B",
+          "C"
+        ],
+        "choice": "D",
+        "result": null,
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C, D. You chose C and saw RED.\nRound 2: Available cues B, C. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "A"
+        ],
+        "choice": "and",
+        "result": null,
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C, D. You chose C and saw RED.\nRound 2: Available cues B, C. You chose D and saw Invalid choice.\nRound 3: Available cues A. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "D"
+        ],
+        "choice": "to",
+        "result": null,
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C, D. You chose C and saw RED.\nRound 2: Available cues B, C. You chose D and saw Invalid choice.\nRound 3: Available cues A. You chose and and saw Invalid choice.\nRound 4: Available cues D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "B"
+        ],
+        "choice": "<",
+        "result": null,
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C, D. You chose C and saw RED.\nRound 2: Available cues B, C. You chose D and saw Invalid choice.\nRound 3: Available cues A. You chose and and saw Invalid choice.\nRound 4: Available cues D. You chose to and saw Invalid choice.\nRound 5: Available cues B. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      }
+    ],
+    "final_choice": "and",
+    "correct_quadrant": 1,
+    "success": false,
+    "full_conversation": [
+      [
+        "INITIAL_DESCRIPTION",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points."
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "C"
+      ],
+      [
+        "RESULT",
+        "RED"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C, D. You chose C and saw RED.\nRound 2: Available cues B, C. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "D"
+      ],
+      [
+        "RESULT",
+        "Invalid choice"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C, D. You chose C and saw RED.\nRound 2: Available cues B, C. You chose D and saw Invalid choice.\nRound 3: Available cues A. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "and"
+      ],
+      [
+        "RESULT",
+        "Invalid choice"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C, D. You chose C and saw RED.\nRound 2: Available cues B, C. You chose D and saw Invalid choice.\nRound 3: Available cues A. You chose and and saw Invalid choice.\nRound 4: Available cues D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "to"
+      ],
+      [
+        "RESULT",
+        "Invalid choice"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C, D. You chose C and saw RED.\nRound 2: Available cues B, C. You chose D and saw Invalid choice.\nRound 3: Available cues A. You chose and and saw Invalid choice.\nRound 4: Available cues D. You chose to and saw Invalid choice.\nRound 5: Available cues B. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "<"
+      ],
+      [
+        "RESULT",
+        "Invalid choice"
+      ],
+      [
+        "FINAL_ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C, D. You chose C and saw RED.\nRound 2: Available cues B, C. You chose D and saw Invalid choice.\nRound 3: Available cues A. You chose and and saw Invalid choice.\nRound 4: Available cues D. You chose to and saw Invalid choice.\nRound 5: Available cues B. You chose < and saw Invalid choice.\nBased on all observed colors, which quadrant (1, 2, 3, 4) do you think had the highest ratio of RED? Respond with just the number. You choose <<"
+      ],
+      [
+        "FINAL_CHOICE",
+        "and"
+      ]
+    ]
+  },
+  {
+    "rounds": [
+      {
+        "available_cues": [
+          "C"
+        ],
+        "choice": "C",
+        "result": "RED",
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "B",
+          "C",
+          "D"
+        ],
+        "choice": "C",
+        "result": "RED",
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C. You chose C and saw RED.\nRound 2: Available cues B, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "B",
+          "C"
+        ],
+        "choice": "C",
+        "result": "GREEN",
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C. You chose C and saw RED.\nRound 2: Available cues B, C, D. You chose C and saw RED.\nRound 3: Available cues B, C. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "A",
+          "B",
+          "D"
+        ],
+        "choice": "C",
+        "result": null,
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C. You chose C and saw RED.\nRound 2: Available cues B, C, D. You chose C and saw RED.\nRound 3: Available cues B, C. You chose C and saw GREEN.\nRound 4: Available cues A, B, D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "B",
+          "C"
+        ],
+        "choice": "C",
+        "result": "GREEN",
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C. You chose C and saw RED.\nRound 2: Available cues B, C, D. You chose C and saw RED.\nRound 3: Available cues B, C. You chose C and saw GREEN.\nRound 4: Available cues A, B, D. You chose C and saw Invalid choice.\nRound 5: Available cues B, C. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      }
+    ],
+    "final_choice": "Correct",
+    "correct_quadrant": 1,
+    "success": false,
+    "full_conversation": [
+      [
+        "INITIAL_DESCRIPTION",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points."
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "C"
+      ],
+      [
+        "RESULT",
+        "RED"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C. You chose C and saw RED.\nRound 2: Available cues B, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "C"
+      ],
+      [
+        "RESULT",
+        "RED"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C. You chose C and saw RED.\nRound 2: Available cues B, C, D. You chose C and saw RED.\nRound 3: Available cues B, C. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "C"
+      ],
+      [
+        "RESULT",
+        "GREEN"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C. You chose C and saw RED.\nRound 2: Available cues B, C, D. You chose C and saw RED.\nRound 3: Available cues B, C. You chose C and saw GREEN.\nRound 4: Available cues A, B, D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "C"
+      ],
+      [
+        "RESULT",
+        "Invalid choice"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C. You chose C and saw RED.\nRound 2: Available cues B, C, D. You chose C and saw RED.\nRound 3: Available cues B, C. You chose C and saw GREEN.\nRound 4: Available cues A, B, D. You chose C and saw Invalid choice.\nRound 5: Available cues B, C. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "C"
+      ],
+      [
+        "RESULT",
+        "GREEN"
+      ],
+      [
+        "FINAL_ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C. You chose C and saw RED.\nRound 2: Available cues B, C, D. You chose C and saw RED.\nRound 3: Available cues B, C. You chose C and saw GREEN.\nRound 4: Available cues A, B, D. You chose C and saw Invalid choice.\nRound 5: Available cues B, C. You chose C and saw GREEN.\nBased on all observed colors, which quadrant (1, 2, 3, 4) do you think had the highest ratio of RED? Respond with just the number. You choose <<"
+      ],
+      [
+        "FINAL_CHOICE",
+        "Correct"
+      ]
+    ]
+  },
+  {
+    "rounds": [
+      {
+        "available_cues": [
+          "A",
+          "B",
+          "D"
+        ],
+        "choice": "Page",
+        "result": null,
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "C"
+        ],
+        "choice": "C",
+        "result": "GREEN",
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, D. You chose Page and saw Invalid choice.\nRound 2: Available cues C. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "A",
+          "B"
+        ],
+        "choice": "A",
+        "result": "RED",
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, D. You chose Page and saw Invalid choice.\nRound 2: Available cues C. You chose C and saw GREEN.\nRound 3: Available cues A, B. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "D"
+        ],
+        "choice": "D",
+        "result": "RED",
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, D. You chose Page and saw Invalid choice.\nRound 2: Available cues C. You chose C and saw GREEN.\nRound 3: Available cues A, B. You chose A and saw RED.\nRound 4: Available cues D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "C"
+        ],
+        "choice": "C",
+        "result": "RED",
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, D. You chose Page and saw Invalid choice.\nRound 2: Available cues C. You chose C and saw GREEN.\nRound 3: Available cues A, B. You chose A and saw RED.\nRound 4: Available cues D. You chose D and saw RED.\nRound 5: Available cues C. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      }
+    ],
+    "final_choice": "think",
+    "correct_quadrant": 2,
+    "success": false,
+    "full_conversation": [
+      [
+        "INITIAL_DESCRIPTION",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points."
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "Page"
+      ],
+      [
+        "RESULT",
+        "Invalid choice"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, D. You chose Page and saw Invalid choice.\nRound 2: Available cues C. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "C"
+      ],
+      [
+        "RESULT",
+        "GREEN"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, D. You chose Page and saw Invalid choice.\nRound 2: Available cues C. You chose C and saw GREEN.\nRound 3: Available cues A, B. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "A"
+      ],
+      [
+        "RESULT",
+        "RED"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, D. You chose Page and saw Invalid choice.\nRound 2: Available cues C. You chose C and saw GREEN.\nRound 3: Available cues A, B. You chose A and saw RED.\nRound 4: Available cues D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "D"
+      ],
+      [
+        "RESULT",
+        "RED"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, D. You chose Page and saw Invalid choice.\nRound 2: Available cues C. You chose C and saw GREEN.\nRound 3: Available cues A, B. You chose A and saw RED.\nRound 4: Available cues D. You chose D and saw RED.\nRound 5: Available cues C. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "C"
+      ],
+      [
+        "RESULT",
+        "RED"
+      ],
+      [
+        "FINAL_ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, D. You chose Page and saw Invalid choice.\nRound 2: Available cues C. You chose C and saw GREEN.\nRound 3: Available cues A, B. You chose A and saw RED.\nRound 4: Available cues D. You chose D and saw RED.\nRound 5: Available cues C. You chose C and saw RED.\nBased on all observed colors, which quadrant (1, 2, 3, 4) do you think had the highest ratio of RED? Respond with just the number. You choose <<"
+      ],
+      [
+        "FINAL_CHOICE",
+        "think"
+      ]
+    ]
+  },
+  {
+    "rounds": [
+      {
+        "available_cues": [
+          "A",
+          "B",
+          "D"
+        ],
+        "choice": "enter",
+        "result": null,
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "D"
+        ],
+        "choice": "D",
+        "result": "RED",
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, D. You chose enter and saw Invalid choice.\nRound 2: Available cues D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "A",
+          "D"
+        ],
+        "choice": "D",
+        "result": "RED",
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, D. You chose enter and saw Invalid choice.\nRound 2: Available cues D. You chose D and saw RED.\nRound 3: Available cues A, D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "C",
+          "D"
+        ],
+        "choice": "D",
+        "result": "GREEN",
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, D. You chose enter and saw Invalid choice.\nRound 2: Available cues D. You chose D and saw RED.\nRound 3: Available cues A, D. You chose D and saw RED.\nRound 4: Available cues C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "B",
+          "C"
+        ],
+        "choice": "C",
+        "result": "RED",
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, D. You chose enter and saw Invalid choice.\nRound 2: Available cues D. You chose D and saw RED.\nRound 3: Available cues A, D. You chose D and saw RED.\nRound 4: Available cues C, D. You chose D and saw GREEN.\nRound 5: Available cues B, C. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      }
+    ],
+    "final_choice": "C",
+    "correct_quadrant": 3,
+    "success": false,
+    "full_conversation": [
+      [
+        "INITIAL_DESCRIPTION",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points."
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "enter"
+      ],
+      [
+        "RESULT",
+        "Invalid choice"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, D. You chose enter and saw Invalid choice.\nRound 2: Available cues D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "D"
+      ],
+      [
+        "RESULT",
+        "RED"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, D. You chose enter and saw Invalid choice.\nRound 2: Available cues D. You chose D and saw RED.\nRound 3: Available cues A, D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "D"
+      ],
+      [
+        "RESULT",
+        "RED"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, D. You chose enter and saw Invalid choice.\nRound 2: Available cues D. You chose D and saw RED.\nRound 3: Available cues A, D. You chose D and saw RED.\nRound 4: Available cues C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "D"
+      ],
+      [
+        "RESULT",
+        "GREEN"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, D. You chose enter and saw Invalid choice.\nRound 2: Available cues D. You chose D and saw RED.\nRound 3: Available cues A, D. You chose D and saw RED.\nRound 4: Available cues C, D. You chose D and saw GREEN.\nRound 5: Available cues B, C. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "C"
+      ],
+      [
+        "RESULT",
+        "RED"
+      ],
+      [
+        "FINAL_ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, B, D. You chose enter and saw Invalid choice.\nRound 2: Available cues D. You chose D and saw RED.\nRound 3: Available cues A, D. You chose D and saw RED.\nRound 4: Available cues C, D. You chose D and saw GREEN.\nRound 5: Available cues B, C. You chose C and saw RED.\nBased on all observed colors, which quadrant (1, 2, 3, 4) do you think had the highest ratio of RED? Respond with just the number. You choose <<"
+      ],
+      [
+        "FINAL_CHOICE",
+        "C"
+      ]
+    ]
+  },
+  {
+    "rounds": [
+      {
+        "available_cues": [
+          "A",
+          "C"
+        ],
+        "choice": "<",
+        "result": null,
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, C. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "C",
+          "D"
+        ],
+        "choice": "C",
+        "result": "GREEN",
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, C. You chose < and saw Invalid choice.\nRound 2: Available cues C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "B"
+        ],
+        "choice": "and",
+        "result": null,
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, C. You chose < and saw Invalid choice.\nRound 2: Available cues C, D. You chose C and saw GREEN.\nRound 3: Available cues B. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "A",
+          "B",
+          "C"
+        ],
+        "choice": "C",
+        "result": "RED",
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, C. You chose < and saw Invalid choice.\nRound 2: Available cues C, D. You chose C and saw GREEN.\nRound 3: Available cues B. You chose and and saw Invalid choice.\nRound 4: Available cues A, B, C. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "C",
+          "D"
+        ],
+        "choice": "and",
+        "result": null,
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, C. You chose < and saw Invalid choice.\nRound 2: Available cues C, D. You chose C and saw GREEN.\nRound 3: Available cues B. You chose and and saw Invalid choice.\nRound 4: Available cues A, B, C. You chose C and saw RED.\nRound 5: Available cues C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      }
+    ],
+    "final_choice": "<<",
+    "correct_quadrant": 4,
+    "success": false,
+    "full_conversation": [
+      [
+        "INITIAL_DESCRIPTION",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points."
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, C. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "<"
+      ],
+      [
+        "RESULT",
+        "Invalid choice"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, C. You chose < and saw Invalid choice.\nRound 2: Available cues C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "C"
+      ],
+      [
+        "RESULT",
+        "GREEN"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, C. You chose < and saw Invalid choice.\nRound 2: Available cues C, D. You chose C and saw GREEN.\nRound 3: Available cues B. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "and"
+      ],
+      [
+        "RESULT",
+        "Invalid choice"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, C. You chose < and saw Invalid choice.\nRound 2: Available cues C, D. You chose C and saw GREEN.\nRound 3: Available cues B. You chose and and saw Invalid choice.\nRound 4: Available cues A, B, C. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "C"
+      ],
+      [
+        "RESULT",
+        "RED"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, C. You chose < and saw Invalid choice.\nRound 2: Available cues C, D. You chose C and saw GREEN.\nRound 3: Available cues B. You chose and and saw Invalid choice.\nRound 4: Available cues A, B, C. You chose C and saw RED.\nRound 5: Available cues C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "and"
+      ],
+      [
+        "RESULT",
+        "Invalid choice"
+      ],
+      [
+        "FINAL_ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues A, C. You chose < and saw Invalid choice.\nRound 2: Available cues C, D. You chose C and saw GREEN.\nRound 3: Available cues B. You chose and and saw Invalid choice.\nRound 4: Available cues A, B, C. You chose C and saw RED.\nRound 5: Available cues C, D. You chose and and saw Invalid choice.\nBased on all observed colors, which quadrant (1, 2, 3, 4) do you think had the highest ratio of RED? Respond with just the number. You choose <<"
+      ],
+      [
+        "FINAL_CHOICE",
+        "<<"
+      ]
+    ]
+  },
+  {
+    "rounds": [
+      {
+        "available_cues": [
+          "C"
+        ],
+        "choice": "J",
+        "result": null,
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "A"
+        ],
+        "choice": "J",
+        "result": null,
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C. You chose J and saw Invalid choice.\nRound 2: Available cues A. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "A",
+          "C",
+          "D"
+        ],
+        "choice": "J",
+        "result": null,
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C. You chose J and saw Invalid choice.\nRound 2: Available cues A. You chose J and saw Invalid choice.\nRound 3: Available cues A, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "B"
+        ],
+        "choice": "<<",
+        "result": null,
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C. You chose J and saw Invalid choice.\nRound 2: Available cues A. You chose J and saw Invalid choice.\nRound 3: Available cues A, C, D. You chose J and saw Invalid choice.\nRound 4: Available cues B. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      },
+      {
+        "available_cues": [
+          "A",
+          "B",
+          "D"
+        ],
+        "choice": "for",
+        "result": null,
+        "full_prompt": "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C. You chose J and saw Invalid choice.\nRound 2: Available cues A. You chose J and saw Invalid choice.\nRound 3: Available cues A, C, D. You chose J and saw Invalid choice.\nRound 4: Available cues B. You chose << and saw Invalid choice.\nRound 5: Available cues A, B, D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      }
+    ],
+    "final_choice": "",
+    "correct_quadrant": 1,
+    "success": false,
+    "full_conversation": [
+      [
+        "INITIAL_DESCRIPTION",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points."
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "J"
+      ],
+      [
+        "RESULT",
+        "Invalid choice"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C. You chose J and saw Invalid choice.\nRound 2: Available cues A. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "J"
+      ],
+      [
+        "RESULT",
+        "Invalid choice"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C. You chose J and saw Invalid choice.\nRound 2: Available cues A. You chose J and saw Invalid choice.\nRound 3: Available cues A, C, D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "J"
+      ],
+      [
+        "RESULT",
+        "Invalid choice"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C. You chose J and saw Invalid choice.\nRound 2: Available cues A. You chose J and saw Invalid choice.\nRound 3: Available cues A, C, D. You chose J and saw Invalid choice.\nRound 4: Available cues B. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "<<"
+      ],
+      [
+        "RESULT",
+        "Invalid choice"
+      ],
+      [
+        "ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C. You chose J and saw Invalid choice.\nRound 2: Available cues A. You chose J and saw Invalid choice.\nRound 3: Available cues A, C, D. You chose J and saw Invalid choice.\nRound 4: Available cues B. You chose << and saw Invalid choice.\nRound 5: Available cues A, B, D. Based on previous observations, choose one cue by responding with just the letter. You press <<"
+      ],
+      [
+        "LLM_CHOICE",
+        "for"
+      ],
+      [
+        "RESULT",
+        "Invalid choice"
+      ],
+      [
+        "FINAL_ACCUMULATED_PROMPT",
+        "You will play a game with 5 rounds.\nIn each round you'll see active cues (chooseable):\nOne quadrant has 90% one color/10% other\nOther quadrants have 50/50 color distribution\nAt least one cue active per round\nActive cues disappear after random duration\n\nAfter 5 rounds, identify the biased quadrant.\nCorrect: +100 points, Wrong: -100 points.\n\nRound 1: Available cues C. You chose J and saw Invalid choice.\nRound 2: Available cues A. You chose J and saw Invalid choice.\nRound 3: Available cues A, C, D. You chose J and saw Invalid choice.\nRound 4: Available cues B. You chose << and saw Invalid choice.\nRound 5: Available cues A, B, D. You chose for and saw Invalid choice.\nBased on all observed colors, which quadrant (1, 2, 3, 4) do you think had the highest ratio of RED? Respond with just the number. You choose <<"
+      ],
+      [
+        "FINAL_CHOICE",
+        ""
+      ]
+    ]
+  }
+]
