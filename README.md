@@ -1,10 +1,10 @@
-# g1Bbon: Small Language Model Perceptual-Inference Benchmark
+# g1Bbon: Language Model Perceptual-Inference Benchmark
 
 ![G1Bbon Benchmark Results](images/benchmark_sample.png)
 
-G1Bbon is a benchmark for evaluating Large Language Models (LLMs) on perceptual inference tasks. It tests an LLM's ability to maintain and update beliefs about the world based on limited, noisy observations.
+G1Bbon is a benchmark for evaluating (small) Language Models on perceptual inference tasks. It tests an LLM's ability to maintain and update beliefs about the world based on limited, noisy observations.
 
-This repository contains the code to run the Perceptual Sampling Task (VST) benchmark on LLMs and compare their performance across different model sizes and architectures.
+This repository contains the code to run the Perceptual Sampling Task (PST) benchmark on LLMs and compare their performance across different model sizes and architectures.
 
 ## Repository Structure
 
@@ -30,7 +30,7 @@ This repository contains the code to run the Perceptual Sampling Task (VST) benc
 
 ## Benchmark Structure
 
-The G1Bbon benchmark is organized in a hierarchical structure:
+The g1Bbon benchmark is organized in a hierarchical structure:
 
 1. **Simulations**: The outermost loop, representing independent benchmark runs
 2. **Trials**: Multiple iterations of a task within a simulation
@@ -45,7 +45,7 @@ This hierarchical structure allows for more robust evaluation by:
 
 ## Components
 
-### 1. Perceptual Sampling Task (VST)
+### 1. Perceptual Sampling Task (PST)
 
 The Perceptual Sampling Task is a multi-armed bandit problem designed to test an agent's ability to infer hidden properties from limited observations:
 
