@@ -1,6 +1,8 @@
 # g1Bbon: Language Model Perceptual-Inference Benchmark
 
-G1Bbon is a benchmark for evaluating (small) Language Models on perceptual inference tasks. It tests an LLM's ability to maintain and update beliefs about the world based on limited, noisy observations.
+g1Bbon is a benchmark for evaluating (small) Language Models on perceptual inference tasks. It tests an LLM's ability to maintain and update beliefs about the world based on limited, noisy observations.
+
+Try it out here: ai.trt-bench.org
 
 This repository contains the code to run the Perceptual Sampling Task (PST) benchmark on LLMs and compare their performance across different model sizes and architectures.
 
