@@ -1,4 +1,4 @@
-# G1Bbon: Large Language Model Perceptual-Inference Benchmark
+# g1Bbon: Large Language Model Perceptual-Inference Benchmark
 
 ![G1Bbon Benchmark Results](images/benchmark_sample.png)
 
