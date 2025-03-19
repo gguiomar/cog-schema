@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
+import unsloth
 from datetime import datetime
 from typing import List, Dict, Tuple, Optional, Any, Union
 from tqdm import tqdm
@@ -17,8 +18,7 @@ class TaskManager:
                  output_dir="simulation_results", openai_api_key=None, 
                  anthropic_api_key=None, use_unsloth=True,
                  reasoning_mode="time", min_thinking_time=5.0, max_thinking_time=10.0,
-                 min_thinking_tokens=200, max_thinking_tokens=500,
-                 task_type="bias_detection"):
+                 min_thinking_tokens=200, max_thinking_tokens=500):
         """
         Initialize task manager with benchmark capabilities.
         
@@ -58,13 +58,8 @@ class TaskManager:
             Minimum number of thinking tokens (for token mode)
         max_thinking_tokens : int
             Maximum number of thinking tokens (for token mode)
-        task_type : str
-            Type of task to run: 'bias_detection', 'pattern_detection', or 'conditional_probability'
         """
         from agents.LLMagent import LLMagent  # Import here to avoid circular imports
-        
-        # Store the task type
-        self.task_type = task_type
         
         # Convert single values to lists for consistent processing
         self.agents = [agents] if isinstance(agents, str) else agents
@@ -119,8 +114,6 @@ class TaskManager:
             model_name=agent_name,
             use_unsloth=self.use_unsloth,
             device_map=self.device,
-            openai_api_key=self.openai_api_key,
-            anthropic_api_key=self.anthropic_api_key,
             reasoning_mode=self.reasoning_mode,
             min_thinking_time=self.min_thinking_time,
             max_thinking_time=self.max_thinking_time,
@@ -156,8 +149,10 @@ class TaskManager:
         """Build final prompt for a trial including conversation history."""
         prompt = (
             self.conversation_history +
-            f"Trial {trial_num + 1}: {self.task.get_final_question()} "
-            "Respond with just the answer. You choose <<"
+            f"Trial {trial_num + 1}: Based on all observed colors, which quadrant (1"
+            f"{', ' + ', '.join(str(i) for i in range(2, num_quadrants + 1))}"
+            ") do you think had the highest ratio of RED? "
+            "Respond with just the number. You choose <<"
         )
         return prompt
     
@@ -179,15 +174,14 @@ class TaskManager:
         dict
             Dictionary containing trial results and statistics
         """
-        # Initialize task with task_type
-        self.task = VSTtask(n_rounds, num_quadrants, self.num_cues, task_type=self.task_type)
+        self.task = VSTtask(n_rounds, num_quadrants, self.num_cues)
         self.agent.reset_history()
         self.thinking_times = []  # Reset thinking times for this trial
         
         trial_stats = {
             'rounds': [],
             'final_choice': None,
-            'correct_answer': self.task.get_correct_answer(),
+            'correct_quadrant': self.task.biased_quadrant + 1,
             'success': False,
             'agent': self.current_agent,
             'round_times': [],
@@ -229,6 +223,7 @@ class TaskManager:
             
             # Get agent's choice and track round time
             round_start_time = time.time()
+            print(f'!!! {prompt} !!!')
             choice = self.agent.get_response(prompt)
             round_time = time.time() - round_start_time
             trial_stats['round_times'].append(round_time)
@@ -252,7 +247,7 @@ class TaskManager:
             result = self.task.process_choice(choice, round_data)
             quadrant = None
             
-            # Find which quadrant the chosen cue belongs to (for bias detection task)
+            # Find which quadrant the chosen cue belongs to
             if result is not None:  # Only try to identify quadrant if choice was valid
                 for q in round_data:
                     if q['name'].lower() == choice.lower():
@@ -262,7 +257,7 @@ class TaskManager:
             if self.verbose:
                 if result:
                     print(f"Result: {result}")
-                    if quadrant and self.task_type == VSTtask.TASK_BIAS_DETECTION:
+                    if quadrant:
                         print(f"(cue {choice} was from Quadrant {quadrant})")
                 else:
                     print("Invalid choice!")
@@ -298,17 +293,18 @@ class TaskManager:
             print(final_prompt)
             print("-------------------------")
         
+        print(f'!!! {final_prompt} !!!')
         final_choice = self.agent.get_response(final_prompt)
         
         if self.verbose:
-            print(f"\nLLM's final choice: {final_choice}")
+            print(f"\nLLM's final choice: Quadrant {final_choice}")
             print(f"\n=== Trial {trial_num + 1} Results ===")
-            print(f"Correct answer: {self.task.get_correct_answer()}")
+            print(f"Correct quadrant: {self.task.biased_quadrant + 1}")
             print(f"LLM chose: {final_choice}")
-            print(f"Success: {self.task.get_correct_answer() == final_choice}")
+            print(f"Success: {str(self.task.biased_quadrant + 1) == final_choice}")
         
         trial_stats['final_choice'] = final_choice
-        trial_stats['success'] = self.task.get_correct_answer() == final_choice
+        trial_stats['success'] = str(self.task.biased_quadrant + 1) == final_choice
         
         return trial_stats
     
@@ -380,8 +376,8 @@ class TaskManager:
         agent_log_dir = os.path.join(self.logs_dir, self.current_agent)
         os.makedirs(agent_log_dir, exist_ok=True)
         
-        # Create a unique log filename based on agent, task type, rounds, quadrants, trials
-        log_filename = f"{agent_log_dir}/{self.current_agent}_{self.task_type}_{n_rounds}r_{num_quadrants}q_{self.n_trials}t_{self.timestamp}.json"
+        # Create a unique log filename based on agent, rounds, quadrants, trials
+        log_filename = f"{agent_log_dir}/{self.current_agent}_{n_rounds}r_{num_quadrants}q_{self.n_trials}t_{self.timestamp}.json"
         
         for sim_num in tqdm(range(self.n_simulations), disable=self.verbose):
             if self.verbose:
@@ -417,14 +413,9 @@ class TaskManager:
         all_thinking_times = []
         all_success_rates = []
         
-        # Different analysis depending on task type
-        if self.task_type == VSTtask.TASK_BIAS_DETECTION:
-            # For bias detection, track quadrant distribution
-            quadrant_distribution = {q: {'times_chosen': 0, 'times_correct': 0, 'success_count': 0} 
-                                   for q in range(1, num_quadrants + 1)}
-        else:
-            # For other tasks, track cue choices
-            cue_distribution = {}
+        # Collect quadrant distribution data
+        quadrant_distribution = {q: {'times_chosen': 0, 'times_correct': 0, 'success_count': 0} 
+                               for q in range(1, num_quadrants + 1)}
         
         # Process all simulations
         for sim in results:
@@ -439,32 +430,20 @@ class TaskManager:
                     if thinking_time > 0:
                         all_thinking_times.append(thinking_time)
                 
-                # Update choice distribution based on task type
+                # Update quadrant distribution
                 choice = trial.get('final_choice', '')
-                correct = trial.get('correct_answer', '')
+                correct = trial.get('correct_quadrant', 0)
                 
-                if self.task_type == VSTtask.TASK_BIAS_DETECTION:
-                    # Handle quadrant choices for bias detection
-                    if isinstance(choice, str) and choice.isdigit():
-                        choice = int(choice)
-                        if 1 <= choice <= num_quadrants:
-                            quadrant_distribution[choice]['times_chosen'] += 1
-                            if str(choice) == correct:
-                                quadrant_distribution[choice]['success_count'] += 1
-                    
-                    # Record correct quadrant for metrics
-                    if isinstance(correct, str) and correct.isdigit():
-                        correct_quadrant = int(correct)
-                        if 1 <= correct_quadrant <= num_quadrants:
-                            quadrant_distribution[correct_quadrant]['times_correct'] += 1
-                else:
-                    # For other tasks, track cue choices
-                    if choice not in cue_distribution:
-                        cue_distribution[choice] = {'times_chosen': 0, 'times_correct': 0}
-                    
-                    cue_distribution[choice]['times_chosen'] += 1
-                    if choice == correct:
-                        cue_distribution[choice]['times_correct'] += 1
+                if isinstance(choice, str) and choice.isdigit():
+                    choice = int(choice)
+                    if 1 <= choice <= num_quadrants:
+                        quadrant_distribution[choice]['times_chosen'] += 1
+                        if choice == correct:
+                            quadrant_distribution[choice]['success_count'] += 1
+                
+                # Record correct quadrant for metrics
+                if 1 <= correct <= num_quadrants:
+                    quadrant_distribution[correct]['times_correct'] += 1
         
         # Calculate success rate
         success_rate = np.mean(all_success_rates) if all_success_rates else 0
@@ -479,26 +458,17 @@ class TaskManager:
         avg_thinking_time = np.mean(all_thinking_times) if all_thinking_times and self.is_reasoning_model else None
         std_thinking_time = np.std(all_thinking_times) if all_thinking_times and self.is_reasoning_model else None
         
-        # Calculate accuracy for choices based on task type
-        if self.task_type == VSTtask.TASK_BIAS_DETECTION:
-            for q in quadrant_distribution:
-                times_chosen = quadrant_distribution[q]['times_chosen']
-                if times_chosen > 0:
-                    quadrant_distribution[q]['accuracy_when_chosen'] = float(quadrant_distribution[q]['success_count'] / times_chosen)
-                else:
-                    quadrant_distribution[q]['accuracy_when_chosen'] = 0.0
-        else:
-            for cue in cue_distribution:
-                times_chosen = cue_distribution[cue]['times_chosen']
-                if times_chosen > 0:
-                    cue_distribution[cue]['accuracy_when_chosen'] = float(cue_distribution[cue]['times_correct'] / times_chosen)
-                else:
-                    cue_distribution[cue]['accuracy_when_chosen'] = 0.0
+        # Calculate accuracy for each quadrant
+        for q in quadrant_distribution:
+            times_chosen = quadrant_distribution[q]['times_chosen']
+            if times_chosen > 0:
+                quadrant_distribution[q]['accuracy_when_chosen'] = float(quadrant_distribution[q]['success_count'] / times_chosen)
+            else:
+                quadrant_distribution[q]['accuracy_when_chosen'] = 0.0
         
         # Reorganized metrics according to specified order
         metrics = {
             'agent': self.current_agent,
-            'task_type': self.task_type,
             'timestamp': self.timestamp,
             'is_reasoning_model': self.is_reasoning_model,
             'n_simulations': int(self.n_simulations),
@@ -536,19 +506,12 @@ class TaskManager:
                 'max_thinking_tokens': None
             })
         
-        # Add choice distribution based on task type
-        if self.task_type == VSTtask.TASK_BIAS_DETECTION:
-            metrics['quadrant_distribution'] = {f'quadrant_{q}': {
-                'times_chosen': int(quadrant_distribution[q]['times_chosen']),
-                'times_correct': int(quadrant_distribution[q]['times_correct']),
-                'accuracy_when_chosen': float(quadrant_distribution[q]['accuracy_when_chosen'])
-            } for q in quadrant_distribution}
-        else:
-            metrics['cue_distribution'] = {cue: {
-                'times_chosen': int(cue_distribution[cue]['times_chosen']),
-                'times_correct': int(cue_distribution[cue]['times_correct']),
-                'accuracy_when_chosen': float(cue_distribution[cue]['accuracy_when_chosen'])
-            } for cue in cue_distribution}
+        # Add quadrant distribution
+        metrics['quadrant_distribution'] = {f'quadrant_{q}': {
+            'times_chosen': int(quadrant_distribution[q]['times_chosen']),
+            'times_correct': int(quadrant_distribution[q]['times_correct']),
+            'accuracy_when_chosen': float(quadrant_distribution[q]['accuracy_when_chosen'])
+        } for q in quadrant_distribution}
         
         return metrics
     
@@ -693,7 +656,6 @@ class TaskManager:
                     
                     row = {
                         "Model": model,
-                        "Task": self.task_type,
                         "Rounds": rounds_label,
                         "Quadrants": quadrant_label,
                         "Trials": self.n_trials,
@@ -833,7 +795,7 @@ class TaskManager:
         # Include parameters in title for clarity
         title_params = f"r={self.rounds[0] if len(self.rounds)==1 else self.rounds}, " \
                       f"q={self.quadrants[0] if len(self.quadrants)==1 else self.quadrants}, " \
-                      f"t={self.n_trials}, task={self.task_type}"
+                      f"t={self.n_trials}"
         plt.title(f"G1Bbon benchmark ({title_params})")
         
         # Create a legend for the categories
@@ -848,7 +810,7 @@ class TaskManager:
         
         # Save the plot in the benchmarks_plots directory
         if output_path is None:
-            config_str = f"_{self.task_type}_r{self.rounds[0]}_q{self.quadrants[0]}_t{self.n_trials}"
+            config_str = f"_r{self.rounds[0]}_q{self.quadrants[0]}_t{self.n_trials}"
             output_path = f"{self.benchmarks_plots_dir}/benchmark_plot{config_str}_{self.timestamp}.png"
         else:
             output_path = f"{self.benchmarks_plots_dir}/{output_path}"
