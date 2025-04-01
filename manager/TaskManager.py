@@ -5,7 +5,6 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
-import unsloth
 from datetime import datetime
 from typing import List, Dict, Tuple, Optional, Any, Union
 from tqdm import tqdm
@@ -131,8 +130,10 @@ class TaskManager:
         """Build prompt including conversation history and trial number."""
         # Add the current round information with trial number
         current_prompt = (
-            f"Trial {trial_num + 1}, Round {round_num + 1}: Available cues {available_cues}. "
-            f"Based on previous observations, choose one cue by responding with just the letter. You press <<"
+            f"""
+            Trial {trial_num + 1}, Round {round_num + 1}: Available cues {available_cues}.
+            Based on previous observations, choose one cue by responding with just the letter and nothing else.
+            """
         )
         
         return self.conversation_history + current_prompt
@@ -153,7 +154,7 @@ class TaskManager:
             f"Trial {trial_num + 1}: Based on all observed colors, which quadrant (1"
             f"{', ' + ', '.join(str(i) for i in range(2, num_quadrants + 1))}"
             ") do you think had the highest ratio of RED? "
-            "Respond with just the number. You choose <<"
+            "You choose:"
         )
         return prompt
     

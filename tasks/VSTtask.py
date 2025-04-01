@@ -414,14 +414,18 @@ class VSTtask:
     def _get_bias_detection_description(self) -> str:
         """Get description for bias detection task."""
         return (
-            f"You will play a game with {self.n_rounds} rounds.\n"
-            "In each round you'll see active cues (letters):\n" +
-            "One quadrant has 90% RED / 10% GREEN\n"
-            "Other quadrants have 50% RED / 50% GREEN distribution\n"
-            "At least one cue active per round\n"
-            "Active cues appear and disappear randomly\n\n"
-            f"After {self.n_rounds} rounds, identify the quadrant with the highest ratio of RED.\n"
-            "Correct: +100 points, Wrong: -100 points."
+            f"""
+            Task:
+            You will play a game with {self.n_rounds} rounds.
+            In each round you'll see active cues (choosable):
+            One cue has 90%% one color / 10%% other, others  have 50/50 color distribution.
+            Possible cues are: A, B, C, D.
+            Active cues disappear after random duration, at least one cue is active per round.
+            Your task is to pick one of the available cues every round, by responding with just the letter and nothing else. Don't use markup or punctuation.
+            Answer like this: "You choose: <letter>".
+            After {self.n_rounds} rounds, identify the biased cue.
+            Correct: +100 points, Wrong: -100 points.
+            """
         )
 
     def _get_pattern_detection_description(self) -> str:
