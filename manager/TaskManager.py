@@ -200,16 +200,16 @@ class TaskManager:
             self.conversation_history = task_description + f"\n\n==== Trial {trial_num + 1} ====\n\n"
             
             if self.verbose:
-                print("\n=== Task Description ===")
-                print(task_description)
-                print(f"\n=== Beginning Trial {trial_num + 1} ===")
+                tqdm.write("\n=== Task Description ===")
+                tqdm.write(task_description)
+                tqdm.write(f"\n=== Beginning Trial {trial_num + 1} ===")
         elif self.verbose:
-            print(f"\n=== Beginning Trial {trial_num + 1} ===")
+            tqdm.write(f"\n=== Beginning Trial {trial_num + 1} ===")
         
         # Run all rounds
         for round_num in range(self.task.n_rounds):
             if self.verbose:
-                print(f"\n--- Trial {trial_num + 1}, Round {round_num + 1} ---")
+                tqdm.write(f"\n--- Trial {trial_num + 1}, Round {round_num + 1} ---")
             
             round_data = self.task.get_round_data(round_num)
             available_cues = [q['name'] for q in round_data]
@@ -218,14 +218,13 @@ class TaskManager:
             prompt = self.build_prompt(', '.join(available_cues), round_num, trial_num)
             
             if self.verbose:
-                print("\nAccumulated prompt shown to LLM:")
-                print("--------------------")
-                print(prompt)
-                print("--------------------")
+                tqdm.write("\nAccumulated prompt shown to LLM:")
+                tqdm.write("--------------------")
+                tqdm.write(prompt)
+                tqdm.write("--------------------")
             
             # Get agent's choice and track round time
             round_start_time = time.time()
-            print(f'!!! {prompt} !!!')
             choice = self.agent.get_response(prompt)
             round_time = time.time() - round_start_time
             trial_stats['round_times'].append(round_time)
@@ -241,9 +240,9 @@ class TaskManager:
                 trial_stats['thinking_times'].append(thinking_time)
             
             if self.verbose:
-                print(f"\nLLM chose: {choice}")
+                tqdm.write(f"\nLLM chose: {choice}")
                 if self.is_reasoning_model:
-                    print(f"Thinking time: {thinking_time:.2f} seconds")
+                    tqdm.write(f"Thinking time: {thinking_time:.2f} seconds")
             
             # Process choice
             result = self.task.process_choice(choice, round_data)
@@ -258,11 +257,11 @@ class TaskManager:
             
             if self.verbose:
                 if result:
-                    print(f"Result: {result}")
+                    tqdm.write(f"Result: {result}")
                     if quadrant:
-                        print(f"(cue {choice} was from Quadrant {quadrant})")
+                        tqdm.write(f"(cue {choice} was from Quadrant {quadrant})")
                 else:
-                    print("Invalid choice!")
+                    tqdm.write("Invalid choice!")
             
             # Update conversation history
             self.update_history(', '.join(available_cues), choice, result, round_num, trial_num)
@@ -285,25 +284,24 @@ class TaskManager:
         
         # Get final answer
         if self.verbose:
-            print(f"\n=== Trial {trial_num + 1} Final Decision ===")
+            tqdm.write(f"\n=== Trial {trial_num + 1} Final Decision ===")
         
         final_prompt = self.get_final_prompt(num_quadrants, trial_num)
         
         if self.verbose:
-            print("\nFinal accumulated prompt shown to LLM:")
-            print("-------------------------")
-            print(final_prompt)
-            print("-------------------------")
+            tqdm.write("\nFinal accumulated prompt shown to LLM:")
+            tqdm.write("-------------------------")
+            tqdm.write(final_prompt)
+            tqdm.write("-------------------------")
         
-        print(f'!!! {final_prompt} !!!')
         final_choice = self.agent.get_response(final_prompt)
         
         if self.verbose:
-            print(f"\nLLM's final choice: Quadrant {final_choice}")
-            print(f"\n=== Trial {trial_num + 1} Results ===")
-            print(f"Correct quadrant: {self.task.biased_quadrant + 1}")
-            print(f"LLM chose: {final_choice}")
-            print(f"Success: {str(self.task.biased_quadrant + 1) == final_choice}")
+            tqdm.write(f"\nLLM's final choice: Quadrant {final_choice}")
+            tqdm.write(f"\n=== Trial {trial_num + 1} Results ===")
+            tqdm.write(f"Correct quadrant: {self.task.biased_quadrant + 1}")
+            tqdm.write(f"LLM chose: {final_choice}")
+            tqdm.write(f"Success: {str(self.task.biased_quadrant + 1) == final_choice}")
         
         trial_stats['final_choice'] = final_choice
         trial_stats['success'] = str(self.task.biased_quadrant + 1) == final_choice

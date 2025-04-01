@@ -1,5 +1,6 @@
 import os
 import transformers
+from transformers.utils import logging
 import torch
 import time
 import anthropic
@@ -136,6 +137,9 @@ class LLMagent:
         # Check if this is a reasoning model
         self.is_reasoning_model = model_name in self.REASONING_MODELS
         self.model_name = model_name  # Store the friendly model name
+
+        # Set this so that it doesn't print the device at every inference
+        logging.set_verbosity_error()
 
         if model_name in model_openai:
             self.openai_flag = True
