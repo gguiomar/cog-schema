@@ -180,7 +180,6 @@ class LLMagent:
         else:
             raise ValueError("Unsupported model or configuration")
 
-        self.conversation_history = ""
 
     @classmethod
     def get_reasoning_models(cls) -> List[str]:
@@ -189,8 +188,6 @@ class LLMagent:
 
     def get_response(self, prompt: str) -> str:
         """Get response from the LLM."""
-        # Combine conversation history with the current prompt
-        full_prompt = self.conversation_history + prompt
         self.thinking_time = 0  # Reset thinking time for this prompt
         self.last_thinking_tokens = ""  # Reset thinking tokens
         self.token_count = 0  # Reset token count
@@ -200,7 +197,7 @@ class LLMagent:
             # Build a dictionary of parameters for the API call
             params = {
                 "model": self.api_model_name,
-                "messages": [{"role": "user", "content": full_prompt}],
+                "messages": [{"role": "user", "content": prompt}],
                 "temperature": 1.0,
                 "stop": ["<<"],
             }
@@ -225,7 +222,7 @@ class LLMagent:
                 max_tokens=1,  # adjust based on your needs
                 temperature=1.0,
                 stop_sequences=["<<"],
-                messages=[{"role": "user", "content": full_prompt}],
+                messages=[{"role": "user", "content": prompt}],
             )
             if response.content and len(response.content) > 0:
                 generated_text = response.content[0].text.strip()
@@ -233,7 +230,7 @@ class LLMagent:
                 generated_text = "X" # Anthropic API returned an empty response.
 
         elif self.is_reasoning_model:
-            tokenized_prompt = self.tokenizer.encode(f"<｜begin▁of▁sentence｜><｜User｜>{full_prompt}<｜Assistant｜>", return_tensors="pt", add_special_tokens=False).to(self.model.device)
+            tokenized_prompt = self.tokenizer.encode(f"<｜begin▁of▁sentence｜><｜User｜>{prompt}<｜Assistant｜>", return_tensors="pt", add_special_tokens=False).to(self.model.device)
 
             ## REASONING PHASE
             batch_tokens = 20        # Generate tokens in small batches
@@ -304,7 +301,7 @@ class LLMagent:
             
             # Extract thinking tokens by removing the prompt
             # First, format the prompt in the same way as it would appear in output_text
-            formatted_prompt = f"<｜User｜>{full_prompt}<｜Assistant｜>"
+            formatted_prompt = f"<｜User｜>{prompt}<｜Assistant｜>"
             
             # Extract thinking tokens
             if formatted_prompt in output_text:
@@ -339,17 +336,9 @@ class LLMagent:
             )
 
             # Use the local pipeline (unsloth or transformers)
-            generated_text = self.pipe(full_prompt)[0]["generated_text"][len(full_prompt):].strip()
+            generated_text = self.pipe(prompt)[0]["generated_text"][len(prompt):].strip()
 
         return generated_text
-
-    def update_history(self, text: str):
-        """Update conversation history."""
-        self.conversation_history += text
-
-    def reset_history(self):
-        """Reset conversation history."""
-        self.conversation_history = ""
         
     def get_thinking_tokens(self):
         """Get the most recent thinking tokens for reasoning models."""

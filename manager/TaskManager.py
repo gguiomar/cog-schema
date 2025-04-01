@@ -177,7 +177,6 @@ class TaskManager:
             Dictionary containing trial results and statistics
         """
         self.task = VSTtask(n_rounds, num_quadrants, self.num_cues)
-        self.agent.reset_history()
         self.thinking_times = []  # Reset thinking times for this trial
         
         trial_stats = {
