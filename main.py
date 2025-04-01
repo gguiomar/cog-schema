@@ -9,7 +9,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Run G1Bbon LLM benchmark')
     
     # Model selection
-    parser.add_argument('--models', nargs='+', default=['Deepseek_R1_7B_Qwen'], 
+    parser.add_argument('--models', nargs='+', default=['Qwen_0.5B'],
                         help='Models to benchmark')
     
     # Task configuration
@@ -30,7 +30,7 @@ def parse_args():
                         help='Number of trials per simulation')
     
     # Hardware settings
-    parser.add_argument('--device', type=str, default='cuda:0', 
+    parser.add_argument('--device', type=str, default='mps',
                         help='Device to run inference on')
     parser.add_argument('--no-unsloth', action='store_false', dest='use_unsloth',
                         help='Disable unsloth optimization')

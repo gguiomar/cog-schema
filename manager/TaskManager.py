@@ -18,7 +18,8 @@ class TaskManager:
                  output_dir="simulation_results", openai_api_key=None, 
                  anthropic_api_key=None, use_unsloth=True,
                  reasoning_mode="time", min_thinking_time=5.0, max_thinking_time=10.0,
-                 min_thinking_tokens=200, max_thinking_tokens=500):
+                 min_thinking_tokens=200, max_thinking_tokens=500,
+                 task_type=None): # Note: fix task_type not being implemented
         """
         Initialize task manager with benchmark capabilities.
         

@@ -242,6 +242,22 @@ You can also run the benchmark from the command line:
 python main.py --models Deepseek_R1_7B_Qwen --rounds 4 6 --quadrants 2 4 --simulations 10 --trials 3
 ```
 
+### Usage on Mac (Apple Silicon with MPS)
+_MPS (Metal Performance Shaders) is the GPU-accelerated framework for machine learning on Apple Silicon._
+1. Create a new conda environment with Python 3.11
+```bash
+conda create -n g1bbon python=3.11
+conda activate g1bbon
+```
+2. Install requirements from `requirements.txt`
+```bash
+pip install -r requirements.txt
+```
+3. Run using MPS
+```bash
+python main.py --device mps [add any other arguments as normal]
+```
+
 ### Comparing Multiple Models
 
 To benchmark and compare multiple models:
