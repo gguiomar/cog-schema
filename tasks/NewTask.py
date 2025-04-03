@@ -4,7 +4,7 @@ import numpy as np
 from tqdm import tqdm
 
 
-class VSTtask_general:
+class TaskGeneral:
     def __init__(self, n_rounds: int = 1, n_quadrants: int = 4, n_cues: int = 1):
         self.n_rounds = n_rounds
         self.n_quadrants = n_quadrants
@@ -77,7 +77,7 @@ class VSTtask_general:
         self.current_result = result
 
 
-class BiasDetectionTask(VSTtask_general):
+class BiasDetectionTask(TaskGeneral):
     def __init__(self, n_rounds: int = 1, n_quadrants: int = 4, n_cues: int = 1):
         super().__init__(n_rounds, n_quadrants, n_cues)
 
@@ -236,7 +236,7 @@ class BiasDetectionTask(VSTtask_general):
 
         return True
 
-class ClassicConditioning(VSTtask_general):
+class ClassicConditioning(TaskGeneral):
     def __init__(self, n_rounds: int = 1, n_quadrants: int = 4, n_cues: int = 1):
         super().__init__(n_rounds, n_quadrants, n_cues)
 
