@@ -1,10 +1,10 @@
-# G1Bbon: Large Language Model Perceptual-Inference Benchmark
+# g1Bbon: Language Model Perceptual-Inference Benchmark
 
-![G1Bbon Benchmark Results](images/benchmark_sample.png)
+g1Bbon is a benchmark for evaluating (small) Language Models on perceptual inference tasks. It tests an LLM's ability to maintain and update beliefs about the world based on limited, noisy observations.
 
-G1Bbon is a benchmark for evaluating Large Language Models (LLMs) on perceptual inference tasks. It tests an LLM's ability to maintain and update beliefs about the world based on limited, noisy observations.
+Try it out here: [https//ai.trt-bench.org](https://ai.trt-bench.org/)
 
-This repository contains the code to run the Visual Sampling Task (VST) benchmark on LLMs and compare their performance across different model sizes and architectures.
+This repository contains the code to run the Perceptual Sampling Task (PST) benchmark on LLMs and compare their performance across different model sizes and architectures.
 
 ## Repository Structure
 
@@ -13,7 +13,7 @@ This repository contains the code to run the Visual Sampling Task (VST) benchmar
 │   ├── LLMagent.py          # Base LLM agent interface
 │   └── ...
 ├── tasks/                   # Task implementations
-│   ├── VSTtask.py           # Visual Sampling Task implementation
+│   ├── VSTtask.py           # Perceptual Sampling Task implementation
 │   └── ...
 ├── manager/                 # Task and benchmark management
 │   ├── TaskManager.py       # Manages running tasks and benchmarks
@@ -30,7 +30,7 @@ This repository contains the code to run the Visual Sampling Task (VST) benchmar
 
 ## Benchmark Structure
 
-The G1Bbon benchmark is organized in a hierarchical structure:
+The g1Bbon benchmark is organized in a hierarchical structure:
 
 1. **Simulations**: The outermost loop, representing independent benchmark runs
 2. **Trials**: Multiple iterations of a task within a simulation
@@ -45,9 +45,9 @@ This hierarchical structure allows for more robust evaluation by:
 
 ## Components
 
-### 1. Visual Sampling Task (VST)
+### 1. Perceptual Sampling Task (PST)
 
-The Visual Sampling Task is a multi-armed bandit problem designed to test an agent's ability to infer hidden properties from limited observations:
+The Perceptual Sampling Task is a multi-armed bandit problem designed to test an agent's ability to infer hidden properties from limited observations:
 
 - The task presents multiple quadrants (2-4), each with cues (typically 1 per quadrant).
 - One quadrant is biased (90% one color, 10% the other), while others have a 50/50 distribution.
@@ -240,6 +240,22 @@ You can also run the benchmark from the command line:
 
 ```bash
 python main.py --models Deepseek_R1_7B_Qwen --rounds 4 6 --quadrants 2 4 --simulations 10 --trials 3
+```
+
+### Usage on Mac (Apple Silicon with MPS)
+_MPS (Metal Performance Shaders) is the GPU-accelerated framework for machine learning on Apple Silicon._
+1. Create a new conda environment with Python 3.11
+```bash
+conda create -n g1bbon python=3.11
+conda activate g1bbon
+```
+2. Install requirements from `requirements.txt`
+```bash
+pip install -r requirements.txt
+```
+3. Run using MPS
+```bash
+python main.py --device mps [add any other arguments as normal]
 ```
 
 ### Comparing Multiple Models

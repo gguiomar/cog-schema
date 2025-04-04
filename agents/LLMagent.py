@@ -1,11 +1,11 @@
 import os
 import transformers
+from transformers.utils import logging
 import torch
 import time
 import anthropic
 from typing import Optional, List, Union
 from openai import OpenAI
-from unsloth import FastLanguageModel
 
 class LLMagent:
     # Define reasoning models as a class variable
@@ -90,6 +90,39 @@ class LLMagent:
             "Gemma_27B_Instruct": "unsloth/gemma-2-27b-it-bnb-4bit",
         }
 
+        model_aliases_mps = {
+            "Deepseek_R1_1.5B_Qwen": "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
+            "Deepseek_R1_7B_Qwen" : "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+            "Deepseek_R1_8B_Llama": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+            "Deepseek_R1_14B_Qwen": "deepseek-ai/DeepSeek-R1-Distill-Qwen-14B",
+            "Deepseek_R1_32B_Qwen": "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
+            "Qwen_0.5B": "Qwen/Qwen2.5-0.5B",
+            "Qwen_1.5B": "Qwen/Qwen2.5-1.5B",
+            "Qwen_3B": "Qwen/Qwen2.5-3B",
+            "Qwen_7B": "Qwen/Qwen2.5-7B",
+            "Qwen_14B": "Qwen/Qwen2.5-14B",
+            "Qwen_32B": "Qwen/Qwen2.5-32B",
+            "Qwen_0.5B_Instruct": "Qwen/Qwen2.5-0.5B-Instruct",
+            "Qwen_1.5B_Instruct": "Qwen/Qwen2.5-1.5B-Instruct",
+            "Qwen_3B_Instruct": "Qwen/Qwen2.5-3B-Instruct",
+            "Qwen_7B_Instruct": "Qwen/Qwen2.5-7B-Instruct",
+            "Qwen_14B_Instruct": "Qwen/Qwen2.5-14B-Instruct",
+            "Qwen_32B_Instruct": "Qwen/Qwen2.5-32B-Instruct",
+            "Centaur_8B": "marcelbinz/Llama-3.1-Centaur-8B",
+            "Mistral_7B_Instruct": "mistralai/Mistral-7B-Instruct-v0.3",
+            "Mistral_7B": "mistralai/Mistral-7B-v0.3",
+            "Phi_4_8B": "microsoft/phi-4",
+            "Phi_3.5_mini_Instruct": "microsoft/Phi-3.5-mini-instruct",
+            "Phi_3_mini_Instruct": "microsoft/Phi-3-mini-4k-instruct",
+            "Phi_3_medium_Instruct": "microsoft/Phi-3-medium-4k-instruct",
+            "Gemma_2B": "google/gemma-2b",
+            "Gemma_9B": "google/gemma-9b",
+            "Gemma_27B": "google/gemma-27b",
+            "Gemma_2B_Instruct": "google/gemma-2b-it",
+            "Gemma_9B_Instruct": "google/gemma-9b-it",
+            "Gemma_27B_Instruct": "google/gemma-27b-it",
+        }
+
         model_openai = {
             "gpt4o": "gpt-4o",
             "gpt4o-mini": "gpt-4o-mini",
@@ -105,6 +138,9 @@ class LLMagent:
         self.is_reasoning_model = model_name in self.REASONING_MODELS
         self.model_name = model_name  # Store the friendly model name
 
+        # Set this so that it doesn't print the device at every inference
+        logging.set_verbosity_error()
+
         if model_name in model_openai:
             self.openai_flag = True
             model_name = model_openai[model_name]
@@ -118,6 +154,7 @@ class LLMagent:
             print("Using Anthropic API")
             self.client = anthropic.Anthropic(api_key=self.anthropic_api_key)
         elif model_name in model_aliases and device_map == "cuda:0" and use_unsloth:
+            from unsloth import FastLanguageModel
             print("Using unsloth with GPU")
             model_alias = model_aliases[model_name]
             if "qwen" in model_alias.lower():
@@ -132,8 +169,17 @@ class LLMagent:
                 device_map=device_map
             )
             self.tokenizer = transformers.AutoTokenizer.from_pretrained(model_alias)
-        
-        self.conversation_history = ""
+        elif device_map == "mps" and model_name in model_aliases_mps:
+            model_alias = model_aliases_mps[model_name]
+            print("Using transformers with mps")
+            self.model = transformers.AutoModelForCausalLM.from_pretrained(
+                model_alias,
+                device_map=device_map
+            )
+            self.tokenizer = transformers.AutoTokenizer.from_pretrained(model_alias)
+        else:
+            raise ValueError("Unsupported model or configuration")
+
 
     @classmethod
     def get_reasoning_models(cls) -> List[str]:
@@ -142,8 +188,6 @@ class LLMagent:
 
     def get_response(self, prompt: str) -> str:
         """Get response from the LLM."""
-        # Combine conversation history with the current prompt
-        full_prompt = self.conversation_history + prompt
         self.thinking_time = 0  # Reset thinking time for this prompt
         self.last_thinking_tokens = ""  # Reset thinking tokens
         self.token_count = 0  # Reset token count
@@ -153,7 +197,7 @@ class LLMagent:
             # Build a dictionary of parameters for the API call
             params = {
                 "model": self.api_model_name,
-                "messages": [{"role": "user", "content": full_prompt}],
+                "messages": [{"role": "user", "content": prompt}],
                 "temperature": 1.0,
                 "stop": ["<<"],
             }
@@ -178,7 +222,7 @@ class LLMagent:
                 max_tokens=1,  # adjust based on your needs
                 temperature=1.0,
                 stop_sequences=["<<"],
-                messages=[{"role": "user", "content": full_prompt}],
+                messages=[{"role": "user", "content": prompt}],
             )
             if response.content and len(response.content) > 0:
                 generated_text = response.content[0].text.strip()
@@ -186,7 +230,7 @@ class LLMagent:
                 generated_text = "X" # Anthropic API returned an empty response.
 
         elif self.is_reasoning_model:
-            tokenized_prompt = self.tokenizer.encode(f"<｜begin▁of▁sentence｜><｜User｜>{full_prompt}<｜Assistant｜>", return_tensors="pt", add_special_tokens=False).to(self.model.device)
+            tokenized_prompt = self.tokenizer.encode(f"<｜begin▁of▁sentence｜><｜User｜>{prompt}<｜Assistant｜>", return_tensors="pt", add_special_tokens=False).to(self.model.device)
 
             ## REASONING PHASE
             batch_tokens = 20        # Generate tokens in small batches
@@ -257,7 +301,7 @@ class LLMagent:
             
             # Extract thinking tokens by removing the prompt
             # First, format the prompt in the same way as it would appear in output_text
-            formatted_prompt = f"<｜User｜>{full_prompt}<｜Assistant｜>"
+            formatted_prompt = f"<｜User｜>{prompt}<｜Assistant｜>"
             
             # Extract thinking tokens
             if formatted_prompt in output_text:
@@ -292,17 +336,9 @@ class LLMagent:
             )
 
             # Use the local pipeline (unsloth or transformers)
-            generated_text = self.pipe(full_prompt)[0]["generated_text"][len(full_prompt):].strip()
+            generated_text = self.pipe(prompt)[0]["generated_text"][len(prompt):].strip()
 
         return generated_text
-
-    def update_history(self, text: str):
-        """Update conversation history."""
-        self.conversation_history += text
-
-    def reset_history(self):
-        """Reset conversation history."""
-        self.conversation_history = ""
         
     def get_thinking_tokens(self):
         """Get the most recent thinking tokens for reasoning models."""

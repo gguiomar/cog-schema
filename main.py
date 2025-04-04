@@ -9,7 +9,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Run G1Bbon LLM benchmark')
     
     # Model selection
-    parser.add_argument('--models', nargs='+', default=['Deepseek_R1_7B_Qwen'], 
+    parser.add_argument('--models', nargs='+', default=['Qwen_0.5B'],
                         help='Models to benchmark')
     
     # Task configuration
@@ -19,6 +19,9 @@ def parse_args():
                         help='Number of quadrants for the VST task')
     parser.add_argument('--cues', type=int, default=1, 
                         help='Number of cues per quadrant')
+    parser.add_argument('--task-type', type=str, default='bias_detection',
+                        choices=['bias_detection', 'pattern_detection', 'conditional_probability'],
+                        help='Type of task to run')
     
     # Experiment setup
     parser.add_argument('--simulations', type=int, default=10, 
@@ -27,7 +30,7 @@ def parse_args():
                         help='Number of trials per simulation')
     
     # Hardware settings
-    parser.add_argument('--device', type=str, default='cuda:0', 
+    parser.add_argument('--device', type=str, default='mps',
                         help='Device to run inference on')
     parser.add_argument('--no-unsloth', action='store_false', dest='use_unsloth',
                         help='Disable unsloth optimization')
@@ -53,7 +56,7 @@ def parse_args():
 def main():
     args = parse_args()
     
-    # Create task manager with parameters (without n_runs)
+    # Create task manager with parameters
     manager = TaskManager(
         agents=args.models,
         rounds=args.rounds,
@@ -66,11 +69,12 @@ def main():
         output_dir=args.output_dir,
         openai_api_key=args.openai_key,
         anthropic_api_key=args.anthropic_key,
-        use_unsloth=args.use_unsloth
+        use_unsloth=args.use_unsloth,
+        task_type=args.task_type  # Pass the task type to TaskManager
     )
     
     # Run benchmarks
-    print(f"Running benchmarks for models: {args.models}")
+    print(f"Running benchmarks for models: {args.models} on task: {args.task_type}")
     results = manager.multiple_benchmarks()
     
     # Get DataFrame but don't save additional files
