@@ -1,6 +1,6 @@
-# g1Bbon: Language Model Perceptual-Inference Benchmark
+# G1bbon: Language Model Perceptual-Inference Benchmark
 
-g1Bbon is a benchmark for evaluating (small) Language Models on perceptual inference tasks. It tests an LLM's ability to maintain and update beliefs about the world based on limited, noisy observations.
+G1bbon is a benchmark for evaluating (small) Language Models on perceptual inference tasks. It tests an LLM's ability to maintain and update beliefs about the world based on limited, noisy observations.
 
 Try it out here: [https//ai.trt-bench.org](https://ai.trt-bench.org/)
 
@@ -30,7 +30,7 @@ This repository contains the code to run the Perceptual Sampling Task (PST) benc
 
 ## Benchmark Structure
 
-The g1Bbon benchmark is organized in a hierarchical structure:
+The G1bbon benchmark is organized in a hierarchical structure:
 
 1. **Simulations**: The outermost loop, representing independent benchmark runs
 2. **Trials**: Multiple iterations of a task within a simulation
@@ -246,8 +246,8 @@ python main.py --models Deepseek_R1_7B_Qwen --rounds 4 6 --quadrants 2 4 --simul
 _MPS (Metal Performance Shaders) is the GPU-accelerated framework for machine learning on Apple Silicon._
 1. Create a new conda environment with Python 3.11
 ```bash
-conda create -n g1bbon python=3.11
-conda activate g1bbon
+conda create -n G1bbon python=3.11
+conda activate G1bbon
 ```
 2. Install requirements from `requirements.txt`
 ```bash
@@ -325,13 +325,13 @@ See `requirements.txt` for the full list of dependencies.
 If you use this benchmark in your research, please cite:
 
 ```
-@misc{g1bbon2024,
+@misc{G1bbon2024,
   author = {Your Name},
-  title = {G1Bbon: A Benchmark for Large Language Model Perceptual Inference},
+  title = {G1bbon: A Benchmark for Large Language Model Perceptual Inference},
   year = {2024},
   publisher = {GitHub},
   journal = {GitHub Repository},
-  howpublished = {\url{https://github.com/yourusername/g1bbon}}
+  howpublished = {\url{https://github.com/yourusername/G1bbon}}
 }
 ```
 
