@@ -162,12 +162,12 @@ class TaskManager:
 
         # Add a trial separator in the conversation history if this is not the first trial
         if trial_num > 0:
-            self.conversation_history += f"\n==== Trial {trial_num + 1} ====\n\n" #TODO: move this to constant
+            self.conversation_history += self.task.get_trial_separator()
 
         # If this is the first trial or we want to start fresh, initialize conversation with task description
         if not self.conversation_history:
             task_description = self.task.get_initial_prompt()
-            self.conversation_history = task_description + f"\n\n==== Trial {trial_num + 1} ====\n\n" #TODO: move this to constant
+            self.conversation_history = task_description + "\n" + self.task.get_trial_separator()
 
             if self.verbose:
                 tqdm.write("\n=== Task Description ===")

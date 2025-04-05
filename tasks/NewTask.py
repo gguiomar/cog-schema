@@ -3,6 +3,7 @@ from typing import List, Dict, Optional
 import numpy as np
 from tqdm import tqdm
 import xml.etree.ElementTree as ET
+from util.util import *
 
 class TaskGeneral:
     def __init__(self, n_rounds: int = 1, n_quadrants: int = 4, n_cues: int = 1):
@@ -22,6 +23,9 @@ class TaskGeneral:
             q: self.letters[q*self.n_cues:(q+1)*self.n_cues]
             for q in range(self.n_quadrants)
         }
+
+    def get_trial_separator(self) -> Optional[str]:
+        pass
 
     def get_initial_prompt(self):
         try:
@@ -87,11 +91,13 @@ class BiasDetectionTask(TaskGeneral):
 
         self.strings = ET.parse('tasks/BiasDetectionTask.xml')
 
+    def get_trial_separator(self) -> Optional[str]:
+        prompt = load_prompt_from_xml(self.strings, 'trial_separator')
+        return prompt.format(trial_num = self.current_trial + 1)
+
     def initial_prompt(self):
-        prompt = self.strings.find('initial_prompt').text.format(n_rounds=self.n_rounds)
-        # Remove leading and trailing newlines that comes from XML tags (and keep other whitespace)
-        prompt = '\n'.join(prompt.splitlines()[1:])
-        return prompt
+        prompt = load_prompt_from_xml(self.strings, 'initial_prompt')
+        return prompt.format(n_rounds=self.n_rounds)
 
     def intermediate_prompt(self) -> str:
         round_data = self.get_round_data(self.current_round)
@@ -100,23 +106,19 @@ class BiasDetectionTask(TaskGeneral):
         # Build and show prompt with accumulated history
         self.available_cues = ', '.join(available_cues)
 
-        prompt = self.strings.find('intermediate_prompt').text.format(
+        prompt = load_prompt_from_xml(self.strings, 'intermediate_prompt')
+        return prompt.format(
             current_trial=self.current_trial + 1,
             current_round=self.current_round + 1,
             available_cues=self.available_cues
         )
-        # Remove leading and trailing newlines that comes from XML tags (and keep other whitespace)
-        prompt = '\n'.join(prompt.splitlines()[1:])
-        return prompt
 
     def final_prompt(self) -> str:
-        prompt = self.strings.find('final_prompt').text.format(
+        prompt = load_prompt_from_xml(self.strings, 'final_prompt')
+        return prompt.format(
             current_trial=self.current_trial + 1,
             letters=self.letters
         )
-        # Remove leading and trailing newlines that comes from XML tags (and keep other whitespace)
-        prompt = '\n'.join(prompt.splitlines()[1:])
-        return prompt
 
     def get_round_data(self, round_num: int) -> List[Dict]:
         """Get data for specific round."""
@@ -127,16 +129,15 @@ class BiasDetectionTask(TaskGeneral):
     def give_feedback(self) -> str:
         """Return round results including trial number."""
         result_text = self.current_result if self.current_result is not None else "Invalid choice"
-        prompt = self.strings.find('feedback_prompt').text.format(
+        prompt = load_prompt_from_xml(self.strings, 'feedback_prompt')
+        return prompt.format(
             current_trial=self.current_trial + 1,
             current_round=self.current_round + 1,
             available_cues=self.available_cues,
             current_answer=self.current_answer,
             result_text=result_text
         )
-        # Remove leading and trailing newlines that comes from XML tags (and keep other whitespace)
-        prompt = '\n'.join(prompt.splitlines()[1:])
-        return prompt
+
 
     def process_choice(self):
         round_data = self.get_round_data(self.current_round)
