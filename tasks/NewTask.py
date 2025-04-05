@@ -2,7 +2,7 @@ import random
 from typing import List, Dict, Optional
 import numpy as np
 from tqdm import tqdm
-
+import xml.etree.ElementTree as ET
 
 class TaskGeneral:
     def __init__(self, n_rounds: int = 1, n_quadrants: int = 4, n_cues: int = 1):
@@ -41,13 +41,12 @@ class TaskGeneral:
         except AttributeError:
             raise ValueError("Final prompt not defined for this task.")
 
-    def process_choice(self) -> Optional[str]: # This only holds for the bias task, fix!
-        # Choice processing is task-specific
-        self.task_choice_processing()
+    def process_choice(self) -> Optional[str]:
+        pass
 
     def create_round_stats(self) -> Dict:
         # Create round stats
-        round_stats = {
+        return {
             'available_cues': self.available_cues,
             'choice': self.current_answer,
             'quadrant': self.quadrant,
@@ -64,8 +63,7 @@ class TaskGeneral:
         return self.correct_answer
 
     def give_feedback(self):
-        # Updating of conversation history wth feedback is task-specific
-        self.give_task_feedback()
+        pass
 
     def update_round(self, round_num):
         self.current_round = round_num
@@ -86,23 +84,13 @@ class BiasDetectionTask(TaskGeneral):
         self.rounds = self._generate_rounds()
 
         self.available_cues = None
-        self.conversation_history = None
+
+        self.strings = ET.parse('tasks/BiasDetectionTask.xml')
 
     def initial_prompt(self):
-        prompt = (
-            f"""
-            Task:
-            You will play a game with {self.n_rounds} rounds.
-            In each round you'll see active cues (choosable):
-            One cue has 90%% one color / 10%% other, others  have 50/50 color distribution.
-            Possible cues are: A, B, C, D.
-            Active cues disappear after random duration, at least one cue is active per round.
-            Your task is to pick one of the available cues every round, by responding with just the letter and nothing else. Don't use markup or punctuation.
-            Answer like this: "You choose: <letter>".
-            After {self.n_rounds} rounds, identify the biased cue.
-            Correct: +100 points, Wrong: -100 points.
-            """
-        )
+        prompt = self.strings.find('initial_prompt').text.format(n_rounds=self.n_rounds)
+        # Remove leading and trailing newlines that comes from XML tags (and keep other whitespace)
+        prompt = '\n'.join(prompt.splitlines()[1:])
         return prompt
 
     def intermediate_prompt(self) -> str:
@@ -112,24 +100,22 @@ class BiasDetectionTask(TaskGeneral):
         # Build and show prompt with accumulated history
         self.available_cues = ', '.join(available_cues)
 
-        current_prompt = (
-            f"""
-            Trial {self.current_trial + 1}, Round {self.current_round + 1}: Available cues {self.available_cues}.
-            Based on previous observations, choose one cue by responding with just the letter and nothing else.
-            """
+        prompt = self.strings.find('intermediate_prompt').text.format(
+            current_trial=self.current_trial + 1,
+            current_round=self.current_round + 1,
+            available_cues=self.available_cues
         )
-
-        return self.conversation_history + current_prompt
+        # Remove leading and trailing newlines that comes from XML tags (and keep other whitespace)
+        prompt = '\n'.join(prompt.splitlines()[1:])
+        return prompt
 
     def final_prompt(self) -> str:
-        """Build final prompt for a trial including conversation history."""
-        prompt = (
-                self.conversation_history +
-                f"Trial {self.current_trial + 1}: Based on all observed colors, which cue"
-                f"{self.letters}"
-                ") do you think had the highest ratio of RED? "
-                "You choose:"
+        prompt = self.strings.find('final_prompt').text.format(
+            current_trial=self.current_trial + 1,
+            letters=self.letters
         )
+        # Remove leading and trailing newlines that comes from XML tags (and keep other whitespace)
+        prompt = '\n'.join(prompt.splitlines()[1:])
         return prompt
 
     def get_round_data(self, round_num: int) -> List[Dict]:
@@ -138,16 +124,21 @@ class BiasDetectionTask(TaskGeneral):
             raise ValueError(f"Round number must be between 0 and {self.n_rounds - 1}")
         return self.rounds[round_num]
 
-    def give_task_feedback(self):
-        """Update conversation history with round results including trial number."""
+    def give_feedback(self) -> str:
+        """Return round results including trial number."""
         result_text = self.current_result if self.current_result is not None else "Invalid choice"
-        round_text = (
-            f"Trial {self.current_trial + 1}, Round {self.current_round + 1}: Available cues {self.available_cues}. "
-            f"You chose {self.current_answer} and saw {result_text}.\n"
+        prompt = self.strings.find('feedback_prompt').text.format(
+            current_trial=self.current_trial + 1,
+            current_round=self.current_round + 1,
+            available_cues=self.available_cues,
+            current_answer=self.current_answer,
+            result_text=result_text
         )
-        self.conversation_history += round_text
+        # Remove leading and trailing newlines that comes from XML tags (and keep other whitespace)
+        prompt = '\n'.join(prompt.splitlines()[1:])
+        return prompt
 
-    def task_choice_processing(self):
+    def process_choice(self):
         round_data = self.get_round_data(self.current_round)
         result = None
         for cue in round_data:
@@ -246,7 +237,6 @@ class ClassicConditioning(TaskGeneral):
         self.rounds = self._generate_rounds()
 
         self.available_queues = None
-        self.conversation_history = None
 
     def initial_prompt(self):
         prompt = (
@@ -273,12 +263,11 @@ class ClassicConditioning(TaskGeneral):
             """
         )
 
-        return self.conversation_history + current_prompt
+        return current_prompt
 
     def final_prompt(self) -> str:
         """Build final prompt for a trial including conversation history."""
         prompt = (
-                self.conversation_history +
                 f"Trial {self.current_trial + 1}: Based on all observed colors, which quadrant (1"
                 f"{', ' + ', '.join(str(i) for i in range(2, self.current_trial + 1))}"
                 ") do you think had the highest ratio of RED? "

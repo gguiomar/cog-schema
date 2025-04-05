@@ -84,7 +84,7 @@ class TaskManager:
         self.max_thinking_tokens = max_thinking_tokens
 
         self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        self.conversation_history = ""
+        self.conversation_history = None
         self.current_agent = None
         self.is_reasoning_model = False
         self.thinking_times = []
@@ -162,12 +162,12 @@ class TaskManager:
 
         # Add a trial separator in the conversation history if this is not the first trial
         if trial_num > 0:
-            self.task.conversation_history += f"\n==== Trial {trial_num + 1} ====\n\n"
+            self.conversation_history += f"\n==== Trial {trial_num + 1} ====\n\n" #TODO: move this to constant
 
         # If this is the first trial or we want to start fresh, initialize conversation with task description
-        if not self.task.conversation_history:
+        if not self.conversation_history:
             task_description = self.task.get_initial_prompt()
-            self.task.conversation_history = task_description + f"\n\n==== Trial {trial_num + 1} ====\n\n"
+            self.conversation_history = task_description + f"\n\n==== Trial {trial_num + 1} ====\n\n" #TODO: move this to constant
 
             if self.verbose:
                 tqdm.write("\n=== Task Description ===")
@@ -185,17 +185,18 @@ class TaskManager:
 
             # Build and show prompt with accumulated history
             prompt = self.task.get_intermediate_prompt()
-            self.task.conversation_history = prompt
+
+            history_and_prompt = self.conversation_history + prompt
 
             if self.verbose:
                 tqdm.write("\nAccumulated prompt shown to LLM:")
                 tqdm.write("--------------------")
-                tqdm.write(prompt)
+                tqdm.write(history_and_prompt)
                 tqdm.write("--------------------")
 
             # Get agent's choice and track round time
             round_start_time = time.time()
-            choice = self.agent.get_response(prompt)
+            choice = self.agent.get_response(history_and_prompt)
             self.task.update_answer(choice)
             round_time = time.time() - round_start_time
             self.task.round_time = round_time
@@ -222,7 +223,7 @@ class TaskManager:
             self.task.update_result(result)
 
             # Update conversation history with feedback
-            self.task.give_feedback()
+            self.conversation_history += self.task.give_feedback()
 
             round_stats = self.task.create_round_stats()
 
@@ -236,15 +237,15 @@ class TaskManager:
         if self.verbose:
             tqdm.write(f"\n=== Trial {trial_num + 1} Final Decision ===")
 
-        final_prompt = self.task.get_final_prompt()
+        self.conversation_history += self.task.get_final_prompt()
 
         if self.verbose:
             tqdm.write("\nFinal accumulated prompt shown to LLM:")
             tqdm.write("-------------------------")
-            tqdm.write(final_prompt)
+            tqdm.write(self.conversation_history)
             tqdm.write("-------------------------")
 
-        final_choice = self.agent.get_response(final_prompt)
+        final_choice = self.agent.get_response(self.conversation_history)
 
         if self.verbose:
             tqdm.write(f"\nLLM's final choice: Quadrant {final_choice}")
