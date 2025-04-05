@@ -9,8 +9,7 @@ from datetime import datetime
 from typing import List, Dict, Tuple, Optional, Any, Union
 from tqdm import tqdm
 
-from tasks.NewTask import BiasDetectionTask
-
+from tasks import *
 
 class TaskManager:
     def __init__(self, agents=None, rounds=None, quadrants=None, n_simulations=10,
