@@ -352,8 +352,35 @@ class TaskManager:
         
         # analyze_simulations only work(ed) for bias task (it throws out an error now hehe)
         
-        metrics = self.analyze_simulations(all_results, n_rounds, num_quadrants, total_time)
-        
+        try:
+            metrics = self.analyze_simulations(all_results, n_rounds, num_quadrants, total_time)
+        except Exception as e:
+            print(f"analyze_simulations failed: {e}")
+            metrics = {
+                "agent": self.current_agent,
+                "timestamp": self.timestamp,
+                "n_simulations": self.n_simulations,
+                "n_trials": self.n_trials,
+                "n_rounds": n_rounds,
+                "n_quadrants": num_quadrants,
+                "n_cues": self.num_cues,
+                "success_rate": 0.0,
+                "total_time": total_time,
+                "avg_trial_time": 0.0,
+                "std_trial_time": 0.0,
+                "avg_round_time": 0.0,
+                "std_round_time": 0.0,
+                "avg_thinking_time": None,
+                "std_thinking_time": None,
+                "reasoning_mode": None,
+                "min_thinking_time": None,
+                "max_thinking_time": None,
+                "min_thinking_tokens": None,
+                "max_thinking_tokens": None,
+                "quadrant_distribution": {},
+            }
+
+
         # Save detailed results including the raw data
         results_data = {
             'metrics': metrics,
@@ -669,9 +696,6 @@ class TaskManager:
         """
         # Convert stored results to a DataFrame
         df = self.results_to_dataframe()
-        print("🧪 df columns:", df.columns.tolist())
-        print("🧪 df shape:", df.shape)
-        print("🧪 df head:\n", df.head())
 
 
         # Aggregate the success rates per model
