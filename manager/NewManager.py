@@ -18,7 +18,7 @@ class TaskManager:
                  anthropic_api_key=None, use_unsloth=True,
                  reasoning_mode="time", min_thinking_time=5.0, max_thinking_time=10.0,
                  min_thinking_tokens=200, max_thinking_tokens=500,
-                 task_type=None):  # Note: fix task_type not being implemented
+                 task_type=None,log_stats = False):  # Note: fix task_type not being implemented
         """
         Initialize task manager with benchmark capabilities.
 
@@ -58,6 +58,10 @@ class TaskManager:
             Minimum number of thinking tokens (for token mode)
         max_thinking_tokens : int
             Maximum number of thinking tokens (for token mode)
+        task_type : str
+            Type of task to run (not implemented)
+        log_stats : bool
+            Whether to log statistics during the benchmark
         """
         from agents.LLMagent import LLMagent  # Import here to avoid circular imports
 
@@ -99,6 +103,8 @@ class TaskManager:
 
         # Get reasoning models list from LLMagent
         self.reasoning_models = LLMagent.get_reasoning_models()
+        
+        self.log_stats = log_stats
 
     def initialize_agent(self, agent_name):
         """Initialize an LLM agent with the specified model."""
@@ -341,10 +347,10 @@ class TaskManager:
         # Calculate the total time for all simulations
         total_time = time.time() - total_time_start
 
-        '''
+
         # Calculate metrics for this configuration
         
-        analyze_simulations only work(ed) for bias task (it throws out an error now hehe)
+        # analyze_simulations only work(ed) for bias task (it throws out an error now hehe)
         
         metrics = self.analyze_simulations(all_results, n_rounds, num_quadrants, total_time)
         
@@ -358,7 +364,8 @@ class TaskManager:
             json.dump(results_data, f, indent=2)
 
         return metrics
-        '''
+
+
     def analyze_simulations(self, results, n_rounds, num_quadrants, total_time=0) -> Dict:
         """Analyze simulation results and generate metrics."""
         # Collect all time metrics across simulations and trials
@@ -504,7 +511,6 @@ class TaskManager:
                 # Run simulations for this configuration
                 metrics = self.run_simulations(n_rounds, num_quadrants)
 
-                '''
                 # Still have to fix metrics
                 
                 # Store metrics directly
@@ -514,7 +520,6 @@ class TaskManager:
                     "round_time": metrics.get('avg_round_time', 0),
                     "thinking_time": metrics.get('avg_thinking_time', 0) if self.is_reasoning_model else 0
                 }
-                '''
 
         return agent_results
 
@@ -664,9 +669,14 @@ class TaskManager:
         """
         # Convert stored results to a DataFrame
         df = self.results_to_dataframe()
+        print("🧪 df columns:", df.columns.tolist())
+        print("🧪 df shape:", df.shape)
+        print("🧪 df head:\n", df.head())
+
 
         # Aggregate the success rates per model
         aggregated_data = {}
+
         for model, group in df.groupby("Model"):
             # Extract success_rate directly from raw_metrics
             all_success_rates = [metrics.get("success_rate", 0) for metrics in group["raw_metrics"]]

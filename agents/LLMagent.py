@@ -9,8 +9,11 @@ from openai import OpenAI
 
 class LLMagent:
     # Define reasoning models as a class variable
-    REASONING_MODELS = ["Deepseek_R1_1.5B_Qwen", "Deepseek_R1_7B_Qwen", "Deepseek_R1_8B_Llama"
-                        "Deepseek_R1_14B_Qwen", "Deepseek_R1_32B_Qwen"]
+    REASONING_MODELS = ["Deepseek_R1_1.5B_Qwen",
+                        "Deepseek_R1_7B_Qwen",
+                        "Deepseek_R1_8B_Llama",
+                        "Deepseek_R1_14B_Qwen",
+                        "Deepseek_R1_32B_Qwen"]
     
     def __init__(self, 
                  model_name: str, 
@@ -133,6 +136,7 @@ class LLMagent:
             "sonnet": "claude-3-5-sonnet-latest",
             "haiku": "claude-3-5-haiku-latest"
         }
+
 
         # Check if this is a reasoning model
         self.is_reasoning_model = model_name in self.REASONING_MODELS

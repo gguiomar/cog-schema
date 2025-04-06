@@ -4,6 +4,7 @@
 import argparse
 import os
 from manager.NewManager import TaskManager
+import platform
 
 
 def parse_args():
@@ -51,6 +52,9 @@ def parse_args():
     # Visualization settings
     parser.add_argument('--no-plot', action='store_false', dest='plot',
                         help='Skip generating result plots')
+    
+    parser.add_argument('--log-stats', action='store_true', help='Enable stats logging during benchmark')
+
 
     return parser.parse_args()
 
@@ -72,6 +76,7 @@ def main():
         openai_api_key=args.openai_key,
         anthropic_api_key=args.anthropic_key,
         use_unsloth=args.use_unsloth,
+        log_stats=args.log_stats
     )
 
     # Run benchmarks
@@ -81,13 +86,13 @@ def main():
     # Get DataFrame but don't save additional files
     df = manager.save_results()
 
-    '''
     # Need to fix metrics
     
     # Generate plot if requested and not already generated
     if args.plot and not hasattr(manager, 'plot_generated'):
         manager.plot_results()
-    '''
+
+
 
     print(f"Benchmark complete! Results saved to logs/ and benchmark plot saved to benchmarks_plots/")
 
