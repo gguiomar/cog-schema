@@ -17,35 +17,6 @@ class BiasDetectionTask(TaskGeneral):
 
         self.strings = ET.parse('tasks/BiasDetectionTask.xml')
 
-    def get_trial_separator(self) -> Optional[str]:
-        prompt = load_prompt_from_xml(self.strings, 'trial_separator')
-        return prompt.format(trial_num = self.current_trial + 1)
-
-    def initial_prompt(self):
-        prompt = load_prompt_from_xml(self.strings, 'initial_prompt')
-        return prompt.format(n_rounds=self.n_rounds)
-
-    def intermediate_prompt(self) -> str:
-        round_data = self.get_round_data(self.current_round)
-        available_cues = [q['name'] for q in round_data]
-
-        # Build and show prompt with accumulated history
-        self.available_cues = ', '.join(available_cues)
-
-        prompt = load_prompt_from_xml(self.strings, 'intermediate_prompt')
-        return prompt.format(
-            current_trial=self.current_trial + 1,
-            current_round=self.current_round + 1,
-            available_cues=self.available_cues
-        )
-
-    def final_prompt(self) -> str:
-        prompt = load_prompt_from_xml(self.strings, 'final_prompt')
-        return prompt.format(
-            current_trial=self.current_trial + 1,
-            letters=self.letters
-        )
-
     def get_round_data(self, round_num: int) -> List[Dict]:
         """Get data for specific round."""
         if round_num < 0 or round_num >= self.n_rounds:
@@ -63,7 +34,6 @@ class BiasDetectionTask(TaskGeneral):
             current_answer=self.current_answer,
             result_text=result_text
         )
-
 
     def process_choice(self):
         round_data = self.get_round_data(self.current_round)

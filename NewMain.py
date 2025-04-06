@@ -91,10 +91,7 @@ def main():
     # Generate plot if requested and not already generated
     if args.plot and not hasattr(manager, 'plot_generated'):
         manager.plot_results()
-
-
-
-    print(f"Benchmark complete! Results saved to logs/ and benchmark plot saved to benchmarks_plots/")
+        print(f"Benchmark plot saved to benchmarks_plots/")
 
 
 if __name__ == "__main__":

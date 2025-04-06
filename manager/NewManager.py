@@ -386,9 +386,10 @@ class TaskManager:
             'metrics': metrics,
             'raw_results': all_results
         }
-
-        with open(log_filename, 'w') as f:
-            json.dump(results_data, f, indent=2)
+        if self.log_stats:
+            with open(log_filename, 'w') as f:
+                json.dump(results_data, f, indent=2)
+            print(f"Benchmark complete! Results saved to logs/")
 
         return metrics
 

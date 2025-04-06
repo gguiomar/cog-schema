@@ -22,23 +22,43 @@ class TaskGeneral:
         }
 
     def get_trial_separator(self) -> Optional[str]:
-        pass
+        try:
+            prompt = load_prompt_from_xml(self.strings, 'trial_separator')
+            return prompt.format(trial_num = self.current_trial + 1)
+        except AttributeError:
+            raise ValueError("Trial separator not defined for this task.")
 
     def get_initial_prompt(self):
         try:
-            return self.initial_prompt()
+            prompt = load_prompt_from_xml(self.strings, 'initial_prompt')
+            return prompt.format(n_rounds=self.n_rounds)
         except AttributeError:
             raise ValueError("Initial prompt not defined for this task.")
 
     def get_intermediate_prompt(self) -> str:
         try:
-            return self.intermediate_prompt()
+            round_data = self.get_round_data(self.current_round)
+            available_cues = [q['name'] for q in round_data]
+
+            # Build and show prompt with accumulated history
+            self.available_cues = ', '.join(available_cues)
+
+            prompt = load_prompt_from_xml(self.strings, 'intermediate_prompt')
+            return prompt.format(
+                current_trial=self.current_trial + 1,
+                current_round=self.current_round + 1,
+                available_cues=self.available_cues
+            )
         except AttributeError:
             raise ValueError("Intermediate prompt not defined for this task.")
 
     def get_final_prompt(self) -> str:
         try:
-            return self.final_prompt()
+            prompt = load_prompt_from_xml(self.strings, 'final_prompt')
+            return prompt.format(
+                current_trial=self.current_trial + 1,
+                letters=self.letters
+            )
         except AttributeError:
             raise ValueError("Final prompt not defined for this task.")
 

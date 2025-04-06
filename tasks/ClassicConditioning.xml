@@ -23,16 +23,15 @@ Correct: +100 points, Wrong: -100 points.
 <intermediate_prompt>
 Trial {current_trial}, Round {current_round}: Available cues {available_cues}.
 Based on previous observations, choose one cue by responding with just the letter and nothing else.
-
 </intermediate_prompt>
 
 <feedback_prompt>
-Trial {current_trial}, Round {current_round}: Available cues {available_cues}. You chose "{current_answer}" and saw {result_text}.
+
 </feedback_prompt>
 
 <final_prompt>
-Trial {current_trial}: Based on all observed colors, which cue {letters} do you think had the highest ratio of RED?
-You choose: 
+Trial {current_trial}: Based on all observed colors, which quadrant {letters} do you think had the highest ratio of RED?
+You choose:
 </final_prompt>
 </prompt>
 </prompts>
