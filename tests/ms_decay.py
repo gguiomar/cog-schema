@@ -18,10 +18,10 @@ num_steps = 10000
 split_point = num_steps // 2  # Switch from T1 to T2 at 5000
 window_size = 100             # Sliding window for tracking surprisals
 num_states = 4                # Number of states                    # Gaussian smoothing parameter
-eta = 0.001                    # Learning rate for delta rule
-lambda_momentum = 0.01         # Momentum toward window mean
-lambda_variance = 0.01        # Momentum for variance
-alpha_decay = 1            # Decay rate for meta-surprisal adjustment
+eta = 0.05                    # Learning rate for delta rule
+lambda_momentum = 0.5         # Momentum toward window mean
+lambda_variance = 0.1         # Momentum for variance
+alpha_decay = 5.0             # Decay rate for meta-surprisal adjustment
 min_sigma = 1e-3              # Minimum sigma to avoid overly narrow Gaussians
 beta_smooth = 0.9             # Smoothing factor for window mean
 
@@ -112,11 +112,11 @@ for t in range(num_steps):
             density = norm.pdf(s_val, mu_s[s], sigma_s[s])
             if s == s_t:
                 # Original meta-surprisal
-                m_t_s = -np.log(max(density, 1e-10))
+                m_t_s = np.log(max(density, 1e-10))
                 # Apply decay based on fit
-                # dist_s = abs(mu_s[s] - mu_window_smoothed[s])
-                # decay_s = 1 - np.exp(-alpha_decay * dist_s)  # d_s -> 0 when dist_s is small
-                # m_t_s *= decay_s  # Reduce m_t_s when fit is good (dist_s small)
+                dist_s = abs(mu_s[s] - mu_window_smoothed[s])
+                decay_s = 1 - np.exp(-alpha_decay * dist_s)  # d_s -> 0 when dist_s is small
+                m_t_s *= decay_s  # Reduce m_t_s when fit is good (dist_s small)
                 metasurprisals[t] = m_t_s
                 meta_per_state[s].append(m_t_s)
                 times_per_state[s].append(t)
@@ -132,7 +132,6 @@ for t in range(num_steps):
             else:
                 meta_per_state[s].append(0.0)  # Inactive states contribute 0
 
-#%%
 # Smooth the per-state meta-surprisal data
 sigma = 30
 smoothed_meta_per_state = []
