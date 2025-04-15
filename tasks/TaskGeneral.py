@@ -19,6 +19,7 @@ class TaskGeneral:
             q: self.letters[q*self.n_cues:(q+1)*self.n_cues]
             for q in range(self.n_quadrants)
         }
+    
 
     def get_trial_separator(self) -> Optional[str]:
         try:
@@ -41,8 +42,11 @@ class TaskGeneral:
 
             # Build and show prompt with accumulated history
             self.available_cues = ', '.join(available_cues)
+            print("-------------------------------------")
+            print(self.strings)
 
             prompt = load_prompt_from_xml(self.strings, 'intermediate_prompt')
+            print(prompt)
             return prompt.format(
                 current_trial=self.current_trial + 1,
                 current_round=self.current_round + 1,
@@ -51,30 +55,9 @@ class TaskGeneral:
         except AttributeError:
             raise ValueError("Intermediate prompt not defined for this task.")
 
-    def get_final_prompt(self) -> str:
-        try:
-            prompt = load_prompt_from_xml(self.strings, 'final_prompt')
-            return prompt.format(
-                current_trial=self.current_trial + 1,
-                letters=self.letters
-            )
-        except AttributeError:
-            raise ValueError("Final prompt not defined for this task.")
-
     def process_choice(self) -> Optional[str]:
         pass
 
-    def create_round_stats(self) -> Dict:
-        # Create round stats
-        return {
-            'available_cues': self.available_cues,
-            'choice': self.current_answer,
-            'quadrant': self.quadrant,
-            'result': self.current_result,
-            'round_time': self.round_time,
-            'thinking_time': self.thinking_time
-        }
-    
     def process_final_choice(self) -> Optional[str]:
         pass
 
@@ -98,3 +81,11 @@ class TaskGeneral:
 
     def update_result(self, result):
         self.current_result = result
+
+    def get_round_data(self, round_num: int):
+        """Get data for specific round."""
+        if round_num < 0 or round_num >= self.n_rounds:
+            raise ValueError(f"Round number must be between 0 and {self.n_rounds - 1}")
+        return self.rounds[round_num]
+    
+    

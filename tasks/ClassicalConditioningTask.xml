@@ -1,7 +1,7 @@
 <prompts>
 <prompt version="0">
 <trial_separator>
-
+==== Trial {trial_num} ====
 
 </trial_separator>
 
@@ -24,11 +24,13 @@ You choose:
 </intermediate_prompt>
 
 <feedback_prompt>
-
+Trial {current_trial}, Round {current_round}: You chose "{current_answer}" and saw {result_text}.
 </feedback_prompt>
 
 <final_prompt>
-
+{current_trial}, {current_round}: Available cues: A.
+Choose one cue by responding with just the letter and nothing else.
+You choose: 
 </final_prompt>
 </prompt>
 </prompts>
