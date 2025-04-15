@@ -1,0 +1,42 @@
+<prompts>
+<prompt version="0">
+<trial_separator>
+==== Trial {trial_num} ====
+
+
+</trial_separator>
+
+<initial_prompt>
+Task:
+You will play a game with {n_rounds} rounds.
+In each round you'll see active cues (choosable):
+One cue has 90% one color / 10% other, others  have 50/50 color distribution.
+Possible cues are: A, B, C, D.
+Active cues disappear after random duration, at least one cue is active per round.
+Your task is to pick one of the available cues every round, by responding with just the letter and nothing else. Don't use markup or punctuation.
+Answer like this: "You choose: &lt;letter&gt;".
+After {n_rounds} rounds, identify the biased cue.
+Correct: +100 points, Wrong: -100 points.
+
+</initial_prompt>
+
+<intermediate_prompt>
+Trial {current_trial}, Round {current_round}: Available cues {available_cues}.
+Based on previous observations, choose one cue by responding with just the letter and nothing else.
+
+You choose:
+</intermediate_prompt>
+
+<feedback_prompt>
+Trial {current_trial}, Round {current_round}: Available cues {available_cues}. You chose "{current_answer}" and saw {result_text}.
+
+</feedback_prompt>
+
+<final_prompt>
+Trial {current_trial}: Based on all observed colors, which cue {letters} do you think had the highest ratio of RED?
+Choose one cue by responding with just the letter and nothing else.
+
+You choose:
+</final_prompt>
+</prompt>
+</prompts>

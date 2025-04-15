@@ -1,0 +1,34 @@
+<prompts>
+<prompt version="0">
+<trial_separator>
+
+
+</trial_separator>
+
+<initial_prompt>
+You will play a game with {n_rounds} rounds.
+In each round you will choose A.
+Respond with just the letter and nothing else. Don't use markup or punctuation.
+Answer like this: "You choose: A".
+You will be prompted like this: "You choose: ".
+
+Correct: +100 points, Wrong: -100 points.
+
+</initial_prompt>
+
+<intermediate_prompt>
+{current_trial}, {current_round}: Available cues: A.
+Choose one cue by responding with just the letter and nothing else.
+You choose: 
+
+</intermediate_prompt>
+
+<feedback_prompt>
+
+</feedback_prompt>
+
+<final_prompt>
+
+</final_prompt>
+</prompt>
+</prompts>
