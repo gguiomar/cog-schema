@@ -8,15 +8,15 @@ from util.util import *
 class ClassicalConditioningTask(TaskGeneral):
     def __init__(self, n_rounds: int = 1, n_quadrants: int = 4, n_cues: int = 1):
         super().__init__(n_rounds, n_quadrants, n_cues)
+        self.current_result = None
+        self.available_cues = ["A"]
+        # self.available_queues = ["A"]
         self.strings = ET.parse('tasks/ClassicalConditioningTask.xml')
         self.reward_quadrant = random.choice(self.quadrants)
         self.correct_answer = self.reward_quadrant
-        self.conditioned_stimulus = "REWARD"
+        self.conditioned_stimulus = "A"
         self.received_reward = False
         self.rounds = self._generate_rounds()
-        
-
-        self.available_queues = None
 
     def _generate_rounds(self) -> List[List[Dict]]:
         """Generate rounds for classical conditioning task.
@@ -50,6 +50,7 @@ class ClassicalConditioningTask(TaskGeneral):
     
     def give_feedback(self) -> str:
         """Return round results including trial number."""
+        print("Current result:", self.current_result)
         result_text = self.current_result if self.current_result is not None else "Invalid choice"
         prompt = load_prompt_from_xml(self.strings, 'feedback_prompt')
         return prompt.format(
@@ -79,3 +80,49 @@ class ClassicalConditioningTask(TaskGeneral):
             )
         except AttributeError:
             raise ValueError("Final prompt not defined for this task.")
+
+    def process_choice(self):
+        round_data = self.get_round_data(self.current_round)
+        result = None
+        print(round_data)
+        for cue in round_data:
+            if cue['name'] == self.current_answer:
+                result = cue['color']
+                break
+        # round_data = self.get_round_data(self.current_round)
+
+        return result
+    
+    def get_round_data(self, round_num: int) -> List[Dict]:
+        """Get data for specific round."""
+        if round_num < 0 or round_num >= self.n_rounds:
+            raise ValueError(f"Round number must be between 0 and {self.n_rounds - 1}")
+        return self.rounds[round_num]
+
+    def give_feedback(self) -> str:
+        """Return round results including trial number."""
+        result_text = self.current_result if self.current_result is not None else "Invalid choice"
+        prompt = load_prompt_from_xml(self.strings, 'feedback_prompt')
+        return prompt.format(
+            current_trial=self.current_trial + 1,
+            current_round=self.current_round + 1,
+            available_cues=self.available_cues,
+            current_answer=self.current_answer,
+            result_text=result_text
+        )
+    
+    def process_final_choice(self) -> bool:
+        """Process the final choice and check if it's correct."""
+        if self.current_answer == self.letters[self.correct_answer]:
+            return True
+        return False
+    
+    def print_final_log(self):
+        tqdm.write(f"LLM's final choice: {self.current_answer}")
+        if self.current_answer == self.letters[self.correct_answer]:
+            tqdm.write(f"Result: REWARD +100 POINTS")
+        else:
+            tqdm.write(f"Result: INVALID")
+
+    def update_result(self, result):
+        self.current_result = result
