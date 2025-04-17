@@ -358,7 +358,7 @@ def plot_biased_accuracy_by_round(games_df: pd.DataFrame,
     plt.ylim(0, 1)
     plt.xlabel("Round")
     plt.ylabel("Proportion of Choices Matching Biased Quadrant")
-    plt.title("Biased-Choice Accuracy by Round")
+    plt.title("Choice Accuracy by Round")
     plt.grid(True)
     # annotate n above each point
     for _, row in stats.iterrows():
