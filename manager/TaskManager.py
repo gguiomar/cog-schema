@@ -242,17 +242,21 @@ class TaskManager:
         if self.verbose:
             tqdm.write(f"\n=== Trial {trial_num + 1} Final Decision ===")
 
-        self.conversation_history += self.task.get_final_prompt()
+        history_and_prompt = self.conversation_history + self.task.get_final_prompt()
+
+        #self.conversation_history += self.task.get_final_prompt()
 
         if self.verbose:
             tqdm.write("\nFinal accumulated prompt shown to LLM:")
             tqdm.write("-------------------------")
-            tqdm.write(self.conversation_history)
+            tqdm.write(history_and_prompt)
             tqdm.write("-------------------------")
 
-        final_choice = self.agent.get_response(self.conversation_history)
+        final_choice = self.agent.get_response(history_and_prompt)
 
         self.task.update_answer(final_choice)
+
+        self.conversation_history += self.task.give_final_feedback()
 
         success = self.task.process_final_choice()
         trial_stats['final_choice'] = final_choice

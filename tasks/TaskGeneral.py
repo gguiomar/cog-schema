@@ -60,6 +60,9 @@ class TaskGeneral:
             )
         except AttributeError:
             raise ValueError("Final prompt not defined for this task.")
+        
+    def give_final_feedback(self) -> Optional[str]:
+        pass
 
     def process_choice(self) -> Optional[str]:
         pass
