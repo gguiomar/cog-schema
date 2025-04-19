@@ -414,18 +414,34 @@ class VSTtask:
     def _get_bias_detection_description(self) -> str:
         """Get description for bias detection task."""
         return (
-            f"""
-            Task:
-            You will play a game with {self.n_rounds} rounds.
-            In each round you'll see active cues (choosable):
-            One cue has 90%% one color / 10%% other, others  have 50/50 color distribution.
-            Possible cues are: A, B, C, D.
-            Active cues disappear after random duration, at least one cue is active per round.
-            Your task is to pick one of the available cues every round, by responding with just the letter and nothing else. Don't use markup or punctuation.
-            Answer like this: "You choose: <letter>".
-            After {self.n_rounds} rounds, identify the biased cue.
-            Correct: +100 points, Wrong: -100 points.
-            """
+            # f"""
+            # Task:
+            # You will play a game of {self.n_rounds} rounds.
+            # In each round you'll see active cues drawn from {{A, B, C, D}}.  
+            # One cue is biased (90% one color, 10% the other); all others are 50/50.  
+            # Active cues disappear after a random time; at least one is always present.  
+
+            # Your job:  
+            # 1. In each round, pick *one* available cue by responding with exactly one uppercase letter (A, B, C or D), and *nothing else*.  
+            # 2. After 4 rounds, identify the biased cue by again returning exactly its single uppercase letter.  
+
+            # Let's begin.
+            # """
+            # f"You will play a game with {self.n_rounds} rounds.\n"
+            # "In each round you'll see active cues (chooseable):\n" +
+            # "One quadrant has 90% one color/10% other\n"
+            # "Other quadrants have 50/50 color distribution\n"
+            # "At least one cue active per round\n"
+            # f"After {self.n_rounds} rounds, identify the biased quadrant.\n"
+            # "Correct: +100 points, Wrong: -100 points."
+            f"You will play a game with {self.n_rounds} rounds."
+            "Each round, you will see a set of active cues labeled A, B, C, or D."
+            "One of the four quadrants is biased: it shows 90% of one color and 10% of the other."
+            "The other quadrants are unbiased: they show a 50/50 color split."
+            "At least one cue is active per round."
+            "Your task: figure out which quadrant is biased."
+            "At the end of 6 rounds, you must make a single guess."
+            "Correct: +100 points, Wrong: -100 points."
         )
 
     def _get_pattern_detection_description(self) -> str:

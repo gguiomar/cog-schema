@@ -130,10 +130,14 @@ class TaskManager:
         """Build prompt including conversation history and trial number."""
         # Add the current round information with trial number
         current_prompt = (
-            f"""
-            Trial {trial_num + 1}, Round {round_num + 1}: Available cues {available_cues}.
-            Based on previous observations, choose one cue by responding with just the letter and nothing else.
-            """
+            # f"Trial {trial_num + 1}, Round {round_num + 1}: Available cues {available_cues}. "
+            # f"Based on previous observations, choose one cue by responding with just the letter. You press <<"
+            # f"""
+            # Round {round_num + 1}: Active cues {available_cues}.
+            # The letter you choose is
+            # """
+            f"Round {round_num + 1} - Active cues {available_cues}.\n"
+            "The letter you choose is "
         )
         
         return self.conversation_history + current_prompt
@@ -141,20 +145,38 @@ class TaskManager:
     def update_history(self, cues: str, choice: str, result: Optional[str], round_num: int, trial_num: int) -> None:
         """Update conversation history with round results including trial number."""
         result_text = result if result is not None else "Invalid choice"
+        # round_text = (
+        #     f"Round {round_num + 1}: Active cues {cues}. "
+        #     f"You chose cue {choice} and saw {result_text}.\n"
+        # )
+        
         round_text = (
-            f"Trial {trial_num + 1}, Round {round_num + 1}: Available cues {cues}. "
-            f"You chose {choice} and saw {result_text}.\n"
+            f"Round {round_num + 1} "
+            f"You chose cue {choice} and saw {result_text}.\n"
         )
+        
+        """Update conversation history with round results including trial number."""
+        # result_text = result if result is not None else "Invalid choice"
+        # round_text = (
+        #     f"Trial {trial_num + 1}, Round {round_num + 1}: Available cues {cues}. "
+        #     f"You chose {choice} and saw {result_text}.\n"
+        # )
         self.conversation_history += round_text
         
     def get_final_prompt(self, num_quadrants: int, trial_num: int) -> str:
         """Build final prompt for a trial including conversation history."""
+        quadrant_letters = [chr(65 + i) for i in range(num_quadrants)]
         prompt = (
+            # self.conversation_history +
+            # f"Trial {trial_num + 1}: Based on all observed colors, which quadrant (1"
+            # f"{', ' + ', '.join(str(i) for i in range(2, num_quadrants + 1))}"
+            # ") do you think had the highest ratio of RED? "
+            # "You choose <<"
             self.conversation_history +
-            f"Trial {trial_num + 1}: Based on all observed colors, which quadrant (1"
-            f"{', ' + ', '.join(str(i) for i in range(2, num_quadrants + 1))}"
+            f"Trial {trial_num + 1}: Based on all observed colors, which quadrant letter ("
+            f"{', '.join(quadrant_letters)}"
             ") do you think had the highest ratio of RED? "
-            "You choose:"
+            "The letter you choose is "
         )
         return prompt
     
@@ -186,7 +208,8 @@ class TaskManager:
             'success': False,
             'agent': self.current_agent,
             'round_times': [],
-            'thinking_times': []
+            'thinking_times': [],
+            'logits': []  # Store logit distributions for each round
         }
         
         # Add a trial separator in the conversation history if this is not the first trial
@@ -239,10 +262,19 @@ class TaskManager:
                 self.thinking_times.append(thinking_time)
                 trial_stats['thinking_times'].append(thinking_time)
             
+            # Get logit distribution for this round
+            logits = self.agent.get_last_logits()
+            if logits is not None:
+                trial_stats['logits'].append(logits)  # Store the token-probability dictionary directly
+            
             if self.verbose:
                 tqdm.write(f"\nLLM chose: {choice}")
                 if self.is_reasoning_model:
                     tqdm.write(f"Thinking time: {thinking_time:.2f} seconds")
+                    if logits is not None:
+                        tqdm.write("Token probabilities:")
+                        for tok, prob in logits.items():
+                            tqdm.write(f"  {tok!r}: {prob:.4f}")
             
             # Process choice
             result = self.task.process_choice(choice, round_data)
@@ -280,6 +312,10 @@ class TaskManager:
             if self.is_reasoning_model and thinking_tokens:
                 round_stats['thinking_tokens'] = thinking_tokens
             
+            # Add token probabilities to round stats
+            if logits is not None:
+                round_stats['token_probabilities'] = logits
+            
             trial_stats['rounds'].append(round_stats)
         
         # Get final answer
@@ -297,15 +333,24 @@ class TaskManager:
         print(f'!!! {final_prompt} !!!')
         final_choice = self.agent.get_response(final_prompt)
         
+        # Get logit distribution for final choice
+        final_logits = self.agent.get_last_logits()
+        if final_logits is not None:
+            trial_stats['final_logits'] = final_logits  # Store the token-probability dictionary directly
+            if self.verbose:
+                tqdm.write("\nFinal choice token probabilities:")
+                for tok, prob in final_logits.items():
+                    tqdm.write(f"  {tok!r}: {prob:.4f}")
+        
         if self.verbose:
             tqdm.write(f"\nLLM's final choice: Quadrant {final_choice}")
             tqdm.write(f"\n=== Trial {trial_num + 1} Results ===")
-            tqdm.write(f"Correct quadrant: {self.task.biased_quadrant + 1}")
+            tqdm.write(f"Correct quadrant: {chr(64 + self.task.biased_quadrant + 1)}")
             tqdm.write(f"LLM chose: {final_choice}")
-            tqdm.write(f"Success: {str(self.task.biased_quadrant + 1) == final_choice}")
+            tqdm.write(f"Success: {chr(64 + self.task.biased_quadrant + 1) == final_choice.upper()}")
         
         trial_stats['final_choice'] = final_choice
-        trial_stats['success'] = str(self.task.biased_quadrant + 1) == final_choice
+        trial_stats['success'] = chr(64 + self.task.biased_quadrant + 1) == final_choice.upper()
         
         return trial_stats
     
