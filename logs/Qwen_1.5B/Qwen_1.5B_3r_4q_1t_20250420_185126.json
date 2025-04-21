@@ -1,0 +1,4195 @@
+{
+  "metrics": {
+    "agent": "Qwen_1.5B",
+    "timestamp": "20250420_185126",
+    "is_reasoning_model": false,
+    "n_simulations": 50,
+    "n_trials": 1,
+    "n_rounds": 3,
+    "n_quadrants": 4,
+    "n_cues": 1,
+    "success_rate": 0.2,
+    "total_time": 18.180045127868652,
+    "avg_trial_time": 0.36352100372314455,
+    "std_trial_time": 0.0070063810352580915,
+    "avg_round_time": 0.08672252972920735,
+    "std_round_time": 0.002796786513627191,
+    "avg_thinking_time": null,
+    "std_thinking_time": null,
+    "reasoning_mode": null,
+    "min_thinking_time": null,
+    "max_thinking_time": null,
+    "min_thinking_tokens": null,
+    "max_thinking_tokens": null,
+    "quadrant_distribution": {
+      "quadrant_1": {
+        "times_chosen": 0,
+        "times_correct": 10,
+        "accuracy_when_chosen": 0.0
+      },
+      "quadrant_2": {
+        "times_chosen": 0,
+        "times_correct": 13,
+        "accuracy_when_chosen": 0.0
+      },
+      "quadrant_3": {
+        "times_chosen": 0,
+        "times_correct": 13,
+        "accuracy_when_chosen": 0.0
+      },
+      "quadrant_4": {
+        "times_chosen": 0,
+        "times_correct": 14,
+        "accuracy_when_chosen": 0.0
+      }
+    }
+  },
+  "raw_results": [
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "D"
+              ],
+              "choice": "A",
+              "quadrant": 1,
+              "result": "RED",
+              "round_time": 0.08490395545959473,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "B",
+                "C"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08551287651062012,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "D"
+              ],
+              "choice": "D",
+              "quadrant": 4,
+              "result": "GREEN",
+              "round_time": 0.08635950088500977,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 3,
+          "success": true,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08490395545959473,
+            0.08551287651062012,
+            0.08635950088500977
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "A": 0.3104841709136963,
+              "C": 0.30093157291412354,
+              "D": 0.21845290064811707,
+              "B": 0.17013129591941833
+            },
+            {
+              "C": 0.4373045265674591,
+              "B": 0.4044405519962311,
+              "A": 0.08644739538431168,
+              "D": 0.07180751860141754
+            },
+            {
+              "D": 0.44218775629997253,
+              "C": 0.33903712034225464,
+              "A": 0.14133170247077942,
+              "B": 0.07744337618350983
+            },
+            {
+              "C": 0.4201549291610718,
+              "D": 0.3483206629753113,
+              "B": 0.14748825132846832,
+              "A": 0.08403626829385757
+            }
+          ],
+          "trial_time": 0.3593466281890869
+        }
+      ],
+      "avg_trial_time": 0.3593466281890869,
+      "std_trial_time": 0.0,
+      "success_rate": 1.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "C"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08594799041748047,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.08655691146850586,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.0864567756652832,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 2,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08594799041748047,
+            0.08655691146850586,
+            0.0864567756652832
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.8274726271629333,
+              "A": 0.0794101357460022,
+              "D": 0.05127103626728058,
+              "B": 0.041846200823783875
+            },
+            {
+              "C": 0.6687719225883484,
+              "D": 0.14018221199512482,
+              "A": 0.13168899714946747,
+              "B": 0.05935687944293022
+            },
+            {
+              "C": 0.45932161808013916,
+              "D": 0.24972882866859436,
+              "A": 0.16635526716709137,
+              "B": 0.12459433078765869
+            },
+            {
+              "C": 0.809837281703949,
+              "D": 0.11666812747716904,
+              "B": 0.041599299758672714,
+              "A": 0.031895287334918976
+            }
+          ],
+          "trial_time": 0.3615257740020752
+        }
+      ],
+      "avg_trial_time": 0.3615257740020752,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08610153198242188,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.08632421493530273,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.08651924133300781,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 1,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08610153198242188,
+            0.08632421493530273,
+            0.08651924133300781
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.3678560256958008,
+              "A": 0.3349367082118988,
+              "B": 0.17106893658638,
+              "D": 0.1261383295059204
+            },
+            {
+              "C": 0.6034361720085144,
+              "A": 0.159894660115242,
+              "B": 0.1284789741039276,
+              "D": 0.1081901416182518
+            },
+            {
+              "C": 0.4472486972808838,
+              "D": 0.3122299015522003,
+              "A": 0.1697564572095871,
+              "B": 0.07076501846313477
+            },
+            {
+              "C": 0.809837281703949,
+              "D": 0.11666812747716904,
+              "B": 0.041599299758672714,
+              "A": 0.031895287334918976
+            }
+          ],
+          "trial_time": 0.36162662506103516
+        }
+      ],
+      "avg_trial_time": 0.36162662506103516,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08605051040649414,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.08632850646972656,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A"
+              ],
+              "choice": "C",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.08638739585876465,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 2,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08605051040649414,
+            0.08632850646972656,
+            0.08638739585876465
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.3858918845653534,
+              "B": 0.3199155926704407,
+              "A": 0.15111742913722992,
+              "D": 0.1430751085281372
+            },
+            {
+              "C": 0.6034361720085144,
+              "A": 0.159894660115242,
+              "B": 0.1284789741039276,
+              "D": 0.1081901416182518
+            },
+            {
+              "C": 0.5620882511138916,
+              "A": 0.21168437600135803,
+              "B": 0.12061411887407303,
+              "D": 0.10561325401067734
+            },
+            {
+              "C": 0.809837281703949,
+              "D": 0.11666812747716904,
+              "B": 0.041599299758672714,
+              "A": 0.031895287334918976
+            }
+          ],
+          "trial_time": 0.3617231845855713
+        }
+      ],
+      "avg_trial_time": 0.3617231845855713,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08599424362182617,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.08609437942504883,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08642721176147461,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 3,
+          "success": true,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08599424362182617,
+            0.08609437942504883,
+            0.08642721176147461
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.3858918845653534,
+              "B": 0.3199155926704407,
+              "A": 0.15111742913722992,
+              "D": 0.1430751085281372
+            },
+            {
+              "C": 0.3541536033153534,
+              "D": 0.3326965272426605,
+              "A": 0.2148050218820572,
+              "B": 0.09834489971399307
+            },
+            {
+              "C": 0.6476675271987915,
+              "A": 0.2006380409002304,
+              "B": 0.09330535680055618,
+              "D": 0.058389004319906235
+            },
+            {
+              "C": 0.8747112154960632,
+              "D": 0.07407987117767334,
+              "B": 0.026004480198025703,
+              "A": 0.025204405188560486
+            }
+          ],
+          "trial_time": 0.3626728057861328
+        }
+      ],
+      "avg_trial_time": 0.3626728057861328,
+      "std_trial_time": 0.0,
+      "success_rate": 1.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08596014976501465,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.08630847930908203,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "C"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08629465103149414,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 3,
+          "success": true,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08596014976501465,
+            0.08630847930908203,
+            0.08629465103149414
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.3858918845653534,
+              "B": 0.3199155926704407,
+              "A": 0.15111742913722992,
+              "D": 0.1430751085281372
+            },
+            {
+              "C": 0.37884339690208435,
+              "D": 0.23707415163516998,
+              "B": 0.19654136896133423,
+              "A": 0.18754108250141144
+            },
+            {
+              "C": 0.7395009398460388,
+              "A": 0.18407633900642395,
+              "B": 0.038584496825933456,
+              "D": 0.03783820569515228
+            },
+            {
+              "C": 0.8747112154960632,
+              "D": 0.07407987117767334,
+              "B": 0.026004480198025703,
+              "A": 0.025204405188560486
+            }
+          ],
+          "trial_time": 0.3620333671569824
+        }
+      ],
+      "avg_trial_time": 0.3620333671569824,
+      "std_trial_time": 0.0,
+      "success_rate": 1.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08604812622070312,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B"
+              ],
+              "choice": "C",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.08624529838562012,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.08759307861328125,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 2,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08604812622070312,
+            0.08624529838562012,
+            0.08759307861328125
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.46797478199005127,
+              "A": 0.2708430290222168,
+              "D": 0.15553206205368042,
+              "B": 0.1056501492857933
+            },
+            {
+              "C": 0.42994073033332825,
+              "A": 0.26905006170272827,
+              "B": 0.21959222853183746,
+              "D": 0.08141706138849258
+            },
+            {
+              "C": 0.7016062140464783,
+              "D": 0.2313651740550995,
+              "A": 0.03632240742444992,
+              "B": 0.030706245452165604
+            },
+            {
+              "C": 0.8495333790779114,
+              "D": 0.09095020592212677,
+              "B": 0.03345871344208717,
+              "A": 0.026057671755552292
+            }
+          ],
+          "trial_time": 0.3644130229949951
+        }
+      ],
+      "avg_trial_time": 0.3644130229949951,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08588981628417969,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.08626317977905273,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A"
+              ],
+              "choice": "C",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.08737874031066895,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 2,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08588981628417969,
+            0.08626317977905273,
+            0.08737874031066895
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.3858918845653534,
+              "B": 0.3199155926704407,
+              "A": 0.15111742913722992,
+              "D": 0.1430751085281372
+            },
+            {
+              "C": 0.6034361720085144,
+              "A": 0.159894660115242,
+              "B": 0.1284789741039276,
+              "D": 0.1081901416182518
+            },
+            {
+              "C": 0.5620882511138916,
+              "A": 0.21168437600135803,
+              "B": 0.12061411887407303,
+              "D": 0.10561325401067734
+            },
+            {
+              "C": 0.809837281703949,
+              "D": 0.11666812747716904,
+              "B": 0.041599299758672714,
+              "A": 0.031895287334918976
+            }
+          ],
+          "trial_time": 0.3654899597167969
+        }
+      ],
+      "avg_trial_time": 0.3654899597167969,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "C"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08629798889160156,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08626151084899902,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "B",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.08636069297790527,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 3,
+          "success": true,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08629798889160156,
+            0.08626151084899902,
+            0.08636069297790527
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.43848785758018494,
+              "A": 0.383952796459198,
+              "B": 0.09707847237586975,
+              "D": 0.08048088103532791
+            },
+            {
+              "C": 0.6034361720085144,
+              "A": 0.159894660115242,
+              "B": 0.1284789741039276,
+              "D": 0.1081901416182518
+            },
+            {
+              "C": 0.37217238545417786,
+              "D": 0.2898481488227844,
+              "B": 0.27228716015815735,
+              "A": 0.06569232791662216
+            },
+            {
+              "C": 0.8384010195732117,
+              "D": 0.10331127792596817,
+              "A": 0.029599176719784737,
+              "B": 0.028688505291938782
+            }
+          ],
+          "trial_time": 0.36247849464416504
+        }
+      ],
+      "avg_trial_time": 0.36247849464416504,
+      "std_trial_time": 0.0,
+      "success_rate": 1.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "D"
+              ],
+              "choice": "A",
+              "quadrant": 1,
+              "result": "RED",
+              "round_time": 0.08597517013549805,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.08614587783813477,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08632206916809082,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "D",
+          "correct_quadrant": 3,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08597517013549805,
+            0.08614587783813477,
+            0.08632206916809082
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "A": 0.38394245505332947,
+              "D": 0.37212976813316345,
+              "C": 0.16773204505443573,
+              "B": 0.07619571685791016
+            },
+            {
+              "B": 0.4206470251083374,
+              "A": 0.29365894198417664,
+              "C": 0.2148454636335373,
+              "D": 0.07084851711988449
+            },
+            {
+              "C": 0.4671488106250763,
+              "B": 0.28334006667137146,
+              "D": 0.17730969190597534,
+              "A": 0.07220146805047989
+            },
+            {
+              "D": 0.3872258961200714,
+              "C": 0.3525731861591339,
+              "B": 0.14024393260478973,
+              "A": 0.11995698511600494
+            }
+          ],
+          "trial_time": 0.35992431640625
+        }
+      ],
+      "avg_trial_time": 0.35992431640625,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08475852012634277,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.0849604606628418,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.08511114120483398,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 4,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08475852012634277,
+            0.0849604606628418,
+            0.08511114120483398
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.3678560256958008,
+              "A": 0.3349367082118988,
+              "B": 0.17106893658638,
+              "D": 0.1261383295059204
+            },
+            {
+              "C": 0.5632674694061279,
+              "B": 0.25388455390930176,
+              "D": 0.1380346268415451,
+              "A": 0.044813282787799835
+            },
+            {
+              "C": 0.4472486972808838,
+              "D": 0.3122299015522003,
+              "A": 0.1697564572095871,
+              "B": 0.07076501846313477
+            },
+            {
+              "C": 0.809837281703949,
+              "D": 0.11666812747716904,
+              "B": 0.041599299758672714,
+              "A": 0.031895287334918976
+            }
+          ],
+          "trial_time": 0.3559432029724121
+        }
+      ],
+      "avg_trial_time": 0.3559432029724121,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.0846414566040039,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "B"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.0849919319152832,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "C"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.08629393577575684,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 4,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.0846414566040039,
+            0.0849919319152832,
+            0.08629393577575684
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.33462387323379517,
+              "A": 0.3046784996986389,
+              "D": 0.21104463934898376,
+              "B": 0.14965304732322693
+            },
+            {
+              "B": 0.5010185837745667,
+              "C": 0.34434470534324646,
+              "A": 0.07958291471004486,
+              "D": 0.07505384087562561
+            },
+            {
+              "C": 0.7489602565765381,
+              "A": 0.12226440012454987,
+              "B": 0.08602374792098999,
+              "D": 0.04275151714682579
+            },
+            {
+              "C": 0.7019769549369812,
+              "D": 0.1720268428325653,
+              "B": 0.08383919298648834,
+              "A": 0.04215699061751366
+            }
+          ],
+          "trial_time": 0.36022305488586426
+        }
+      ],
+      "avg_trial_time": 0.36022305488586426,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08469367027282715,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.08489274978637695,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B"
+              ],
+              "choice": "C",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.08517122268676758,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 1,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08469367027282715,
+            0.08489274978637695,
+            0.08517122268676758
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.7491504549980164,
+              "D": 0.12816452980041504,
+              "A": 0.08405235409736633,
+              "B": 0.0386325865983963
+            },
+            {
+              "C": 0.6034361720085144,
+              "A": 0.159894660115242,
+              "B": 0.1284789741039276,
+              "D": 0.1081901416182518
+            },
+            {
+              "C": 0.5374225378036499,
+              "A": 0.21713833510875702,
+              "B": 0.15277589857578278,
+              "D": 0.09266326576471329
+            },
+            {
+              "C": 0.809837281703949,
+              "D": 0.11666812747716904,
+              "B": 0.041599299758672714,
+              "A": 0.031895287334918976
+            }
+          ],
+          "trial_time": 0.3560361862182617
+        }
+      ],
+      "avg_trial_time": 0.3560361862182617,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "C"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08554649353027344,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.08517861366271973,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.09380936622619629,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 1,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08554649353027344,
+            0.08517861366271973,
+            0.09380936622619629
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.43848785758018494,
+              "A": 0.383952796459198,
+              "B": 0.09707847237586975,
+              "D": 0.08048088103532791
+            },
+            {
+              "C": 0.37884339690208435,
+              "D": 0.23707415163516998,
+              "B": 0.19654136896133423,
+              "A": 0.18754108250141144
+            },
+            {
+              "C": 0.644706130027771,
+              "A": 0.1681816577911377,
+              "D": 0.1012134924530983,
+              "B": 0.08589877933263779
+            },
+            {
+              "C": 0.8495333790779114,
+              "D": 0.09095020592212677,
+              "B": 0.03345871344208717,
+              "A": 0.026057671755552292
+            }
+          ],
+          "trial_time": 0.3672666549682617
+        }
+      ],
+      "avg_trial_time": 0.3672666549682617,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.0860893726348877,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "C"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.09042167663574219,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.08654427528381348,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 4,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.0860893726348877,
+            0.09042167663574219,
+            0.08654427528381348
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.33462387323379517,
+              "A": 0.3046784996986389,
+              "D": 0.21104463934898376,
+              "B": 0.14965304732322693
+            },
+            {
+              "C": 0.8571049571037292,
+              "A": 0.05394340306520462,
+              "B": 0.05187686160206795,
+              "D": 0.03707472234964371
+            },
+            {
+              "C": 0.45932161808013916,
+              "D": 0.24972882866859436,
+              "A": 0.16635526716709137,
+              "B": 0.12459433078765869
+            },
+            {
+              "C": 0.809837281703949,
+              "D": 0.11666812747716904,
+              "B": 0.041599299758672714,
+              "A": 0.031895287334918976
+            }
+          ],
+          "trial_time": 0.3674156665802002
+        }
+      ],
+      "avg_trial_time": 0.3674156665802002,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08722329139709473,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "D"
+              ],
+              "choice": "D",
+              "quadrant": 4,
+              "result": "RED",
+              "round_time": 0.08733987808227539,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.09616351127624512,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 1,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08722329139709473,
+            0.08733987808227539,
+            0.09616351127624512
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.3678560256958008,
+              "A": 0.3349367082118988,
+              "B": 0.17106893658638,
+              "D": 0.1261383295059204
+            },
+            {
+              "D": 0.5938800573348999,
+              "C": 0.2849467694759369,
+              "B": 0.07318037748336792,
+              "A": 0.04799286648631096
+            },
+            {
+              "C": 0.575518786907196,
+              "D": 0.19581039249897003,
+              "A": 0.13249194622039795,
+              "B": 0.09617883712053299
+            },
+            {
+              "C": 0.6706674098968506,
+              "D": 0.21773383021354675,
+              "B": 0.07068782299757004,
+              "A": 0.04091097414493561
+            }
+          ],
+          "trial_time": 0.3763284683227539
+        }
+      ],
+      "avg_trial_time": 0.3763284683227539,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08735895156860352,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.08761882781982422,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "B"
+              ],
+              "choice": "C",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.08776974678039551,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 3,
+          "success": true,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08735895156860352,
+            0.08761882781982422,
+            0.08776974678039551
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.33462387323379517,
+              "A": 0.3046784996986389,
+              "D": 0.21104463934898376,
+              "B": 0.14965304732322693
+            },
+            {
+              "C": 0.3541536033153534,
+              "D": 0.3326965272426605,
+              "A": 0.2148050218820572,
+              "B": 0.09834489971399307
+            },
+            {
+              "C": 0.5148946642875671,
+              "B": 0.3324410021305084,
+              "D": 0.08020512014627457,
+              "A": 0.07245928794145584
+            },
+            {
+              "C": 0.8604912161827087,
+              "D": 0.08790471404790878,
+              "A": 0.02680942229926586,
+              "B": 0.02479466237127781
+            }
+          ],
+          "trial_time": 0.3671107292175293
+        }
+      ],
+      "avg_trial_time": 0.3671107292175293,
+      "std_trial_time": 0.0,
+      "success_rate": 1.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.0858762264251709,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08600687980651855,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08612537384033203,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 3,
+          "success": true,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.0858762264251709,
+            0.08600687980651855,
+            0.08612537384033203
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.3858918845653534,
+              "B": 0.3199155926704407,
+              "A": 0.15111742913722992,
+              "D": 0.1430751085281372
+            },
+            {
+              "C": 0.6397780776023865,
+              "A": 0.17765994369983673,
+              "B": 0.13621661067008972,
+              "D": 0.04634537175297737
+            },
+            {
+              "C": 0.662784993648529,
+              "D": 0.1675782948732376,
+              "A": 0.12453360855579376,
+              "B": 0.04510308429598808
+            },
+            {
+              "C": 0.8635645508766174,
+              "D": 0.08417884260416031,
+              "A": 0.027759239077568054,
+              "B": 0.024497441947460175
+            }
+          ],
+          "trial_time": 0.36030030250549316
+        }
+      ],
+      "avg_trial_time": 0.36030030250549316,
+      "std_trial_time": 0.0,
+      "success_rate": 1.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08472633361816406,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B"
+              ],
+              "choice": "C",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.08484172821044922,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.09447503089904785,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 1,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08472633361816406,
+            0.08484172821044922,
+            0.09447503089904785
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.46797478199005127,
+              "A": 0.2708430290222168,
+              "D": 0.15553206205368042,
+              "B": 0.1056501492857933
+            },
+            {
+              "C": 0.42994073033332825,
+              "A": 0.26905006170272827,
+              "B": 0.21959222853183746,
+              "D": 0.08141706138849258
+            },
+            {
+              "C": 0.644706130027771,
+              "A": 0.1681816577911377,
+              "D": 0.1012134924530983,
+              "B": 0.08589877933263779
+            },
+            {
+              "C": 0.8495333790779114,
+              "D": 0.09095020592212677,
+              "B": 0.03345871344208717,
+              "A": 0.026057671755552292
+            }
+          ],
+          "trial_time": 0.36875414848327637
+        }
+      ],
+      "avg_trial_time": 0.36875414848327637,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.08727526664733887,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08743667602539062,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "D"
+              ],
+              "choice": "D",
+              "quadrant": 4,
+              "result": "RED",
+              "round_time": 0.08697104454040527,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 2,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08727526664733887,
+            0.08743667602539062,
+            0.08697104454040527
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.3678560256958008,
+              "A": 0.3349367082118988,
+              "B": 0.17106893658638,
+              "D": 0.1261383295059204
+            },
+            {
+              "C": 0.701982319355011,
+              "D": 0.12585848569869995,
+              "A": 0.12585848569869995,
+              "B": 0.04630075395107269
+            },
+            {
+              "D": 0.4897300601005554,
+              "C": 0.43218526244163513,
+              "B": 0.04449678212404251,
+              "A": 0.03358793258666992
+            },
+            {
+              "C": 0.6180243492126465,
+              "D": 0.2742466330528259,
+              "B": 0.07497486472129822,
+              "A": 0.032754089683294296
+            }
+          ],
+          "trial_time": 0.3684089183807373
+        }
+      ],
+      "avg_trial_time": 0.3684089183807373,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "B",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.08885002136230469,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "C"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.09149432182312012,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.09385395050048828,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 4,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08885002136230469,
+            0.09149432182312012,
+            0.09385395050048828
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.41223180294036865,
+              "D": 0.22412654757499695,
+              "C": 0.21893465518951416,
+              "A": 0.14470697939395905
+            },
+            {
+              "C": 0.5359316468238831,
+              "B": 0.19715823233127594,
+              "A": 0.19715823233127594,
+              "D": 0.06975186616182327
+            },
+            {
+              "C": 0.42718082666397095,
+              "B": 0.2935968041419983,
+              "A": 0.18087974190711975,
+              "D": 0.09834261238574982
+            },
+            {
+              "C": 0.47270479798316956,
+              "B": 0.2610523998737335,
+              "D": 0.2164200246334076,
+              "A": 0.049822717905044556
+            }
+          ],
+          "trial_time": 0.3813910484313965
+        }
+      ],
+      "avg_trial_time": 0.3813910484313965,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "B"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.08847689628601074,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.09110093116760254,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.08754515647888184,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 4,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08847689628601074,
+            0.09110093116760254,
+            0.08754515647888184
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.5497947931289673,
+              "C": 0.22918856143951416,
+              "A": 0.14454741775989532,
+              "D": 0.07646926492452621
+            },
+            {
+              "C": 0.48551613092422485,
+              "B": 0.1814241260290146,
+              "D": 0.1704321950674057,
+              "A": 0.16262753307819366
+            },
+            {
+              "C": 0.43064361810684204,
+              "B": 0.30537205934524536,
+              "A": 0.16864246129989624,
+              "D": 0.09534180164337158
+            },
+            {
+              "C": 0.47996920347213745,
+              "D": 0.23391830921173096,
+              "B": 0.23391830921173096,
+              "A": 0.05219423025846481
+            }
+          ],
+          "trial_time": 0.37151074409484863
+        }
+      ],
+      "avg_trial_time": 0.37151074409484863,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "D"
+              ],
+              "choice": "A",
+              "quadrant": 1,
+              "result": "GREEN",
+              "round_time": 0.08726811408996582,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "C"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08758854866027832,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.08769083023071289,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 3,
+          "success": true,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08726811408996582,
+            0.08758854866027832,
+            0.08769083023071289
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "A": 0.3104841709136963,
+              "C": 0.30093157291412354,
+              "D": 0.21845290064811707,
+              "B": 0.17013129591941833
+            },
+            {
+              "C": 0.8680668473243713,
+              "B": 0.04746623709797859,
+              "A": 0.04511602222919464,
+              "D": 0.03935089707374573
+            },
+            {
+              "C": 0.3850955367088318,
+              "D": 0.2999127209186554,
+              "B": 0.18190625309944153,
+              "A": 0.1330854594707489
+            },
+            {
+              "C": 0.5429824590682983,
+              "D": 0.26462849974632263,
+              "B": 0.13515901565551758,
+              "A": 0.05722992867231369
+            }
+          ],
+          "trial_time": 0.36883091926574707
+        }
+      ],
+      "avg_trial_time": 0.36883091926574707,
+      "std_trial_time": 0.0,
+      "success_rate": 1.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08611679077148438,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.08679461479187012,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B"
+              ],
+              "choice": "C",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.08771347999572754,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 2,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08611679077148438,
+            0.08679461479187012,
+            0.08771347999572754
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.33462387323379517,
+              "A": 0.3046784996986389,
+              "D": 0.21104463934898376,
+              "B": 0.14965304732322693
+            },
+            {
+              "C": 0.6186758279800415,
+              "D": 0.27885904908180237,
+              "B": 0.05799715220928192,
+              "A": 0.04446795955300331
+            },
+            {
+              "C": 0.5374225378036499,
+              "A": 0.21713833510875702,
+              "B": 0.15277589857578278,
+              "D": 0.09266326576471329
+            },
+            {
+              "C": 0.809837281703949,
+              "D": 0.11666812747716904,
+              "B": 0.041599299758672714,
+              "A": 0.031895287334918976
+            }
+          ],
+          "trial_time": 0.365553617477417
+        }
+      ],
+      "avg_trial_time": 0.365553617477417,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "D"
+              ],
+              "choice": "A",
+              "quadrant": 1,
+              "result": "RED",
+              "round_time": 0.08776521682739258,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.0954594612121582,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.09050869941711426,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 1,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08776521682739258,
+            0.0954594612121582,
+            0.09050869941711426
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "A": 0.38394245505332947,
+              "D": 0.37212976813316345,
+              "C": 0.16773204505443573,
+              "B": 0.07619571685791016
+            },
+            {
+              "C": 0.3001435101032257,
+              "B": 0.28639891743659973,
+              "A": 0.26487571001052856,
+              "D": 0.14858180284500122
+            },
+            {
+              "C": 0.4802725315093994,
+              "B": 0.20981553196907043,
+              "A": 0.20020736753940582,
+              "D": 0.10970459133386612
+            },
+            {
+              "C": 0.5392912030220032,
+              "D": 0.24690549075603485,
+              "B": 0.13850143551826477,
+              "A": 0.07530192285776138
+            }
+          ],
+          "trial_time": 0.3805568218231201
+        }
+      ],
+      "avg_trial_time": 0.3805568218231201,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "C"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.08804941177368164,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.0882730484008789,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.09513306617736816,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 2,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08804941177368164,
+            0.0882730484008789,
+            0.09513306617736816
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.8274726271629333,
+              "A": 0.0794101357460022,
+              "D": 0.05127103626728058,
+              "B": 0.041846200823783875
+            },
+            {
+              "C": 0.3842591345310211,
+              "D": 0.2404632270336151,
+              "A": 0.1993510127067566,
+              "B": 0.17592664062976837
+            },
+            {
+              "C": 0.6691070795059204,
+              "A": 0.1564629226922989,
+              "D": 0.09197980910539627,
+              "B": 0.08245016634464264
+            },
+            {
+              "C": 0.7738317251205444,
+              "D": 0.15237650275230408,
+              "B": 0.046472206711769104,
+              "A": 0.02731960266828537
+            }
+          ],
+          "trial_time": 0.37496495246887207
+        }
+      ],
+      "avg_trial_time": 0.37496495246887207,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08614754676818848,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "B"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.08643579483032227,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "C"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.08648490905761719,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 4,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08614754676818848,
+            0.08643579483032227,
+            0.08648490905761719
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.33462387323379517,
+              "A": 0.3046784996986389,
+              "D": 0.21104463934898376,
+              "B": 0.14965304732322693
+            },
+            {
+              "B": 0.5010185837745667,
+              "C": 0.34434470534324646,
+              "A": 0.07958291471004486,
+              "D": 0.07505384087562561
+            },
+            {
+              "C": 0.7400876879692078,
+              "A": 0.13477997481822968,
+              "B": 0.08238934725522995,
+              "D": 0.042743030935525894
+            },
+            {
+              "C": 0.7531731128692627,
+              "D": 0.13932302594184875,
+              "B": 0.0711592361330986,
+              "A": 0.036344580352306366
+            }
+          ],
+          "trial_time": 0.3623068332672119
+        }
+      ],
+      "avg_trial_time": 0.3623068332672119,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08606839179992676,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B"
+              ],
+              "choice": "C",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.08632826805114746,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.09510993957519531,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 2,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08606839179992676,
+            0.08632826805114746,
+            0.09510993957519531
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.3858918845653534,
+              "B": 0.3199155926704407,
+              "A": 0.15111742913722992,
+              "D": 0.1430751085281372
+            },
+            {
+              "C": 0.42994073033332825,
+              "A": 0.26905006170272827,
+              "B": 0.21959222853183746,
+              "D": 0.08141706138849258
+            },
+            {
+              "C": 0.644706130027771,
+              "A": 0.1681816577911377,
+              "D": 0.1012134924530983,
+              "B": 0.08589877933263779
+            },
+            {
+              "C": 0.8495333790779114,
+              "D": 0.09095020592212677,
+              "B": 0.03345871344208717,
+              "A": 0.026057671755552292
+            }
+          ],
+          "trial_time": 0.37205958366394043
+        }
+      ],
+      "avg_trial_time": 0.37205958366394043,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "B",
+                "C"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08591413497924805,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.08612942695617676,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08612847328186035,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 3,
+          "success": true,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08591413497924805,
+            0.08612942695617676,
+            0.08612847328186035
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.394834041595459,
+              "B": 0.38871270418167114,
+              "A": 0.13433551788330078,
+              "D": 0.08211765438318253
+            },
+            {
+              "C": 0.37884339690208435,
+              "D": 0.23707415163516998,
+              "B": 0.19654136896133423,
+              "A": 0.18754108250141144
+            },
+            {
+              "C": 0.6292796730995178,
+              "A": 0.1616123914718628,
+              "D": 0.15664009749889374,
+              "B": 0.05246786028146744
+            },
+            {
+              "C": 0.8747112154960632,
+              "D": 0.07407987117767334,
+              "B": 0.026004480198025703,
+              "A": 0.025204405188560486
+            }
+          ],
+          "trial_time": 0.36284804344177246
+        }
+      ],
+      "avg_trial_time": 0.36284804344177246,
+      "std_trial_time": 0.0,
+      "success_rate": 1.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.08598160743713379,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.086212158203125,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "B",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.08634448051452637,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 4,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08598160743713379,
+            0.086212158203125,
+            0.08634448051452637
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.46797478199005127,
+              "A": 0.2708430290222168,
+              "D": 0.15553206205368042,
+              "B": 0.1056501492857933
+            },
+            {
+              "C": 0.6343883872032166,
+              "A": 0.15305332839488983,
+              "B": 0.11373956501483917,
+              "D": 0.09881865233182907
+            },
+            {
+              "C": 0.4267376959323883,
+              "B": 0.262905478477478,
+              "D": 0.2548167109489441,
+              "A": 0.05554020032286644
+            },
+            {
+              "C": 0.7512816190719604,
+              "D": 0.15747718513011932,
+              "B": 0.06071286275982857,
+              "A": 0.030528342351317406
+            }
+          ],
+          "trial_time": 0.3615548610687256
+        }
+      ],
+      "avg_trial_time": 0.3615548610687256,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.08477163314819336,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "D"
+              ],
+              "choice": "D",
+              "quadrant": 4,
+              "result": "RED",
+              "round_time": 0.08465385437011719,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08504891395568848,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 1,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08477163314819336,
+            0.08465385437011719,
+            0.08504891395568848
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.3678560256958008,
+              "A": 0.3349367082118988,
+              "B": 0.17106893658638,
+              "D": 0.1261383295059204
+            },
+            {
+              "D": 0.6657778024673462,
+              "C": 0.24492597579956055,
+              "B": 0.05054333060979843,
+              "A": 0.03875291347503662
+            },
+            {
+              "C": 0.5368470549583435,
+              "D": 0.22032158076763153,
+              "B": 0.19443312287330627,
+              "A": 0.04839823395013809
+            },
+            {
+              "C": 0.6565841436386108,
+              "D": 0.24154381453990936,
+              "B": 0.06707429140806198,
+              "A": 0.034797683358192444
+            }
+          ],
+          "trial_time": 0.355457067489624
+        }
+      ],
+      "avg_trial_time": 0.355457067489624,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "B",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.08473753929138184,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.08469533920288086,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08495354652404785,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 3,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08473753929138184,
+            0.08469533920288086,
+            0.08495354652404785
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.41223180294036865,
+              "D": 0.22412654757499695,
+              "C": 0.21893465518951416,
+              "A": 0.14470697939395905
+            },
+            {
+              "B": 0.3912218511104584,
+              "C": 0.3562115430831909,
+              "A": 0.1906663030385971,
+              "D": 0.06190028414130211
+            },
+            {
+              "C": 0.4700515568256378,
+              "B": 0.18122102320194244,
+              "D": 0.17981074750423431,
+              "A": 0.16891656816005707
+            },
+            {
+              "B": 0.4691752791404724,
+              "C": 0.2591032087802887,
+              "D": 0.21480408310890198,
+              "A": 0.05691742151975632
+            }
+          ],
+          "trial_time": 0.35555410385131836
+        }
+      ],
+      "avg_trial_time": 0.35555410385131836,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B"
+              ],
+              "choice": "A",
+              "quadrant": 1,
+              "result": "GREEN",
+              "round_time": 0.08458137512207031,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "D"
+              ],
+              "choice": "D",
+              "quadrant": 4,
+              "result": "RED",
+              "round_time": 0.08477640151977539,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08512401580810547,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "D",
+          "correct_quadrant": 3,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08458137512207031,
+            0.08477640151977539,
+            0.08512401580810547
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "A": 0.4588409960269928,
+              "C": 0.2553834617137909,
+              "B": 0.18978488445281982,
+              "D": 0.0959906354546547
+            },
+            {
+              "D": 0.2889355719089508,
+              "B": 0.2714298665523529,
+              "A": 0.2215345948934555,
+              "C": 0.21810001134872437
+            },
+            {
+              "C": 0.5260362029075623,
+              "D": 0.37301552295684814,
+              "A": 0.058104608207941055,
+              "B": 0.04284365475177765
+            },
+            {
+              "D": 0.4215000569820404,
+              "C": 0.395962655544281,
+              "B": 0.12459518015384674,
+              "A": 0.057942140847444534
+            }
+          ],
+          "trial_time": 0.35814666748046875
+        }
+      ],
+      "avg_trial_time": 0.35814666748046875,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "B",
+                "C"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.08466982841491699,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.08479523658752441,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08497428894042969,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 4,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08466982841491699,
+            0.08479523658752441,
+            0.08497428894042969
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.394834041595459,
+              "B": 0.38871270418167114,
+              "A": 0.13433551788330078,
+              "D": 0.08211765438318253
+            },
+            {
+              "C": 0.3842591345310211,
+              "D": 0.2404632270336151,
+              "A": 0.1993510127067566,
+              "B": 0.17592664062976837
+            },
+            {
+              "C": 0.6870517730712891,
+              "A": 0.1395830363035202,
+              "D": 0.13112612068653107,
+              "B": 0.04223913326859474
+            },
+            {
+              "C": 0.7738317251205444,
+              "D": 0.15237650275230408,
+              "B": 0.046472206711769104,
+              "A": 0.02731960266828537
+            }
+          ],
+          "trial_time": 0.3555643558502197
+        }
+      ],
+      "avg_trial_time": 0.3555643558502197,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "B",
+                "C"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.08452868461608887,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.08476591110229492,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.0933525562286377,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 2,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08452868461608887,
+            0.08476591110229492,
+            0.0933525562286377
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.394834041595459,
+              "B": 0.38871270418167114,
+              "A": 0.13433551788330078,
+              "D": 0.08211765438318253
+            },
+            {
+              "C": 0.3842591345310211,
+              "D": 0.2404632270336151,
+              "A": 0.1993510127067566,
+              "B": 0.17592664062976837
+            },
+            {
+              "C": 0.6691070795059204,
+              "A": 0.1564629226922989,
+              "D": 0.09197980910539627,
+              "B": 0.08245016634464264
+            },
+            {
+              "C": 0.7738317251205444,
+              "D": 0.15237650275230408,
+              "B": 0.046472206711769104,
+              "A": 0.02731960266828537
+            }
+          ],
+          "trial_time": 0.3638346195220947
+        }
+      ],
+      "avg_trial_time": 0.3638346195220947,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "D"
+              ],
+              "choice": "A",
+              "quadrant": 1,
+              "result": "RED",
+              "round_time": 0.08452010154724121,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08477115631103516,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.09320735931396484,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 4,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08452010154724121,
+            0.08477115631103516,
+            0.09320735931396484
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "A": 0.3104841709136963,
+              "C": 0.30093157291412354,
+              "D": 0.21845290064811707,
+              "B": 0.17013129591941833
+            },
+            {
+              "C": 0.6895387768745422,
+              "D": 0.1855868399143219,
+              "A": 0.06827358901500702,
+              "B": 0.05660079047083855
+            },
+            {
+              "C": 0.4566006660461426,
+              "D": 0.19947406649589539,
+              "B": 0.17330606281757355,
+              "A": 0.1706192046403885
+            },
+            {
+              "C": 0.5793217420578003,
+              "D": 0.2340671420097351,
+              "B": 0.11954980343580246,
+              "A": 0.06706135720014572
+            }
+          ],
+          "trial_time": 0.36344218254089355
+        }
+      ],
+      "avg_trial_time": 0.36344218254089355,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08345317840576172,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "B"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.0835576057434082,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.08542490005493164,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 3,
+          "success": true,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08345317840576172,
+            0.0835576057434082,
+            0.08542490005493164
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.33462387323379517,
+              "A": 0.3046784996986389,
+              "D": 0.21104463934898376,
+              "B": 0.14965304732322693
+            },
+            {
+              "B": 0.5010185837745667,
+              "C": 0.34434470534324646,
+              "A": 0.07958291471004486,
+              "D": 0.07505384087562561
+            },
+            {
+              "C": 0.3617737889289856,
+              "D": 0.34520694613456726,
+              "A": 0.17088983952999115,
+              "B": 0.12212946265935898
+            },
+            {
+              "C": 0.7079465985298157,
+              "D": 0.17899693548679352,
+              "B": 0.07120006531476974,
+              "A": 0.04185635596513748
+            }
+          ],
+          "trial_time": 0.35956478118896484
+        }
+      ],
+      "avg_trial_time": 0.35956478118896484,
+      "std_trial_time": 0.0,
+      "success_rate": 1.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B"
+              ],
+              "choice": "A",
+              "quadrant": 1,
+              "result": "GREEN",
+              "round_time": 0.08502864837646484,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.08475971221923828,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "C"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08493590354919434,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 4,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08502864837646484,
+            0.08475971221923828,
+            0.08493590354919434
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "A": 0.4588409960269928,
+              "C": 0.2553834617137909,
+              "B": 0.18978488445281982,
+              "D": 0.0959906354546547
+            },
+            {
+              "C": 0.43186408281326294,
+              "B": 0.30623748898506165,
+              "D": 0.16011998057365417,
+              "A": 0.10177844762802124
+            },
+            {
+              "C": 0.6668599843978882,
+              "A": 0.21990707516670227,
+              "B": 0.060590773820877075,
+              "D": 0.05264217406511307
+            },
+            {
+              "C": 0.5862212777137756,
+              "D": 0.26013413071632385,
+              "B": 0.10844003409147263,
+              "A": 0.0452045314013958
+            }
+          ],
+          "trial_time": 0.35564589500427246
+        }
+      ],
+      "avg_trial_time": 0.35564589500427246,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.08455491065979004,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "B",
+                "C"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08467936515808105,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.08515381813049316,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 4,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08455491065979004,
+            0.08467936515808105,
+            0.08515381813049316
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.33462387323379517,
+              "A": 0.3046784996986389,
+              "D": 0.21104463934898376,
+              "B": 0.14965304732322693
+            },
+            {
+              "C": 0.6781262755393982,
+              "B": 0.2614409625530243,
+              "A": 0.03469783440232277,
+              "D": 0.025734929367899895
+            },
+            {
+              "C": 0.45864084362983704,
+              "D": 0.3055206537246704,
+              "A": 0.16872453689575195,
+              "B": 0.06711398810148239
+            },
+            {
+              "C": 0.7512816190719604,
+              "D": 0.15747718513011932,
+              "B": 0.06071286275982857,
+              "A": 0.030528342351317406
+            }
+          ],
+          "trial_time": 0.3569364547729492
+        }
+      ],
+      "avg_trial_time": 0.3569364547729492,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.08457827568054199,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "B",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.08471846580505371,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.09321069717407227,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 4,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08457827568054199,
+            0.08471846580505371,
+            0.09321069717407227
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.46797478199005127,
+              "A": 0.2708430290222168,
+              "D": 0.15553206205368042,
+              "B": 0.1056501492857933
+            },
+            {
+              "B": 0.3331221342086792,
+              "D": 0.31786736845970154,
+              "C": 0.28493446111679077,
+              "A": 0.06407611817121506
+            },
+            {
+              "C": 0.5975876450538635,
+              "D": 0.13973893225193024,
+              "B": 0.13543961942195892,
+              "A": 0.12723375856876373
+            },
+            {
+              "C": 0.7047641277313232,
+              "D": 0.17542965710163116,
+              "B": 0.08684398233890533,
+              "A": 0.03296225890517235
+            }
+          ],
+          "trial_time": 0.3637394905090332
+        }
+      ],
+      "avg_trial_time": 0.3637394905090332,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "C"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.08473563194274902,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08493924140930176,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.0850670337677002,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 2,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08473563194274902,
+            0.08493924140930176,
+            0.0850670337677002
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.43848785758018494,
+              "A": 0.383952796459198,
+              "B": 0.09707847237586975,
+              "D": 0.08048088103532791
+            },
+            {
+              "C": 0.6000609397888184,
+              "B": 0.2313441038131714,
+              "D": 0.12776035070419312,
+              "A": 0.04083465784788132
+            },
+            {
+              "C": 0.46303173899650574,
+              "D": 0.24784304201602936,
+              "A": 0.16253943741321564,
+              "B": 0.12658582627773285
+            },
+            {
+              "C": 0.7512816190719604,
+              "D": 0.15747718513011932,
+              "B": 0.06071286275982857,
+              "A": 0.030528342351317406
+            }
+          ],
+          "trial_time": 0.35698556900024414
+        }
+      ],
+      "avg_trial_time": 0.35698556900024414,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08480167388916016,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "B",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.08487486839294434,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "C"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08499002456665039,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 3,
+          "success": true,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08480167388916016,
+            0.08487486839294434,
+            0.08499002456665039
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.33462387323379517,
+              "A": 0.3046784996986389,
+              "D": 0.21104463934898376,
+              "B": 0.14965304732322693
+            },
+            {
+              "B": 0.3383786380290985,
+              "C": 0.2986181080341339,
+              "D": 0.2939884662628174,
+              "A": 0.06901485472917557
+            },
+            {
+              "C": 0.7400876879692078,
+              "A": 0.13477997481822968,
+              "B": 0.08238934725522995,
+              "D": 0.042743030935525894
+            },
+            {
+              "C": 0.7752982974052429,
+              "D": 0.12855705618858337,
+              "B": 0.06364035606384277,
+              "A": 0.03250431641936302
+            }
+          ],
+          "trial_time": 0.35566210746765137
+        }
+      ],
+      "avg_trial_time": 0.35566210746765137,
+      "std_trial_time": 0.0,
+      "success_rate": 1.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A"
+              ],
+              "choice": "A",
+              "quadrant": 1,
+              "result": "RED",
+              "round_time": 0.08445167541503906,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.08492422103881836,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08498382568359375,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 1,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08445167541503906,
+            0.08492422103881836,
+            0.08498382568359375
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "A": 0.5471763610839844,
+              "C": 0.24091848731040955,
+              "B": 0.11380184441804886,
+              "D": 0.09810331463813782
+            },
+            {
+              "C": 0.3001435101032257,
+              "B": 0.28639891743659973,
+              "A": 0.26487571001052856,
+              "D": 0.14858180284500122
+            },
+            {
+              "C": 0.4858022630214691,
+              "B": 0.2189682424068451,
+              "D": 0.20251250267028809,
+              "A": 0.09271698445081711
+            },
+            {
+              "C": 0.5392912030220032,
+              "D": 0.24690549075603485,
+              "B": 0.13850143551826477,
+              "A": 0.07530192285776138
+            }
+          ],
+          "trial_time": 0.35522985458374023
+        }
+      ],
+      "avg_trial_time": 0.35522985458374023,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "D"
+              ],
+              "choice": "A",
+              "quadrant": 1,
+              "result": "RED",
+              "round_time": 0.08461332321166992,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.08515405654907227,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "C"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.0853414535522461,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 2,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08461332321166992,
+            0.08515405654907227,
+            0.0853414535522461
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "A": 0.38394245505332947,
+              "D": 0.37212976813316345,
+              "C": 0.16773204505443573,
+              "B": 0.07619571685791016
+            },
+            {
+              "C": 0.3001435101032257,
+              "B": 0.28639891743659973,
+              "A": 0.26487571001052856,
+              "D": 0.14858180284500122
+            },
+            {
+              "C": 0.8481076955795288,
+              "B": 0.05275528132915497,
+              "D": 0.050536464899778366,
+              "A": 0.048600442707538605
+            },
+            {
+              "C": 0.5392912030220032,
+              "D": 0.24690549075603485,
+              "B": 0.13850143551826477,
+              "A": 0.07530192285776138
+            }
+          ],
+          "trial_time": 0.35791611671447754
+        }
+      ],
+      "avg_trial_time": 0.35791611671447754,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.08517932891845703,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "C"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08480024337768555,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.08508682250976562,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 1,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08517932891845703,
+            0.08480024337768555,
+            0.08508682250976562
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.33462387323379517,
+              "A": 0.3046784996986389,
+              "D": 0.21104463934898376,
+              "B": 0.14965304732322693
+            },
+            {
+              "C": 0.8275636434555054,
+              "A": 0.12300635129213333,
+              "B": 0.030858848243951797,
+              "D": 0.01857118308544159
+            },
+            {
+              "C": 0.46303173899650574,
+              "D": 0.24784304201602936,
+              "A": 0.16253943741321564,
+              "B": 0.12658582627773285
+            },
+            {
+              "C": 0.7512816190719604,
+              "D": 0.15747718513011932,
+              "B": 0.06071286275982857,
+              "A": 0.030528342351317406
+            }
+          ],
+          "trial_time": 0.3560197353363037
+        }
+      ],
+      "avg_trial_time": 0.3560197353363037,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.08481597900390625,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08483147621154785,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.08509421348571777,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 4,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08481597900390625,
+            0.08483147621154785,
+            0.08509421348571777
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.33462387323379517,
+              "A": 0.3046784996986389,
+              "D": 0.21104463934898376,
+              "B": 0.14965304732322693
+            },
+            {
+              "C": 0.634074330329895,
+              "D": 0.28136879205703735,
+              "B": 0.045574743300676346,
+              "A": 0.038982145488262177
+            },
+            {
+              "C": 0.46303173899650574,
+              "D": 0.24784304201602936,
+              "A": 0.16253943741321564,
+              "B": 0.12658582627773285
+            },
+            {
+              "C": 0.7512816190719604,
+              "D": 0.15747718513011932,
+              "B": 0.06071286275982857,
+              "A": 0.030528342351317406
+            }
+          ],
+          "trial_time": 0.3566272258758545
+        }
+      ],
+      "avg_trial_time": 0.3566272258758545,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.085693359375,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A"
+              ],
+              "choice": "C",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.08621025085449219,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.09410834312438965,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 2,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.085693359375,
+            0.08621025085449219,
+            0.09410834312438965
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.3858918845653534,
+              "B": 0.3199155926704407,
+              "A": 0.15111742913722992,
+              "D": 0.1430751085281372
+            },
+            {
+              "C": 0.4475584030151367,
+              "A": 0.2889654338359833,
+              "B": 0.17254914343357086,
+              "D": 0.09092700481414795
+            },
+            {
+              "C": 0.644706130027771,
+              "A": 0.1681816577911377,
+              "D": 0.1012134924530983,
+              "B": 0.08589877933263779
+            },
+            {
+              "C": 0.8495333790779114,
+              "D": 0.09095020592212677,
+              "B": 0.03345871344208717,
+              "A": 0.026057671755552292
+            }
+          ],
+          "trial_time": 0.3682823181152344
+        }
+      ],
+      "avg_trial_time": 0.3682823181152344,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08474326133728027,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.08487272262573242,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A"
+              ],
+              "choice": "C",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.0849919319152832,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 2,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08474326133728027,
+            0.08487272262573242,
+            0.0849919319152832
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.33462387323379517,
+              "A": 0.3046784996986389,
+              "D": 0.21104463934898376,
+              "B": 0.14965304732322693
+            },
+            {
+              "C": 0.6186758279800415,
+              "D": 0.27885904908180237,
+              "B": 0.05799715220928192,
+              "A": 0.04446795955300331
+            },
+            {
+              "C": 0.5620882511138916,
+              "A": 0.21168437600135803,
+              "B": 0.12061411887407303,
+              "D": 0.10561325401067734
+            },
+            {
+              "C": 0.809837281703949,
+              "D": 0.11666812747716904,
+              "B": 0.041599299758672714,
+              "A": 0.031895287334918976
+            }
+          ],
+          "trial_time": 0.35830116271972656
+        }
+      ],
+      "avg_trial_time": 0.35830116271972656,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.0845637321472168,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "D"
+              ],
+              "choice": "D",
+              "quadrant": 4,
+              "result": "RED",
+              "round_time": 0.08591055870056152,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.09526515007019043,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 4,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.0845637321472168,
+            0.08591055870056152,
+            0.09526515007019043
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.33462387323379517,
+              "A": 0.3046784996986389,
+              "D": 0.21104463934898376,
+              "B": 0.14965304732322693
+            },
+            {
+              "D": 0.6657778024673462,
+              "C": 0.24492597579956055,
+              "B": 0.05054333060979843,
+              "A": 0.03875291347503662
+            },
+            {
+              "C": 0.6021283268928528,
+              "D": 0.18653064966201782,
+              "A": 0.12043324112892151,
+              "B": 0.09090778231620789
+            },
+            {
+              "C": 0.6565841436386108,
+              "D": 0.24154381453990936,
+              "B": 0.06707429140806198,
+              "A": 0.034797683358192444
+            }
+          ],
+          "trial_time": 0.37027835845947266
+        }
+      ],
+      "avg_trial_time": 0.37027835845947266,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "RED",
+              "round_time": 0.08873248100280762,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "B"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.09060978889465332,
+              "thinking_time": 0
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "C",
+              "quadrant": 3,
+              "result": "GREEN",
+              "round_time": 0.09641814231872559,
+              "thinking_time": 0
+            }
+          ],
+          "final_choice": "C",
+          "correct_quadrant": 1,
+          "success": false,
+          "agent": "Qwen_1.5B",
+          "round_times": [
+            0.08873248100280762,
+            0.09060978889465332,
+            0.09641814231872559
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "C": 0.46797478199005127,
+              "A": 0.2708430290222168,
+              "D": 0.15553206205368042,
+              "B": 0.1056501492857933
+            },
+            {
+              "B": 0.5010185837745667,
+              "C": 0.34434470534324646,
+              "A": 0.07958291471004486,
+              "D": 0.07505384087562561
+            },
+            {
+              "C": 0.5792746543884277,
+              "D": 0.1476123034954071,
+              "A": 0.13975651562213898,
+              "B": 0.13335660099983215
+            },
+            {
+              "C": 0.7531731128692627,
+              "D": 0.13932302594184875,
+              "B": 0.0711592361330986,
+              "A": 0.036344580352306366
+            }
+          ],
+          "trial_time": 0.38226318359375
+        }
+      ],
+      "avg_trial_time": 0.38226318359375,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    }
+  ]
+}

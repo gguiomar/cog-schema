@@ -1,0 +1,3875 @@
+{
+  "metrics": {
+    "agent": "Gemma_2B",
+    "timestamp": "20250420_171326",
+    "is_reasoning_model": false,
+    "n_simulations": 50,
+    "n_trials": 1,
+    "n_rounds": 2,
+    "n_quadrants": 4,
+    "n_cues": 1,
+    "success_rate": 0.2,
+    "total_time": 16.813612461090088,
+    "avg_trial_time": 0.3361892557144165,
+    "std_trial_time": 0.01356689232108493,
+    "avg_round_time": 0.10832536220550537,
+    "std_round_time": 0.00444780633958705,
+    "avg_thinking_time": null,
+    "std_thinking_time": null,
+    "reasoning_mode": null,
+    "min_thinking_time": null,
+    "max_thinking_time": null,
+    "min_thinking_tokens": null,
+    "max_thinking_tokens": null,
+    "quadrant_distribution": {
+      "quadrant_1": {
+        "times_chosen": 0,
+        "times_correct": 10,
+        "accuracy_when_chosen": 0.0
+      },
+      "quadrant_2": {
+        "times_chosen": 0,
+        "times_correct": 10,
+        "accuracy_when_chosen": 0.0
+      },
+      "quadrant_3": {
+        "times_chosen": 0,
+        "times_correct": 12,
+        "accuracy_when_chosen": 0.0
+      },
+      "quadrant_4": {
+        "times_chosen": 0,
+        "times_correct": 18,
+        "accuracy_when_chosen": 0.0
+      }
+    }
+  },
+  "raw_results": [
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.09897780418395996,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.660832941532135,
+                "A": 0.24310685694217682,
+                "D": 0.07414340227842331,
+                "C": 0.021916747093200684
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.09954547882080078,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8956047892570496,
+                "A": 0.060946669429540634,
+                "D": 0.02704492211341858,
+                "C": 0.016403574496507645
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 4,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.09897780418395996,
+            0.09954547882080078
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.660832941532135,
+              "A": 0.24310685694217682,
+              "D": 0.07414340227842331,
+              "C": 0.021916747093200684
+            },
+            {
+              "B": 0.8956047892570496,
+              "A": 0.060946669429540634,
+              "D": 0.02704492211341858,
+              "C": 0.016403574496507645
+            }
+          ],
+          "final_logits": {
+            "B": 0.9611461758613586,
+            "C": 0.018162816762924194,
+            "D": 0.012879365123808384
+          },
+          "trial_time": 0.3081808090209961
+        }
+      ],
+      "avg_trial_time": 0.3081808090209961,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.10089468955993652,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.660832941532135,
+                "A": 0.24310685694217682,
+                "D": 0.07414340227842331,
+                "C": 0.021916747093200684
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.10669827461242676,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.9383756518363953,
+                "A": 0.03638477250933647,
+                "D": 0.01829541102051735
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 2,
+          "success": true,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.10089468955993652,
+            0.10669827461242676
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.660832941532135,
+              "A": 0.24310685694217682,
+              "D": 0.07414340227842331,
+              "C": 0.021916747093200684
+            },
+            {
+              "B": 0.9383756518363953,
+              "A": 0.03638477250933647,
+              "D": 0.01829541102051735
+            }
+          ],
+          "final_logits": {
+            "B": 0.962715744972229,
+            "C": 0.016054805368185043,
+            "D": 0.0129003981128335
+          },
+          "trial_time": 0.32015275955200195
+        }
+      ],
+      "avg_trial_time": 0.32015275955200195,
+      "std_trial_time": 0.0,
+      "success_rate": 1.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.1096651554107666,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.660832941532135,
+                "A": 0.24310685694217682,
+                "D": 0.07414340227842331,
+                "C": 0.021916747093200684
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.10142850875854492,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.9125329852104187,
+                "A": 0.0583362802863121,
+                "D": 0.015700995922088623,
+                "C": 0.013429774902760983
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 4,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.1096651554107666,
+            0.10142850875854492
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.660832941532135,
+              "A": 0.24310685694217682,
+              "D": 0.07414340227842331,
+              "C": 0.021916747093200684
+            },
+            {
+              "B": 0.9125329852104187,
+              "A": 0.0583362802863121,
+              "D": 0.015700995922088623,
+              "C": 0.013429774902760983
+            }
+          ],
+          "final_logits": {
+            "B": 0.9652253985404968,
+            "C": 0.0166076198220253,
+            "D": 0.010073031298816204
+          },
+          "trial_time": 0.3250234127044678
+        }
+      ],
+      "avg_trial_time": 0.3250234127044678,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.1045832633972168,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.660832941532135,
+                "A": 0.24310685694217682,
+                "D": 0.07414340227842331,
+                "C": 0.021916747093200684
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.10594797134399414,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.9383756518363953,
+                "A": 0.03638477250933647,
+                "D": 0.01829541102051735
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 2,
+          "success": true,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.1045832633972168,
+            0.10594797134399414
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.660832941532135,
+              "A": 0.24310685694217682,
+              "D": 0.07414340227842331,
+              "C": 0.021916747093200684
+            },
+            {
+              "B": 0.9383756518363953,
+              "A": 0.03638477250933647,
+              "D": 0.01829541102051735
+            }
+          ],
+          "final_logits": {
+            "B": 0.962715744972229,
+            "C": 0.016054805368185043,
+            "D": 0.0129003981128335
+          },
+          "trial_time": 0.32642340660095215
+        }
+      ],
+      "avg_trial_time": 0.32642340660095215,
+      "std_trial_time": 0.0,
+      "success_rate": 1.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.10415363311767578,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.6160537600517273,
+                "A": 0.27337220311164856,
+                "D": 0.07357712835073471,
+                "C": 0.036996904760599136
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.10268759727478027,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8870264291763306,
+                "A": 0.06840013712644577,
+                "D": 0.03230993449687958,
+                "C": 0.012263468466699123
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 4,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.10415363311767578,
+            0.10268759727478027
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.6160537600517273,
+              "A": 0.27337220311164856,
+              "D": 0.07357712835073471,
+              "C": 0.036996904760599136
+            },
+            {
+              "B": 0.8870264291763306,
+              "A": 0.06840013712644577,
+              "D": 0.03230993449687958,
+              "C": 0.012263468466699123
+            }
+          ],
+          "final_logits": {
+            "B": 0.9652253985404968,
+            "C": 0.0166076198220253,
+            "D": 0.010073031298816204
+          },
+          "trial_time": 0.32100963592529297
+        }
+      ],
+      "avg_trial_time": 0.32100963592529297,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.10457491874694824,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.660832941532135,
+                "A": 0.24310685694217682,
+                "D": 0.07414340227842331,
+                "C": 0.021916747093200684
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.10355210304260254,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8870264291763306,
+                "A": 0.06840013712644577,
+                "D": 0.03230993449687958,
+                "C": 0.012263468466699123
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 2,
+          "success": true,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.10457491874694824,
+            0.10355210304260254
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.660832941532135,
+              "A": 0.24310685694217682,
+              "D": 0.07414340227842331,
+              "C": 0.021916747093200684
+            },
+            {
+              "B": 0.8870264291763306,
+              "A": 0.06840013712644577,
+              "D": 0.03230993449687958,
+              "C": 0.012263468466699123
+            }
+          ],
+          "final_logits": {
+            "B": 0.968870222568512,
+            "C": 0.012982867658138275
+          },
+          "trial_time": 0.3261227607727051
+        }
+      ],
+      "avg_trial_time": 0.3261227607727051,
+      "std_trial_time": 0.0,
+      "success_rate": 1.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.10425472259521484,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.660832941532135,
+                "A": 0.24310685694217682,
+                "D": 0.07414340227842331,
+                "C": 0.021916747093200684
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.1028287410736084,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8956047892570496,
+                "A": 0.060946669429540634,
+                "D": 0.02704492211341858,
+                "C": 0.016403574496507645
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 4,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.10425472259521484,
+            0.1028287410736084
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.660832941532135,
+              "A": 0.24310685694217682,
+              "D": 0.07414340227842331,
+              "C": 0.021916747093200684
+            },
+            {
+              "B": 0.8956047892570496,
+              "A": 0.060946669429540634,
+              "D": 0.02704492211341858,
+              "C": 0.016403574496507645
+            }
+          ],
+          "final_logits": {
+            "B": 0.9611461758613586,
+            "C": 0.018162816762924194,
+            "D": 0.012879365123808384
+          },
+          "trial_time": 0.32291722297668457
+        }
+      ],
+      "avg_trial_time": 0.32291722297668457,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.10520291328430176,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.660832941532135,
+                "A": 0.24310685694217682,
+                "D": 0.07414340227842331,
+                "C": 0.021916747093200684
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.10938119888305664,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.9178953766822815,
+                "A": 0.05178411304950714,
+                "C": 0.01681184023618698,
+                "D": 0.013508693315088749
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 4,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.10520291328430176,
+            0.10938119888305664
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.660832941532135,
+              "A": 0.24310685694217682,
+              "D": 0.07414340227842331,
+              "C": 0.021916747093200684
+            },
+            {
+              "B": 0.9178953766822815,
+              "A": 0.05178411304950714,
+              "C": 0.01681184023618698,
+              "D": 0.013508693315088749
+            }
+          ],
+          "final_logits": {
+            "B": 0.9611461758613586,
+            "C": 0.018162816762924194,
+            "D": 0.012879365123808384
+          },
+          "trial_time": 0.33142733573913574
+        }
+      ],
+      "avg_trial_time": 0.33142733573913574,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.10689997673034668,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.660832941532135,
+                "A": 0.24310685694217682,
+                "D": 0.07414340227842331,
+                "C": 0.021916747093200684
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.10375189781188965,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8870264291763306,
+                "A": 0.06840013712644577,
+                "D": 0.03230993449687958,
+                "C": 0.012263468466699123
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 2,
+          "success": true,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.10689997673034668,
+            0.10375189781188965
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.660832941532135,
+              "A": 0.24310685694217682,
+              "D": 0.07414340227842331,
+              "C": 0.021916747093200684
+            },
+            {
+              "B": 0.8870264291763306,
+              "A": 0.06840013712644577,
+              "D": 0.03230993449687958,
+              "C": 0.012263468466699123
+            }
+          ],
+          "final_logits": {
+            "B": 0.968870222568512,
+            "C": 0.012982867658138275
+          },
+          "trial_time": 0.32508182525634766
+        }
+      ],
+      "avg_trial_time": 0.32508182525634766,
+      "std_trial_time": 0.0,
+      "success_rate": 1.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.10543298721313477,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.6160537600517273,
+                "A": 0.27337220311164856,
+                "D": 0.07357712835073471,
+                "C": 0.036996904760599136
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.1044912338256836,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8956047892570496,
+                "A": 0.060946669429540634,
+                "D": 0.02704492211341858,
+                "C": 0.016403574496507645
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 4,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.10543298721313477,
+            0.1044912338256836
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.6160537600517273,
+              "A": 0.27337220311164856,
+              "D": 0.07357712835073471,
+              "C": 0.036996904760599136
+            },
+            {
+              "B": 0.8956047892570496,
+              "A": 0.060946669429540634,
+              "D": 0.02704492211341858,
+              "C": 0.016403574496507645
+            }
+          ],
+          "final_logits": {
+            "B": 0.9611461758613586,
+            "C": 0.018162816762924194,
+            "D": 0.012879365123808384
+          },
+          "trial_time": 0.3290517330169678
+        }
+      ],
+      "avg_trial_time": 0.3290517330169678,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.10616421699523926,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.660832941532135,
+                "A": 0.24310685694217682,
+                "D": 0.07414340227842331,
+                "C": 0.021916747093200684
+              }
+            },
+            {
+              "available_cues": [
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.10631775856018066,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.9702643752098083,
+                "D": 0.011473827995359898,
+                "A": 0.010125617496669292
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 1,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.10616421699523926,
+            0.10631775856018066
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.660832941532135,
+              "A": 0.24310685694217682,
+              "D": 0.07414340227842331,
+              "C": 0.021916747093200684
+            },
+            {
+              "B": 0.9702643752098083,
+              "D": 0.011473827995359898,
+              "A": 0.010125617496669292
+            }
+          ],
+          "final_logits": {
+            "B": 0.9652253985404968,
+            "C": 0.0166076198220253,
+            "D": 0.010073031298816204
+          },
+          "trial_time": 0.3305540084838867
+        }
+      ],
+      "avg_trial_time": 0.3305540084838867,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.10541796684265137,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.660832941532135,
+                "A": 0.24310685694217682,
+                "D": 0.07414340227842331,
+                "C": 0.021916747093200684
+              }
+            },
+            {
+              "available_cues": [
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.10945510864257812,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.9702643752098083,
+                "D": 0.011473827995359898,
+                "A": 0.010125617496669292
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 1,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.10541796684265137,
+            0.10945510864257812
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.660832941532135,
+              "A": 0.24310685694217682,
+              "D": 0.07414340227842331,
+              "C": 0.021916747093200684
+            },
+            {
+              "B": 0.9702643752098083,
+              "D": 0.011473827995359898,
+              "A": 0.010125617496669292
+            }
+          ],
+          "final_logits": {
+            "B": 0.9652253985404968,
+            "C": 0.0166076198220253,
+            "D": 0.010073031298816204
+          },
+          "trial_time": 0.3385946750640869
+        }
+      ],
+      "avg_trial_time": 0.3385946750640869,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.10792970657348633,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.660832941532135,
+                "A": 0.24310685694217682,
+                "D": 0.07414340227842331,
+                "C": 0.021916747093200684
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.10846519470214844,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8872354626655579,
+                "D": 0.0500543974339962,
+                "A": 0.0500543974339962,
+                "C": 0.012655734084546566
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 3,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.10792970657348633,
+            0.10846519470214844
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.660832941532135,
+              "A": 0.24310685694217682,
+              "D": 0.07414340227842331,
+              "C": 0.021916747093200684
+            },
+            {
+              "B": 0.8872354626655579,
+              "D": 0.0500543974339962,
+              "A": 0.0500543974339962,
+              "C": 0.012655734084546566
+            }
+          ],
+          "final_logits": {
+            "B": 0.9652253985404968,
+            "C": 0.0166076198220253,
+            "D": 0.010073031298816204
+          },
+          "trial_time": 0.33487939834594727
+        }
+      ],
+      "avg_trial_time": 0.33487939834594727,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.1070866584777832,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.660832941532135,
+                "A": 0.24310685694217682,
+                "D": 0.07414340227842331,
+                "C": 0.021916747093200684
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.10717654228210449,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.9383756518363953,
+                "A": 0.03638477250933647,
+                "D": 0.01829541102051735
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 2,
+          "success": true,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.1070866584777832,
+            0.10717654228210449
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.660832941532135,
+              "A": 0.24310685694217682,
+              "D": 0.07414340227842331,
+              "C": 0.021916747093200684
+            },
+            {
+              "B": 0.9383756518363953,
+              "A": 0.03638477250933647,
+              "D": 0.01829541102051735
+            }
+          ],
+          "final_logits": {
+            "B": 0.962715744972229,
+            "C": 0.016054805368185043,
+            "D": 0.0129003981128335
+          },
+          "trial_time": 0.331571102142334
+        }
+      ],
+      "avg_trial_time": 0.331571102142334,
+      "std_trial_time": 0.0,
+      "success_rate": 1.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.10668587684631348,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.5311383605003357,
+                "A": 0.2508919835090637,
+                "D": 0.1619880497455597,
+                "C": 0.05598156899213791
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.10488271713256836,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8956047892570496,
+                "A": 0.060946669429540634,
+                "D": 0.02704492211341858,
+                "C": 0.016403574496507645
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 3,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.10668587684631348,
+            0.10488271713256836
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.5311383605003357,
+              "A": 0.2508919835090637,
+              "D": 0.1619880497455597,
+              "C": 0.05598156899213791
+            },
+            {
+              "B": 0.8956047892570496,
+              "A": 0.060946669429540634,
+              "D": 0.02704492211341858,
+              "C": 0.016403574496507645
+            }
+          ],
+          "final_logits": {
+            "B": 0.9611461758613586,
+            "C": 0.018162816762924194,
+            "D": 0.012879365123808384
+          },
+          "trial_time": 0.33318209648132324
+        }
+      ],
+      "avg_trial_time": 0.33318209648132324,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.11077451705932617,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.660832941532135,
+                "A": 0.24310685694217682,
+                "D": 0.07414340227842331,
+                "C": 0.021916747093200684
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.11409354209899902,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.9178953766822815,
+                "A": 0.05178411304950714,
+                "C": 0.01681184023618698,
+                "D": 0.013508693315088749
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 4,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.11077451705932617,
+            0.11409354209899902
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.660832941532135,
+              "A": 0.24310685694217682,
+              "D": 0.07414340227842331,
+              "C": 0.021916747093200684
+            },
+            {
+              "B": 0.9178953766822815,
+              "A": 0.05178411304950714,
+              "C": 0.01681184023618698,
+              "D": 0.013508693315088749
+            }
+          ],
+          "final_logits": {
+            "B": 0.9611461758613586,
+            "C": 0.018162816762924194,
+            "D": 0.012879365123808384
+          },
+          "trial_time": 0.3416905403137207
+        }
+      ],
+      "avg_trial_time": 0.3416905403137207,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.11058902740478516,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.660832941532135,
+                "A": 0.24310685694217682,
+                "D": 0.07414340227842331,
+                "C": 0.021916747093200684
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.1121823787689209,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.9383756518363953,
+                "A": 0.03638477250933647,
+                "D": 0.01829541102051735
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 2,
+          "success": true,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.11058902740478516,
+            0.1121823787689209
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.660832941532135,
+              "A": 0.24310685694217682,
+              "D": 0.07414340227842331,
+              "C": 0.021916747093200684
+            },
+            {
+              "B": 0.9383756518363953,
+              "A": 0.03638477250933647,
+              "D": 0.01829541102051735
+            }
+          ],
+          "final_logits": {
+            "B": 0.962715744972229,
+            "C": 0.016054805368185043,
+            "D": 0.0129003981128335
+          },
+          "trial_time": 0.3449437618255615
+        }
+      ],
+      "avg_trial_time": 0.3449437618255615,
+      "std_trial_time": 0.0,
+      "success_rate": 1.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.10970640182495117,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.9708330035209656,
+                "A": 0.010131551884114742
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.11377954483032227,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8870264291763306,
+                "A": 0.06840013712644577,
+                "D": 0.03230993449687958,
+                "C": 0.012263468466699123
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 1,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.10970640182495117,
+            0.11377954483032227
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.9708330035209656,
+              "A": 0.010131551884114742
+            },
+            {
+              "B": 0.8870264291763306,
+              "A": 0.06840013712644577,
+              "D": 0.03230993449687958,
+              "C": 0.012263468466699123
+            }
+          ],
+          "final_logits": {
+            "B": 0.9652253985404968,
+            "C": 0.0166076198220253,
+            "D": 0.010073031298816204
+          },
+          "trial_time": 0.34937429428100586
+        }
+      ],
+      "avg_trial_time": 0.34937429428100586,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.1107180118560791,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.6160537600517273,
+                "A": 0.27337220311164856,
+                "D": 0.07357712835073471,
+                "C": 0.036996904760599136
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.10952091217041016,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8870264291763306,
+                "A": 0.06840013712644577,
+                "D": 0.03230993449687958,
+                "C": 0.012263468466699123
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 4,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.1107180118560791,
+            0.10952091217041016
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.6160537600517273,
+              "A": 0.27337220311164856,
+              "D": 0.07357712835073471,
+              "C": 0.036996904760599136
+            },
+            {
+              "B": 0.8870264291763306,
+              "A": 0.06840013712644577,
+              "D": 0.03230993449687958,
+              "C": 0.012263468466699123
+            }
+          ],
+          "final_logits": {
+            "B": 0.9652253985404968,
+            "C": 0.0166076198220253,
+            "D": 0.010073031298816204
+          },
+          "trial_time": 0.34210634231567383
+        }
+      ],
+      "avg_trial_time": 0.34210634231567383,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.11052298545837402,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.5311383605003357,
+                "A": 0.2508919835090637,
+                "D": 0.1619880497455597,
+                "C": 0.05598156899213791
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.10850334167480469,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8870264291763306,
+                "A": 0.06840013712644577,
+                "D": 0.03230993449687958,
+                "C": 0.012263468466699123
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 3,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.11052298545837402,
+            0.10850334167480469
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.5311383605003357,
+              "A": 0.2508919835090637,
+              "D": 0.1619880497455597,
+              "C": 0.05598156899213791
+            },
+            {
+              "B": 0.8870264291763306,
+              "A": 0.06840013712644577,
+              "D": 0.03230993449687958,
+              "C": 0.012263468466699123
+            }
+          ],
+          "final_logits": {
+            "B": 0.9652253985404968,
+            "C": 0.0166076198220253,
+            "D": 0.010073031298816204
+          },
+          "trial_time": 0.3389248847961426
+        }
+      ],
+      "avg_trial_time": 0.3389248847961426,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.10964012145996094,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.5311383605003357,
+                "A": 0.2508919835090637,
+                "D": 0.1619880497455597,
+                "C": 0.05598156899213791
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.10726737976074219,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8870264291763306,
+                "A": 0.06840013712644577,
+                "D": 0.03230993449687958,
+                "C": 0.012263468466699123
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 3,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.10964012145996094,
+            0.10726737976074219
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.5311383605003357,
+              "A": 0.2508919835090637,
+              "D": 0.1619880497455597,
+              "C": 0.05598156899213791
+            },
+            {
+              "B": 0.8870264291763306,
+              "A": 0.06840013712644577,
+              "D": 0.03230993449687958,
+              "C": 0.012263468466699123
+            }
+          ],
+          "final_logits": {
+            "B": 0.9652253985404968,
+            "C": 0.0166076198220253,
+            "D": 0.010073031298816204
+          },
+          "trial_time": 0.3357279300689697
+        }
+      ],
+      "avg_trial_time": 0.3357279300689697,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.10894465446472168,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.660832941532135,
+                "A": 0.24310685694217682,
+                "D": 0.07414340227842331,
+                "C": 0.021916747093200684
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.10958266258239746,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.9178953766822815,
+                "A": 0.05178411304950714,
+                "C": 0.01681184023618698,
+                "D": 0.013508693315088749
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 4,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.10894465446472168,
+            0.10958266258239746
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.660832941532135,
+              "A": 0.24310685694217682,
+              "D": 0.07414340227842331,
+              "C": 0.021916747093200684
+            },
+            {
+              "B": 0.9178953766822815,
+              "A": 0.05178411304950714,
+              "C": 0.01681184023618698,
+              "D": 0.013508693315088749
+            }
+          ],
+          "final_logits": {
+            "B": 0.9611461758613586,
+            "C": 0.018162816762924194,
+            "D": 0.012879365123808384
+          },
+          "trial_time": 0.33640575408935547
+        }
+      ],
+      "avg_trial_time": 0.33640575408935547,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.11202383041381836,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.9708330035209656,
+                "A": 0.010131551884114742
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.10620927810668945,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8870264291763306,
+                "A": 0.06840013712644577,
+                "D": 0.03230993449687958,
+                "C": 0.012263468466699123
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 1,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.11202383041381836,
+            0.10620927810668945
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.9708330035209656,
+              "A": 0.010131551884114742
+            },
+            {
+              "B": 0.8870264291763306,
+              "A": 0.06840013712644577,
+              "D": 0.03230993449687958,
+              "C": 0.012263468466699123
+            }
+          ],
+          "final_logits": {
+            "B": 0.9652253985404968,
+            "C": 0.0166076198220253,
+            "D": 0.010073031298816204
+          },
+          "trial_time": 0.33595991134643555
+        }
+      ],
+      "avg_trial_time": 0.33595991134643555,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.10834217071533203,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.5311383605003357,
+                "A": 0.2508919835090637,
+                "D": 0.1619880497455597,
+                "C": 0.05598156899213791
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.10581445693969727,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8870264291763306,
+                "A": 0.06840013712644577,
+                "D": 0.03230993449687958,
+                "C": 0.012263468466699123
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 3,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.10834217071533203,
+            0.10581445693969727
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.5311383605003357,
+              "A": 0.2508919835090637,
+              "D": 0.1619880497455597,
+              "C": 0.05598156899213791
+            },
+            {
+              "B": 0.8870264291763306,
+              "A": 0.06840013712644577,
+              "D": 0.03230993449687958,
+              "C": 0.012263468466699123
+            }
+          ],
+          "final_logits": {
+            "B": 0.9652253985404968,
+            "C": 0.0166076198220253,
+            "D": 0.010073031298816204
+          },
+          "trial_time": 0.3347160816192627
+        }
+      ],
+      "avg_trial_time": 0.3347160816192627,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.11268329620361328,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.660832941532135,
+                "A": 0.24310685694217682,
+                "D": 0.07414340227842331,
+                "C": 0.021916747093200684
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.10943722724914551,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.9125329852104187,
+                "A": 0.0583362802863121,
+                "D": 0.015700995922088623,
+                "C": 0.013429774902760983
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 4,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.11268329620361328,
+            0.10943722724914551
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.660832941532135,
+              "A": 0.24310685694217682,
+              "D": 0.07414340227842331,
+              "C": 0.021916747093200684
+            },
+            {
+              "B": 0.9125329852104187,
+              "A": 0.0583362802863121,
+              "D": 0.015700995922088623,
+              "C": 0.013429774902760983
+            }
+          ],
+          "final_logits": {
+            "B": 0.9652253985404968,
+            "C": 0.0166076198220253,
+            "D": 0.010073031298816204
+          },
+          "trial_time": 0.34023165702819824
+        }
+      ],
+      "avg_trial_time": 0.34023165702819824,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.11057353019714355,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.660832941532135,
+                "A": 0.24310685694217682,
+                "D": 0.07414340227842331,
+                "C": 0.021916747093200684
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.10590028762817383,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8956047892570496,
+                "A": 0.060946669429540634,
+                "D": 0.02704492211341858,
+                "C": 0.016403574496507645
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 1,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.11057353019714355,
+            0.10590028762817383
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.660832941532135,
+              "A": 0.24310685694217682,
+              "D": 0.07414340227842331,
+              "C": 0.021916747093200684
+            },
+            {
+              "B": 0.8956047892570496,
+              "A": 0.060946669429540634,
+              "D": 0.02704492211341858,
+              "C": 0.016403574496507645
+            }
+          ],
+          "final_logits": {
+            "B": 0.9611461758613586,
+            "C": 0.018162816762924194,
+            "D": 0.012879365123808384
+          },
+          "trial_time": 0.33455920219421387
+        }
+      ],
+      "avg_trial_time": 0.33455920219421387,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.11386942863464355,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.660832941532135,
+                "A": 0.24310685694217682,
+                "D": 0.07414340227842331,
+                "C": 0.021916747093200684
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.11654400825500488,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8872354626655579,
+                "D": 0.0500543974339962,
+                "A": 0.0500543974339962,
+                "C": 0.012655734084546566
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 3,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.11386942863464355,
+            0.11654400825500488
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.660832941532135,
+              "A": 0.24310685694217682,
+              "D": 0.07414340227842331,
+              "C": 0.021916747093200684
+            },
+            {
+              "B": 0.8872354626655579,
+              "D": 0.0500543974339962,
+              "A": 0.0500543974339962,
+              "C": 0.012655734084546566
+            }
+          ],
+          "final_logits": {
+            "B": 0.9652253985404968,
+            "C": 0.0166076198220253,
+            "D": 0.010073031298816204
+          },
+          "trial_time": 0.36772775650024414
+        }
+      ],
+      "avg_trial_time": 0.36772775650024414,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.11369490623474121,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.660832941532135,
+                "A": 0.24310685694217682,
+                "D": 0.07414340227842331,
+                "C": 0.021916747093200684
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.11503982543945312,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8872354626655579,
+                "D": 0.0500543974339962,
+                "A": 0.0500543974339962,
+                "C": 0.012655734084546566
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 3,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.11369490623474121,
+            0.11503982543945312
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.660832941532135,
+              "A": 0.24310685694217682,
+              "D": 0.07414340227842331,
+              "C": 0.021916747093200684
+            },
+            {
+              "B": 0.8872354626655579,
+              "D": 0.0500543974339962,
+              "A": 0.0500543974339962,
+              "C": 0.012655734084546566
+            }
+          ],
+          "final_logits": {
+            "B": 0.9652253985404968,
+            "C": 0.0166076198220253,
+            "D": 0.010073031298816204
+          },
+          "trial_time": 0.3592948913574219
+        }
+      ],
+      "avg_trial_time": 0.3592948913574219,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.11589407920837402,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.660832941532135,
+                "A": 0.24310685694217682,
+                "D": 0.07414340227842331,
+                "C": 0.021916747093200684
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.11235761642456055,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8870264291763306,
+                "A": 0.06840013712644577,
+                "D": 0.03230993449687958,
+                "C": 0.012263468466699123
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 4,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.11589407920837402,
+            0.11235761642456055
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.660832941532135,
+              "A": 0.24310685694217682,
+              "D": 0.07414340227842331,
+              "C": 0.021916747093200684
+            },
+            {
+              "B": 0.8870264291763306,
+              "A": 0.06840013712644577,
+              "D": 0.03230993449687958,
+              "C": 0.012263468466699123
+            }
+          ],
+          "final_logits": {
+            "B": 0.9652253985404968,
+            "C": 0.0166076198220253,
+            "D": 0.010073031298816204
+          },
+          "trial_time": 0.3518385887145996
+        }
+      ],
+      "avg_trial_time": 0.3518385887145996,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.11573123931884766,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.9708330035209656,
+                "A": 0.010131551884114742
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.11569857597351074,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8870264291763306,
+                "A": 0.06840013712644577,
+                "D": 0.03230993449687958,
+                "C": 0.012263468466699123
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 1,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.11573123931884766,
+            0.11569857597351074
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.9708330035209656,
+              "A": 0.010131551884114742
+            },
+            {
+              "B": 0.8870264291763306,
+              "A": 0.06840013712644577,
+              "D": 0.03230993449687958,
+              "C": 0.012263468466699123
+            }
+          ],
+          "final_logits": {
+            "B": 0.9652253985404968,
+            "C": 0.0166076198220253,
+            "D": 0.010073031298816204
+          },
+          "trial_time": 0.3663058280944824
+        }
+      ],
+      "avg_trial_time": 0.3663058280944824,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.11839127540588379,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.660832941532135,
+                "A": 0.24310685694217682,
+                "D": 0.07414340227842331,
+                "C": 0.021916747093200684
+              }
+            },
+            {
+              "available_cues": [
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.11685848236083984,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.9702643752098083,
+                "D": 0.011473827995359898,
+                "A": 0.010125617496669292
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 1,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.11839127540588379,
+            0.11685848236083984
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.660832941532135,
+              "A": 0.24310685694217682,
+              "D": 0.07414340227842331,
+              "C": 0.021916747093200684
+            },
+            {
+              "B": 0.9702643752098083,
+              "D": 0.011473827995359898,
+              "A": 0.010125617496669292
+            }
+          ],
+          "final_logits": {
+            "B": 0.9652253985404968,
+            "C": 0.0166076198220253,
+            "D": 0.010073031298816204
+          },
+          "trial_time": 0.3647158145904541
+        }
+      ],
+      "avg_trial_time": 0.3647158145904541,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.117340087890625,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.6160537600517273,
+                "A": 0.27337220311164856,
+                "D": 0.07357712835073471,
+                "C": 0.036996904760599136
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.11521506309509277,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8870264291763306,
+                "A": 0.06840013712644577,
+                "D": 0.03230993449687958,
+                "C": 0.012263468466699123
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 4,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.117340087890625,
+            0.11521506309509277
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.6160537600517273,
+              "A": 0.27337220311164856,
+              "D": 0.07357712835073471,
+              "C": 0.036996904760599136
+            },
+            {
+              "B": 0.8870264291763306,
+              "A": 0.06840013712644577,
+              "D": 0.03230993449687958,
+              "C": 0.012263468466699123
+            }
+          ],
+          "final_logits": {
+            "B": 0.9652253985404968,
+            "C": 0.0166076198220253,
+            "D": 0.010073031298816204
+          },
+          "trial_time": 0.3589785099029541
+        }
+      ],
+      "avg_trial_time": 0.3589785099029541,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.11530613899230957,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.660832941532135,
+                "A": 0.24310685694217682,
+                "D": 0.07414340227842331,
+                "C": 0.021916747093200684
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.11255431175231934,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8870264291763306,
+                "A": 0.06840013712644577,
+                "D": 0.03230993449687958,
+                "C": 0.012263468466699123
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 4,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.11530613899230957,
+            0.11255431175231934
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.660832941532135,
+              "A": 0.24310685694217682,
+              "D": 0.07414340227842331,
+              "C": 0.021916747093200684
+            },
+            {
+              "B": 0.8870264291763306,
+              "A": 0.06840013712644577,
+              "D": 0.03230993449687958,
+              "C": 0.012263468466699123
+            }
+          ],
+          "final_logits": {
+            "B": 0.9652253985404968,
+            "C": 0.0166076198220253,
+            "D": 0.010073031298816204
+          },
+          "trial_time": 0.3510932922363281
+        }
+      ],
+      "avg_trial_time": 0.3510932922363281,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.11313748359680176,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.5311383605003357,
+                "A": 0.2508919835090637,
+                "D": 0.1619880497455597,
+                "C": 0.05598156899213791
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.11616230010986328,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8870264291763306,
+                "A": 0.06840013712644577,
+                "D": 0.03230993449687958,
+                "C": 0.012263468466699123
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 3,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.11313748359680176,
+            0.11616230010986328
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.5311383605003357,
+              "A": 0.2508919835090637,
+              "D": 0.1619880497455597,
+              "C": 0.05598156899213791
+            },
+            {
+              "B": 0.8870264291763306,
+              "A": 0.06840013712644577,
+              "D": 0.03230993449687958,
+              "C": 0.012263468466699123
+            }
+          ],
+          "final_logits": {
+            "B": 0.9652253985404968,
+            "C": 0.0166076198220253,
+            "D": 0.010073031298816204
+          },
+          "trial_time": 0.35951876640319824
+        }
+      ],
+      "avg_trial_time": 0.35951876640319824,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.11711740493774414,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.660832941532135,
+                "A": 0.24310685694217682,
+                "D": 0.07414340227842331,
+                "C": 0.021916747093200684
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.11287569999694824,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8870264291763306,
+                "A": 0.06840013712644577,
+                "D": 0.03230993449687958,
+                "C": 0.012263468466699123
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 3,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.11711740493774414,
+            0.11287569999694824
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.660832941532135,
+              "A": 0.24310685694217682,
+              "D": 0.07414340227842331,
+              "C": 0.021916747093200684
+            },
+            {
+              "B": 0.8870264291763306,
+              "A": 0.06840013712644577,
+              "D": 0.03230993449687958,
+              "C": 0.012263468466699123
+            }
+          ],
+          "final_logits": {
+            "B": 0.9652253985404968,
+            "C": 0.0166076198220253,
+            "D": 0.010073031298816204
+          },
+          "trial_time": 0.35432982444763184
+        }
+      ],
+      "avg_trial_time": 0.35432982444763184,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.11280322074890137,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.660832941532135,
+                "A": 0.24310685694217682,
+                "D": 0.07414340227842331,
+                "C": 0.021916747093200684
+              }
+            },
+            {
+              "available_cues": [
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.11339044570922852,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.9702643752098083,
+                "D": 0.011473827995359898,
+                "A": 0.010125617496669292
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 1,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.11280322074890137,
+            0.11339044570922852
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.660832941532135,
+              "A": 0.24310685694217682,
+              "D": 0.07414340227842331,
+              "C": 0.021916747093200684
+            },
+            {
+              "B": 0.9702643752098083,
+              "D": 0.011473827995359898,
+              "A": 0.010125617496669292
+            }
+          ],
+          "final_logits": {
+            "B": 0.9652253985404968,
+            "C": 0.0166076198220253,
+            "D": 0.010073031298816204
+          },
+          "trial_time": 0.3484842777252197
+        }
+      ],
+      "avg_trial_time": 0.3484842777252197,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.11239409446716309,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.660832941532135,
+                "A": 0.24310685694217682,
+                "D": 0.07414340227842331,
+                "C": 0.021916747093200684
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.10979771614074707,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8870264291763306,
+                "A": 0.06840013712644577,
+                "D": 0.03230993449687958,
+                "C": 0.012263468466699123
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 4,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.11239409446716309,
+            0.10979771614074707
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.660832941532135,
+              "A": 0.24310685694217682,
+              "D": 0.07414340227842331,
+              "C": 0.021916747093200684
+            },
+            {
+              "B": 0.8870264291763306,
+              "A": 0.06840013712644577,
+              "D": 0.03230993449687958,
+              "C": 0.012263468466699123
+            }
+          ],
+          "final_logits": {
+            "B": 0.9652253985404968,
+            "C": 0.0166076198220253,
+            "D": 0.010073031298816204
+          },
+          "trial_time": 0.34333276748657227
+        }
+      ],
+      "avg_trial_time": 0.34333276748657227,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.1105031967163086,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.6160537600517273,
+                "A": 0.27337220311164856,
+                "D": 0.07357712835073471,
+                "C": 0.036996904760599136
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.10708928108215332,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8870264291763306,
+                "A": 0.06840013712644577,
+                "D": 0.03230993449687958,
+                "C": 0.012263468466699123
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 4,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.1105031967163086,
+            0.10708928108215332
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.6160537600517273,
+              "A": 0.27337220311164856,
+              "D": 0.07357712835073471,
+              "C": 0.036996904760599136
+            },
+            {
+              "B": 0.8870264291763306,
+              "A": 0.06840013712644577,
+              "D": 0.03230993449687958,
+              "C": 0.012263468466699123
+            }
+          ],
+          "final_logits": {
+            "B": 0.9652253985404968,
+            "C": 0.0166076198220253,
+            "D": 0.010073031298816204
+          },
+          "trial_time": 0.3366539478302002
+        }
+      ],
+      "avg_trial_time": 0.3366539478302002,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.10915732383728027,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.6538611650466919,
+                "A": 0.1994163990020752,
+                "D": 0.07336118817329407,
+                "C": 0.07336118817329407
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.10762739181518555,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.815488874912262,
+                "D": 0.09739626199007034,
+                "A": 0.04897391423583031,
+                "C": 0.0381409227848053
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 2,
+          "success": true,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.10915732383728027,
+            0.10762739181518555
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.6538611650466919,
+              "A": 0.1994163990020752,
+              "D": 0.07336118817329407,
+              "C": 0.07336118817329407
+            },
+            {
+              "B": 0.815488874912262,
+              "D": 0.09739626199007034,
+              "A": 0.04897391423583031,
+              "C": 0.0381409227848053
+            }
+          ],
+          "final_logits": {
+            "B": 0.8822781443595886,
+            "C": 0.06803398579359055,
+            "D": 0.043926041573286057
+          },
+          "trial_time": 0.3358943462371826
+        }
+      ],
+      "avg_trial_time": 0.3358943462371826,
+      "std_trial_time": 0.0,
+      "success_rate": 1.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.10782337188720703,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.660832941532135,
+                "A": 0.24310685694217682,
+                "D": 0.07414340227842331,
+                "C": 0.021916747093200684
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.10587716102600098,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8870264291763306,
+                "A": 0.06840013712644577,
+                "D": 0.03230993449687958,
+                "C": 0.012263468466699123
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 1,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.10782337188720703,
+            0.10587716102600098
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.660832941532135,
+              "A": 0.24310685694217682,
+              "D": 0.07414340227842331,
+              "C": 0.021916747093200684
+            },
+            {
+              "B": 0.8870264291763306,
+              "A": 0.06840013712644577,
+              "D": 0.03230993449687958,
+              "C": 0.012263468466699123
+            }
+          ],
+          "final_logits": {
+            "B": 0.9652253985404968,
+            "C": 0.0166076198220253,
+            "D": 0.010073031298816204
+          },
+          "trial_time": 0.3293447494506836
+        }
+      ],
+      "avg_trial_time": 0.3293447494506836,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.1067197322845459,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.660832941532135,
+                "A": 0.24310685694217682,
+                "D": 0.07414340227842331,
+                "C": 0.021916747093200684
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.10357522964477539,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8870264291763306,
+                "A": 0.06840013712644577,
+                "D": 0.03230993449687958,
+                "C": 0.012263468466699123
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 4,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.1067197322845459,
+            0.10357522964477539
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.660832941532135,
+              "A": 0.24310685694217682,
+              "D": 0.07414340227842331,
+              "C": 0.021916747093200684
+            },
+            {
+              "B": 0.8870264291763306,
+              "A": 0.06840013712644577,
+              "D": 0.03230993449687958,
+              "C": 0.012263468466699123
+            }
+          ],
+          "final_logits": {
+            "B": 0.9652253985404968,
+            "C": 0.0166076198220253,
+            "D": 0.010073031298816204
+          },
+          "trial_time": 0.3256213665008545
+        }
+      ],
+      "avg_trial_time": 0.3256213665008545,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.10534405708312988,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.6538611650466919,
+                "A": 0.1994163990020752,
+                "D": 0.07336118817329407,
+                "C": 0.07336118817329407
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.10407757759094238,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.815488874912262,
+                "D": 0.09739626199007034,
+                "A": 0.04897391423583031,
+                "C": 0.0381409227848053
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 2,
+          "success": true,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.10534405708312988,
+            0.10407757759094238
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.6538611650466919,
+              "A": 0.1994163990020752,
+              "D": 0.07336118817329407,
+              "C": 0.07336118817329407
+            },
+            {
+              "B": 0.815488874912262,
+              "D": 0.09739626199007034,
+              "A": 0.04897391423583031,
+              "C": 0.0381409227848053
+            }
+          ],
+          "final_logits": {
+            "B": 0.8822781443595886,
+            "C": 0.06803398579359055,
+            "D": 0.043926041573286057
+          },
+          "trial_time": 0.3267965316772461
+        }
+      ],
+      "avg_trial_time": 0.3267965316772461,
+      "std_trial_time": 0.0,
+      "success_rate": 1.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.10460996627807617,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.660832941532135,
+                "A": 0.24310685694217682,
+                "D": 0.07414340227842331,
+                "C": 0.021916747093200684
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": null,
+              "result": null,
+              "round_time": 0.10463476181030273,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.9383756518363953,
+                "A": 0.03638477250933647,
+                "D": 0.01829541102051735
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 2,
+          "success": true,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.10460996627807617,
+            0.10463476181030273
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.660832941532135,
+              "A": 0.24310685694217682,
+              "D": 0.07414340227842331,
+              "C": 0.021916747093200684
+            },
+            {
+              "B": 0.9383756518363953,
+              "A": 0.03638477250933647,
+              "D": 0.01829541102051735
+            }
+          ],
+          "final_logits": {
+            "B": 0.962715744972229,
+            "C": 0.016054805368185043,
+            "D": 0.0129003981128335
+          },
+          "trial_time": 0.32336950302124023
+        }
+      ],
+      "avg_trial_time": 0.32336950302124023,
+      "std_trial_time": 0.0,
+      "success_rate": 1.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.10356569290161133,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.660832941532135,
+                "A": 0.24310685694217682,
+                "D": 0.07414340227842331,
+                "C": 0.021916747093200684
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.10320138931274414,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8870264291763306,
+                "A": 0.06840013712644577,
+                "D": 0.03230993449687958,
+                "C": 0.012263468466699123
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 2,
+          "success": true,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.10356569290161133,
+            0.10320138931274414
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.660832941532135,
+              "A": 0.24310685694217682,
+              "D": 0.07414340227842331,
+              "C": 0.021916747093200684
+            },
+            {
+              "B": 0.8870264291763306,
+              "A": 0.06840013712644577,
+              "D": 0.03230993449687958,
+              "C": 0.012263468466699123
+            }
+          ],
+          "final_logits": {
+            "B": 0.968870222568512,
+            "C": 0.012982867658138275
+          },
+          "trial_time": 0.3255295753479004
+        }
+      ],
+      "avg_trial_time": 0.3255295753479004,
+      "std_trial_time": 0.0,
+      "success_rate": 1.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.10535097122192383,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.660832941532135,
+                "A": 0.24310685694217682,
+                "D": 0.07414340227842331,
+                "C": 0.021916747093200684
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.10362720489501953,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8956047892570496,
+                "A": 0.060946669429540634,
+                "D": 0.02704492211341858,
+                "C": 0.016403574496507645
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 4,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.10535097122192383,
+            0.10362720489501953
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.660832941532135,
+              "A": 0.24310685694217682,
+              "D": 0.07414340227842331,
+              "C": 0.021916747093200684
+            },
+            {
+              "B": 0.8956047892570496,
+              "A": 0.060946669429540634,
+              "D": 0.02704492211341858,
+              "C": 0.016403574496507645
+            }
+          ],
+          "final_logits": {
+            "B": 0.9611461758613586,
+            "C": 0.018162816762924194,
+            "D": 0.012879365123808384
+          },
+          "trial_time": 0.3236269950866699
+        }
+      ],
+      "avg_trial_time": 0.3236269950866699,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.10535287857055664,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.9708330035209656,
+                "A": 0.010131551884114742
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.1037454605102539,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8870264291763306,
+                "A": 0.06840013712644577,
+                "D": 0.03230993449687958,
+                "C": 0.012263468466699123
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 1,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.10535287857055664,
+            0.1037454605102539
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.9708330035209656,
+              "A": 0.010131551884114742
+            },
+            {
+              "B": 0.8870264291763306,
+              "A": 0.06840013712644577,
+              "D": 0.03230993449687958,
+              "C": 0.012263468466699123
+            }
+          ],
+          "final_logits": {
+            "B": 0.9652253985404968,
+            "C": 0.0166076198220253,
+            "D": 0.010073031298816204
+          },
+          "trial_time": 0.3235313892364502
+        }
+      ],
+      "avg_trial_time": 0.3235313892364502,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.10538840293884277,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.660832941532135,
+                "A": 0.24310685694217682,
+                "D": 0.07414340227842331,
+                "C": 0.021916747093200684
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.10578155517578125,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8872354626655579,
+                "D": 0.0500543974339962,
+                "A": 0.0500543974339962,
+                "C": 0.012655734084546566
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 3,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.10538840293884277,
+            0.10578155517578125
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.660832941532135,
+              "A": 0.24310685694217682,
+              "D": 0.07414340227842331,
+              "C": 0.021916747093200684
+            },
+            {
+              "B": 0.8872354626655579,
+              "D": 0.0500543974339962,
+              "A": 0.0500543974339962,
+              "C": 0.012655734084546566
+            }
+          ],
+          "final_logits": {
+            "B": 0.9652253985404968,
+            "C": 0.0166076198220253,
+            "D": 0.010073031298816204
+          },
+          "trial_time": 0.327897310256958
+        }
+      ],
+      "avg_trial_time": 0.327897310256958,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.10543537139892578,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.660832941532135,
+                "A": 0.24310685694217682,
+                "D": 0.07414340227842331,
+                "C": 0.021916747093200684
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.10596632957458496,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.9125329852104187,
+                "A": 0.0583362802863121,
+                "D": 0.015700995922088623,
+                "C": 0.013429774902760983
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 4,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.10543537139892578,
+            0.10596632957458496
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.660832941532135,
+              "A": 0.24310685694217682,
+              "D": 0.07414340227842331,
+              "C": 0.021916747093200684
+            },
+            {
+              "B": 0.9125329852104187,
+              "A": 0.0583362802863121,
+              "D": 0.015700995922088623,
+              "C": 0.013429774902760983
+            }
+          ],
+          "final_logits": {
+            "B": 0.9652253985404968,
+            "C": 0.0166076198220253,
+            "D": 0.010073031298816204
+          },
+          "trial_time": 0.3255586624145508
+        }
+      ],
+      "avg_trial_time": 0.3255586624145508,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.10548949241638184,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.5311383605003357,
+                "A": 0.2508919835090637,
+                "D": 0.1619880497455597,
+                "C": 0.05598156899213791
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.10234665870666504,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8956047892570496,
+                "A": 0.060946669429540634,
+                "D": 0.02704492211341858,
+                "C": 0.016403574496507645
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 3,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.10548949241638184,
+            0.10234665870666504
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.5311383605003357,
+              "A": 0.2508919835090637,
+              "D": 0.1619880497455597,
+              "C": 0.05598156899213791
+            },
+            {
+              "B": 0.8956047892570496,
+              "A": 0.060946669429540634,
+              "D": 0.02704492211341858,
+              "C": 0.016403574496507645
+            }
+          ],
+          "final_logits": {
+            "B": 0.9611461758613586,
+            "C": 0.018162816762924194,
+            "D": 0.012879365123808384
+          },
+          "trial_time": 0.3208646774291992
+        }
+      ],
+      "avg_trial_time": 0.3208646774291992,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "trials": [
+        {
+          "rounds": [
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "RED",
+              "round_time": 0.104248046875,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.5311383605003357,
+                "A": 0.2508919835090637,
+                "D": 0.1619880497455597,
+                "C": 0.05598156899213791
+              }
+            },
+            {
+              "available_cues": [
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "choice": "B",
+              "quadrant": 2,
+              "result": "GREEN",
+              "round_time": 0.10247993469238281,
+              "thinking_time": 0,
+              "token_probabilities": {
+                "B": 0.8870264291763306,
+                "A": 0.06840013712644577,
+                "D": 0.03230993449687958,
+                "C": 0.012263468466699123
+              }
+            }
+          ],
+          "final_choice": "B",
+          "correct_quadrant": 3,
+          "success": false,
+          "agent": "Gemma_2B",
+          "round_times": [
+            0.104248046875,
+            0.10247993469238281
+          ],
+          "thinking_times": [],
+          "logits": [
+            {
+              "B": 0.5311383605003357,
+              "A": 0.2508919835090637,
+              "D": 0.1619880497455597,
+              "C": 0.05598156899213791
+            },
+            {
+              "B": 0.8870264291763306,
+              "A": 0.06840013712644577,
+              "D": 0.03230993449687958,
+              "C": 0.012263468466699123
+            }
+          ],
+          "final_logits": {
+            "B": 0.9652253985404968,
+            "C": 0.0166076198220253,
+            "D": 0.010073031298816204
+          },
+          "trial_time": 0.3203408718109131
+        }
+      ],
+      "avg_trial_time": 0.3203408718109131,
+      "std_trial_time": 0.0,
+      "success_rate": 0.0
+    }
+  ]
+}
