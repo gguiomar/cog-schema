@@ -1,52 +1,62 @@
 import torch
 from torch.utils.data import DataLoader, TensorDataset
 import numpy as np
-
 import torch.nn as nn
 import torch.optim as optim
+from tqdm import tqdm, trange
 
-def train_sparse_autoencoder(model, data_loader, num_epochs=20, learning_rate=1e-3):
-    optimizer = torch.optim.Adam(model.parameters(), lr=5e-4, betas=(0.9,0.999))
+from SparseAutoencoder import *
+from config import get_default_cfg
+
+def train_sparse_autoencoder(model, data_loader, cfg):
+    optimizer = torch.optim.Adam(model.parameters(), lr=cfg["lr"], betas=(cfg["beta1"], cfg["beta2"]))
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=2)
-    # (Optionally, set up weight EMA here)
 
-    for epoch in range(num_epochs):
+    epoch_range = trange(cfg["num_epochs"], desc="Training", unit="epoch")
+
+    for epoch in epoch_range:
         model.train()
         total_loss = 0.0
-        for batch in train_loader:          # train_loader yields [B, D] activations
-            x = batch.to(device)
+
+        pbar = tqdm(data_loader, desc=f"Epoch {epoch+1}", unit="batch", leave=False)
+
+        for (batch,) in pbar:
             optimizer.zero_grad()
-            x_recon, z = model(x)           # forward
-            loss = sae_loss(x, x_recon, z, l1_coeff)
+            sae_output = model(batch)
+
+            loss = sae_output["loss"]
+            pbar.set_postfix({"Loss": f"{loss.item():.4f}", "L0": f"{sae_output['l0_norm']:.4f}", "L2": f"{sae_output['l2_loss']:.4f}", "L1": f"{sae_output['l1_loss']:.4f}", "L1_norm": f"{sae_output['l1_norm']:.4f}"})
             loss.backward()
+            torch.nn.utils.clip_grad_norm_(model.parameters(), cfg["max_grad_norm"])
+            model.make_decoder_weights_and_grad_unit_norm()
+
             optimizer.step()
-            # Renormalize decoder weights columns to unit norm:
-            with torch.no_grad():
-                w = model.decoder.weight.data   # shape [D, F]
-                norm = w.norm(dim=0, keepdim=True) + 1e-6
-                model.decoder.weight.data.div_(norm)
+
             total_loss += loss.item()
-        avg_loss = total_loss / len(train_loader)
-        # Validate, adjust lr, early stop, etc.
+
+        avg_loss = total_loss / len(data_loader)
+        epoch_range.set_postfix({"Average loss": f"{avg_loss:.4f}"})
+
         scheduler.step(avg_loss)
-        print(f"Epoch {epoch}: loss={avg_loss:.4f}")
 
 if __name__ == "__main__":
-    # Hyperparameters
-    input_dim = 784  # Example for MNIST dataset
-    hidden_dim = 64
-    batch_size = 128
-    num_epochs = 20
-    learning_rate = 1e-3
-    device = "cuda"
+    cfg = get_default_cfg()
+    cfg["device"] = "mps"
 
     # Generate synthetic data (replace with actual dataset)
-    x_train = np.random.rand(10000, input_dim).astype(np.float32)
-    train_dataset = TensorDataset(torch.tensor(x_train), torch.tensor(x_train))
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+    x_train = np.random.rand(10000, cfg["act_size"]).astype(np.float32)
+    train_dataset = TensorDataset(torch.tensor(x_train).to(cfg["device"]))
+    train_loader = DataLoader(train_dataset, batch_size=cfg["batch_size"], shuffle=True)
 
     # Initialize model
-    model = SparseAutoencoder(input_dim=input_dim, hidden_dim=hidden_dim)
+    if cfg["sae_type"] == "vanilla":
+        model = VanillaSAE(cfg)
+    elif cfg["sae_type"] == "topk":
+        model = TopKSAE(cfg)
+    elif cfg["sae_type"] == "batchtopk":
+        model = BatchTopKSAE(cfg)
+    elif cfg["sae_type"] == 'jumprelu':
+        model = JumpReLUSAE(cfg)
 
     # Train model
-    train_sparse_autoencoder(model, train_loader, num_epochs=num_epochs, learning_rate=learning_rate)
+    train_sparse_autoencoder(model, train_loader, cfg)
