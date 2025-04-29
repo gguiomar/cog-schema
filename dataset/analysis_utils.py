@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
+from scipy.stats import ttest_ind, mannwhitneyu
 
 # ---------------------------------------------------------------------------
 # Constants – tweak from a single place instead of repeating literals
@@ -29,6 +30,10 @@ HIGH_DURATION_PERC = 0.95     # 95th percentile
 # Global plotting style (applied once) --------------------------------------
 sns.set(style="ticks", palette="husl")
 plt.rcParams.update({"figure.figsize": (10, 6)})
+plt.rc('axes', titlesize=20)     # for titles
+plt.rc('axes', labelsize=20)     # for x/y axis labels
+plt.rc('xtick', labelsize=20)    # for tick labels
+plt.rc('ytick', labelsize=20)
 
 # ---------------------------------------------------------------------------
 # Data‑loading helpers
@@ -149,19 +154,19 @@ def add_final_choice_metrics(games_df: pd.DataFrame, choices_df: pd.DataFrame) -
 # ---------------------------------------------------------------------------
 
 def plot_game_duration_distribution(games_df: pd.DataFrame, filtered: bool = True) -> None:
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 5))
-    sns.histplot(data=games_df, x="total_duration", bins=30, ax=ax1)
-    ax1.set(title="Distribution of Game Duration", xlabel="Duration (s)", ylabel="Count")
-    sns.boxplot(data=games_df, y="total_duration", ax=ax2)
-    ax2.set(title="Box Plot", ylabel="Duration (s)")
-    plt.tight_layout()
+    # fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
+    # sns.histplot(data=games_df, x="total_duration", bins=50, ax=ax1)
+    # ax1.set(title="Distribution of Game Duration", xlabel="Duration (s)", ylabel="Count")
+    # sns.boxplot(data=games_df, y="total_duration", ax=ax2)
+    # ax2.set(title="Box Plot", ylabel="Duration (s)")
+    # plt.tight_layout()
     if filtered:
         f = filter_games_by_duration(games_df)
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 5))
-        sns.histplot(data=f, x="total_duration", bins=30, ax=ax1)
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
+        sns.histplot(data=f, x="total_duration", bins=30, ax=ax1, color="blue", edgecolor="black", alpha=0.7, linewidth=2) 
         ax1.set(title="Duration (5–95th pct)", xlabel="Duration (s)")
-        sns.boxplot(data=f, y="total_duration", ax=ax2)
-        ax2.set(title="Box Plot (5–95th pct)")
+        sns.boxplot(data=f, x="total_duration", ax=ax2)
+        ax2.set(xlabel="Duration (s)")
         plt.tight_layout()
 
 def evolution_by_round(choices_df: pd.DataFrame, min_games: int = 10) -> pd.DataFrame:
@@ -176,12 +181,12 @@ def evolution_by_round(choices_df: pd.DataFrame, min_games: int = 10) -> pd.Data
 
 
 def plot_evolution_thinking_time(evo_df: pd.DataFrame) -> None:
-    fig, ax1 = plt.subplots()
-    ax1.plot(evo_df["round"], evo_df["mean_thinking_time"], marker="o", label="Mean Thinking Time")
+    fig, ax1 = plt.subplots(figsize=(7, 5))
+    ax1.plot(evo_df["round"], evo_df["mean_thinking_time"], marker="o", label="Mean Thinking Time", color="blue")
     ax1.set(xlabel="Round", ylabel="Thinking Time (s)")
     ax1.grid(True)
     ax2 = ax1.twinx()
-    ax2.bar(evo_df["round"], evo_df["num_games"], alpha=0.3, label="# Games")
+    ax2.bar(evo_df["round"], evo_df["num_games"], alpha=0.3, label="# Games", color="blue")
     ax2.set_ylabel("Number of Games")
     ax1.legend(loc="upper left")
     plt.title("Evolution of Thinking Time by Round")
@@ -201,7 +206,7 @@ def plot_strategy_vs_exploration(df: pd.DataFrame) -> None:
     by = df.groupby(["round", "is_strategy"])["time_taken"].agg(["mean", "count"]).reset_index()
     strat = by[by["is_strategy"]]
     explo = by[~by["is_strategy"]]
-    fig, ax1 = plt.subplots(figsize=(12,6))
+    fig, ax1 = plt.subplots(figsize=(7,5))
     ax1.plot(strat["round"], strat["mean"], marker="o", label="Strategy")
     ax1.plot(explo["round"], explo["mean"], marker="o", label="Exploration")
     ax1.set(xlabel="Round", ylabel="Reaction Time (s)")
@@ -233,15 +238,15 @@ def plot_reflexion_vs_rounds(games_df: pd.DataFrame) -> None:
         .mean()
         .reset_index()
     )
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(7, 5))
     plt.plot(
         rounds_vs_reflexion["num_rounds"],
         rounds_vs_reflexion["final_choice_reflexion_time"],
         marker='o'
     )
-    plt.xlabel("Number of Rounds")
-    plt.ylabel("Mean Final Choice Reflexion Time (seconds)")
-    plt.title(f"Mean Final Choice Reflexion Time vs. Number of Rounds (≤ {MAX_REFLEXION_TIME}s only)")
+    plt.xlabel("#Rounds")
+    plt.ylabel("Mean FCRT (seconds)")
+    plt.title(f"Mean FCRT vs. #Rounds (≤ {MAX_REFLEXION_TIME}s only)")
     plt.grid(True)
     plt.show()
 
@@ -265,15 +270,15 @@ def plot_reflexion_vs_consistency(games_df: pd.DataFrame) -> None:
         True: "Consistent", False: "Non-Consistent"
     })
     grouped_consistency = grouped_consistency.sort_values("Consistency")
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(7, 5))
     plt.plot(
         grouped_consistency["Consistency"],
         grouped_consistency["final_choice_reflexion_time"],
         marker='o', linestyle='-'
     )
     plt.xlabel("Last Three Rounds Consistency")
-    plt.ylabel("Mean Final Choice Reflexion Time (seconds)")
-    plt.title(f"Mean Final Choice Reflexion Time by Consistency (≤ {MAX_REFLEXION_TIME}s only)")
+    plt.ylabel("Mean FCRT (seconds)")
+    plt.title(f"Mean FCRT by Consistency (≤ {MAX_REFLEXION_TIME}s only)")
     plt.grid(True)
     plt.show()
 
@@ -353,11 +358,11 @@ def plot_biased_accuracy_by_round(games_df: pd.DataFrame,
     )
 
     # plot
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(7, 5))
     plt.plot(stats["round"], stats["accuracy"], marker="o")
     plt.ylim(0, 1)
     plt.xlabel("Round")
-    plt.ylabel("Proportion of Choices Matching Biased Quadrant")
+    plt.ylabel("Detection Accuracy")
     plt.title("Choice Accuracy by Round")
     plt.grid(True)
     # annotate n above each point
@@ -438,16 +443,17 @@ def plot_mean_reflection_by_correctness(
     )
 
     # plot
-    plt.figure(figsize=(8, 6))
+    plt.figure(figsize=(7, 5))
     bars = plt.bar(
         agg["label"],
         agg["mean_reflexion_time"],
-        alpha=0.7
+        alpha=0.7,
+        color="blue", edgecolor="black", linewidth=2
     )
     plt.xlabel("Outcome")
-    plt.ylabel("Mean Final-Choice Reflection Time (s)")
+    plt.ylabel("Mean FCRT (s)")
     plt.title(
-        f"Average Reflection Time by Correctness (Filtered to <= {max_reflexion}s)"
+        f"max RT {max_reflexion}s)"
     )
     plt.grid(axis="y", linestyle="--", alpha=0.5)
 
@@ -461,6 +467,96 @@ def plot_mean_reflection_by_correctness(
             ha="center",
             va="bottom"
         )
+
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_mean_reflection_by_correctness_ttest(
+    games_df: pd.DataFrame,
+    max_reflexion: float = 10.0  # or your MAX_REFLEXION_TIME
+) -> None:
+    """
+    Bar‐plot of average final‐choice reflection time for correct vs. incorrect games,
+    filtering out any games with reflexion time > max_reflexion. Also prints the
+    number of games in each category and runs significance tests.
+    """
+    # Filter games
+    df = games_df.loc[
+        games_df["final_choice_reflexion_time"].notnull() &
+        (games_df["final_choice_reflexion_time"] <= max_reflexion)
+    ].copy()
+
+    # Split data
+    correct_times = df.loc[df["correct"], "final_choice_reflexion_time"]
+    incorrect_times = df.loc[~df["correct"], "final_choice_reflexion_time"]
+
+    # Run significance tests
+    t_stat, p_value_t = ttest_ind(correct_times, incorrect_times, equal_var=False)
+    u_stat, p_value_u = mannwhitneyu(correct_times, incorrect_times, alternative='two-sided')
+
+    print(f"T-test: t={t_stat:.3f}, p={p_value_t:.4f}")
+    print(f"Mann–Whitney U: U={u_stat}, p={p_value_u:.4f}")
+
+    # Aggregate for plotting
+    agg = (
+        df.groupby("correct")["final_choice_reflexion_time"]
+          .mean()
+          .rename({True: "Correct", False: "Incorrect"})
+          .reset_index(name="mean_reflexion_time")
+          .rename(columns={"correct": "label"})
+    )
+
+    counts = df.groupby("correct")["game_id"].nunique().rename({True: "Correct", False: "Incorrect"})
+
+    # Plot
+    plt.figure(figsize=(5, 5))
+    bars = plt.bar(
+        agg["label"],
+        agg["mean_reflexion_time"],
+        alpha=0.7,
+        color="skyblue",
+        edgecolor="black",
+        linewidth=2
+    )
+    plt.xlabel("Outcome", fontsize=14)
+    plt.ylabel("Mean FCRT (s)", fontsize=14)
+    plt.title(f"Mean Final Reflection Time (≤{max_reflexion}s)", fontsize=16)
+    plt.grid(axis="y", linestyle="--", alpha=0.5)
+
+    ymax = max(agg["mean_reflexion_time"]) * 1.1
+    plt.ylim(0, ymax * 1.3)
+
+    # Annotate counts and p-value
+    for bar, label in zip(bars, agg["label"]):
+        height = bar.get_height()
+        plt.text(
+            bar.get_x() + bar.get_width()/2,
+            height + max_reflexion*0.02,
+            f"n={counts[label]}",
+            ha="center",
+            va="bottom",
+            fontsize=12
+        )
+
+    # Add p-value text between bars
+    ymax = max(agg["mean_reflexion_time"]) * 1.1
+    x_center = (bars[0].get_x() + bars[1].get_x() + bars[1].get_width()) / 2
+    p_value_display = p_value_u if p_value_u < 1 else p_value_t  # Prefer U-test if non-weird
+
+    plt.plot(
+        [bars[0].get_x() + bars[0].get_width()/2, bars[1].get_x() + bars[1].get_width()/2],
+        [ymax*0.95, ymax*0.95],
+        color="black"
+    )
+    plt.text(
+        x_center,
+        ymax,
+        f"p = {p_value_display:.4f}",
+        ha="center",
+        va="bottom",
+        fontsize=12
+    )
 
     plt.tight_layout()
     plt.show()
