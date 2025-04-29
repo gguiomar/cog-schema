@@ -4,10 +4,11 @@ import numpy as np
 import torch.nn as nn
 import torch.optim as optim
 from tqdm import tqdm, trange
+import argparse
 
 from SparseAutoencoder import *
 from config import get_default_cfg
-from dataset import TokenActivationsDataset, SAEDataLoader
+from dataset import SAEDataLoader
 
 def train_sparse_autoencoder(model, data_loader, cfg):
     optimizer = torch.optim.Adam(model.parameters(), lr=cfg["lr"], betas=(cfg["beta1"], cfg["beta2"]))
@@ -43,10 +44,18 @@ def train_sparse_autoencoder(model, data_loader, cfg):
 
 if __name__ == "__main__":
     cfg = get_default_cfg()
-    cfg["device"] = "mps"
-    cfg["activations_dir"] = "run1"
+    parser = argparse.ArgumentParser(description="Train a Sparse Autoencoder")
+    parser.add_argument("--device", type=str, default="cuda", help="Device to run the training on (e.g., 'cpu', 'cuda', 'mps')")
+    parser.add_argument("--data", type=str, help="Directory containing activation data")
+    parser.add_argument("--sae_type", type=str, default="topk", choices=["vanilla", "topk", "batchtopk", "jumprelu"], help="Type of Sparse Autoencoder to use")
 
-    train_loader = SAEDataLoader(cfg["activations_dir"], batch_size=cfg["batch_size"], shuffle=True)
+    args = parser.parse_args()
+
+    cfg["device"] = args.device
+    cfg["data"] = args.data
+    cfg["sae_type"] = args.sae_type
+
+    train_loader = SAEDataLoader(cfg["data"], batch_size=cfg["batch_size"], shuffle=True)
 
     cfg["act_size"] = train_loader.get_activation_dim()
     cfg["dict_size"] = cfg["act_size"] * 16
