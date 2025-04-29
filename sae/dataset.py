@@ -12,13 +12,14 @@ class TokenActivationsDataset(Dataset):
             activations_dir (str): Path to the directory containing numpy files.
         """
         self.activations = []
-        for file in tqdm(os.listdir(activations_dir), desc="Loading activations"):
-            if file.endswith(".npy"):
-                file_path = os.path.join(activations_dir, file)
-                data = np.load(file_path)  # Shape: batch x tokens x hidden_dim
-                # Reshape to (batch * tokens, hidden_dim)
-                reshaped_data = data.reshape(-1, data.shape[-1])
-                self.activations.append(reshaped_data)
+        for root, _, files in os.walk(activations_dir):
+            for file in files:
+                if file.endswith(".npy"):
+                    file_path = os.path.join(root, file)
+                    data = np.load(file_path)  # Shape: batch x tokens x hidden_dim
+                    # Reshape to (batch * tokens, hidden_dim)
+                    reshaped_data = data.reshape(-1, data.shape[-1])
+                    self.activations.append(reshaped_data)
         
         # Concatenate all activations into a single array
         self.activations = np.concatenate(self.activations, axis=0)  # Shape: (total_tokens, hidden_dim)

@@ -11,13 +11,28 @@ from tqdm import tqdm
 from sae.hooks import Hook
 
 class TaskManager:
-    def __init__(self, agents=None, rounds=None, quadrants=None, n_simulations=10,
-                 n_trials=1, num_cues=1, device="cuda:0", verbose=False,
-                 output_dir="simulation_results", openai_api_key=None,
-                 anthropic_api_key=None, use_unsloth=True,
-                 reasoning_mode="time", min_thinking_time=5.0, max_thinking_time=10.0,
-                 min_thinking_tokens=200, max_thinking_tokens=500,
-                 task_type=None,log_stats = False):  # Note: fix task_type not being implemented
+    def __init__(self,
+                 agents=None,
+                 rounds=None,
+                 quadrants=None,
+                 n_simulations=10,
+                 n_trials=1,
+                 num_cues=1,
+                 device="cuda:0",
+                 verbose=False,
+                 output_dir="simulation_results",
+                 openai_api_key=None,
+                 anthropic_api_key=None,
+                 use_unsloth=True,
+                 reasoning_mode="time",
+                 min_thinking_time=5.0,
+                 max_thinking_time=10.0,
+                 min_thinking_tokens=200,
+                 max_thinking_tokens=500,
+                 task_type=None,
+                 log_stats = False,
+                 activation_layer=None,
+                 ):
         """
         Initialize task manager with benchmark capabilities.
 
@@ -106,6 +121,8 @@ class TaskManager:
         
         self.log_stats = log_stats
 
+        self.activations_layer = activation_layer
+
     def initialize_agent(self, agent_name):
         """Initialize an LLM agent with the specified model."""
         from agents.LLMagent import LLMagent  # Import here to avoid circular imports
@@ -127,9 +144,25 @@ class TaskManager:
             max_thinking_tokens=self.max_thinking_tokens
         )
 
-        # Set up the hook
-        if not self.is_reasoning_model:
-            self.hook = Hook(self.agent.model.model.layers[5].post_attention_layernorm, save_path="./activations")
+        # Set up the hook for saving activations if specified
+        if not self.is_reasoning_model and self.activations_layer is not None:
+            path_parts = self.activations_layer.split('.')
+            layer = self.agent.model
+            # Get the model component from the input string
+            for part in path_parts:
+                if '[' in part and ']' in part:
+                    list_name, index = part.split('[')
+                    index = int(index[:-1])
+                    layer = getattr(layer, list_name)[index]
+                else:
+                    layer = getattr(layer, part)
+
+            # Create the directory for saving activations
+            path = os.path.join("./activations", self.current_agent, f"{'_'.join(path_parts)}_{self.timestamp}")
+            os.makedirs(os.path.dirname(path), exist_ok=False)
+            print(f"Saving activations to {path}")
+
+            self.hook = Hook(layer, save_path=path)
 
         # Get the reasoning parameters that were actually set
         self.reasoning_params = self.agent.get_reasoning_parameters()
