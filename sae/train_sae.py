@@ -7,6 +7,7 @@ from tqdm import tqdm, trange
 
 from SparseAutoencoder import *
 from config import get_default_cfg
+from dataset import TokenActivationsDataset, SAEDataLoader
 
 def train_sparse_autoencoder(model, data_loader, cfg):
     optimizer = torch.optim.Adam(model.parameters(), lr=cfg["lr"], betas=(cfg["beta1"], cfg["beta2"]))
@@ -20,7 +21,8 @@ def train_sparse_autoencoder(model, data_loader, cfg):
 
         pbar = tqdm(data_loader, desc=f"Epoch {epoch+1}", unit="batch", leave=False)
 
-        for (batch,) in pbar:
+        for batch in pbar:
+            batch = batch.to(cfg["device"])
             optimizer.zero_grad()
             sae_output = model(batch)
 
@@ -42,11 +44,12 @@ def train_sparse_autoencoder(model, data_loader, cfg):
 if __name__ == "__main__":
     cfg = get_default_cfg()
     cfg["device"] = "mps"
+    cfg["activations_dir"] = "run1"
 
-    # Generate synthetic data (replace with actual dataset)
-    x_train = np.random.rand(10000, cfg["act_size"]).astype(np.float32)
-    train_dataset = TensorDataset(torch.tensor(x_train).to(cfg["device"]))
-    train_loader = DataLoader(train_dataset, batch_size=cfg["batch_size"], shuffle=True)
+    train_loader = SAEDataLoader(cfg["activations_dir"], batch_size=cfg["batch_size"], shuffle=True)
+
+    cfg["act_size"] = train_loader.get_activation_dim()
+    cfg["dict_size"] = cfg["act_size"] * 16
 
     # Initialize model
     if cfg["sae_type"] == "vanilla":
