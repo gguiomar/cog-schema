@@ -58,5 +58,7 @@ if __name__ == "__main__":
     elif cfg["sae_type"] == 'jumprelu':
         model = JumpReLUSAE(cfg)
 
+    print(f"Running training with model: {cfg['sae_type']} with {sum(p.numel() for p in model.parameters())} parameters")
+
     # Train model
     train_sparse_autoencoder(model, train_loader, cfg)

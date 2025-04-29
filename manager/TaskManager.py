@@ -8,6 +8,7 @@ from matplotlib.patches import Patch
 from datetime import datetime
 from typing import Dict
 from tqdm import tqdm
+from sae.hooks import Hook
 
 class TaskManager:
     def __init__(self, agents=None, rounds=None, quadrants=None, n_simulations=10,
@@ -125,6 +126,10 @@ class TaskManager:
             min_thinking_tokens=self.min_thinking_tokens,
             max_thinking_tokens=self.max_thinking_tokens
         )
+
+        # Set up the hook
+        if not self.is_reasoning_model:
+            self.hook = Hook(self.agent.model.model.layers[5].post_attention_layernorm, save_path="./activations")
 
         # Get the reasoning parameters that were actually set
         self.reasoning_params = self.agent.get_reasoning_parameters()
