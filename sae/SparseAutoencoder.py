@@ -83,6 +83,19 @@ class BatchTopKSAE(BaseAutoencoder):
         output = self.get_loss_dict(x, x_reconstruct, acts, acts_topk, x_mean, x_std)
         return output
 
+    def latents_from_acts(self, acts, use_pre_enc_bias=False):
+        acts, acts_mean, acts_std = self.preprocess_input(acts)
+
+        x_cent = acts - self.b_dec
+        acts = F.relu(x_cent @ self.W_enc)
+        acts_topk = torch.topk(acts.flatten(), self.cfg["top_k"] * x.shape[0], dim=-1)
+        latents = (
+            torch.zeros_like(acts.flatten())
+            .scatter(-1, acts_topk.indices, acts_topk.values)
+            .reshape(acts.shape)
+        )
+        return latents
+
     def get_loss_dict(self, x, x_reconstruct, acts, acts_topk, x_mean, x_std):
         l2_loss = (x_reconstruct.float() - x.float()).pow(2).mean()
         l1_norm = acts_topk.float().abs().sum(-1).mean()
@@ -148,6 +161,17 @@ class TopKSAE(BaseAutoencoder):
         output = self.get_loss_dict(x, x_reconstruct, acts, acts_topk, x_mean, x_std)
         return output
 
+    def latents_from_acts(self, acts, use_pre_enc_bias=False):
+        acts, acts_mean, acts_std = self.preprocess_input(acts)
+
+        x_cent = acts - self.b_dec
+        acts = F.relu(x_cent @ self.W_enc)
+        acts_topk = torch.topk(acts, self.cfg["top_k"], dim=-1)
+        latents = torch.zeros_like(acts).scatter(
+            -1, acts_topk.indices, acts_topk.values
+        )
+        return latents
+
     def get_loss_dict(self, x, x_reconstruct, acts, acts_topk, x_mean, x_std):
         l2_loss = (x_reconstruct.float() - x.float()).pow(2).mean()
         l1_norm = acts_topk.float().abs().sum(-1).mean()
@@ -206,6 +230,12 @@ class VanillaSAE(BaseAutoencoder):
         self.update_inactive_features(acts)
         output = self.get_loss_dict(x, x_reconstruct, acts, x_mean, x_std)
         return output
+
+    def latents_from_acts(self, acts):
+        acts, acts_mean, acts_std = self.preprocess_input(acts)
+        x_cent = acts - self.b_dec
+        latents = F.relu(x_cent @ self.W_enc + self.b_enc)
+        return latents
 
     def get_loss_dict(self, x, x_reconstruct, acts, x_mean, x_std):
         l2_loss = (x_reconstruct.float() - x.float()).pow(2).mean()
@@ -309,6 +339,16 @@ class JumpReLUSAE(BaseAutoencoder):
         x_reconstructed = feature_magnitudes @ self.W_dec + self.b_dec
 
         return self.get_loss_dict(x, x_reconstructed, feature_magnitudes, x_mean, x_std)
+
+    def latents_from_acts(self, acts, use_pre_enc_bias=False):
+        acts, acts_mean, acts_std = self.preprocess_input(acts)
+
+        if use_pre_enc_bias:
+            acts = acts - self.b_dec
+
+        pre_activations = torch.relu(acts @ self.W_enc + self.b_enc)
+        latents = self.jumprelu(pre_activations)
+        return latents
 
     def get_loss_dict(self, x, x_reconstruct, acts, x_mean, x_std):
         l2_loss = (x_reconstruct.float() - x.float()).pow(2).mean()
