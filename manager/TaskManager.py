@@ -159,7 +159,7 @@ class TaskManager:
 
             # Create the directory for saving activations
             path = os.path.join("./activations", self.current_agent, f"{'_'.join(path_parts)}_{self.timestamp}")
-            os.makedirs(os.path.dirname(path), exist_ok=False)
+            os.makedirs(os.path.dirname(path), exist_ok=True)
             print(f"Saving activations to {path}")
 
             self.hook = Hook(layer, save_path=path)
