@@ -35,7 +35,7 @@ class ClassicalConditioningTask(TaskGeneral):
                     reward_str = "REWARD +100 POINTS"
                     round_str = [{
                     'name': reward_str,
-                    'color': 'WHITE',
+                    'color': 'GREEN',
                     'quadrant': 0  # since there's only one cue, assign quadrant 0
                 }]
                 else:
@@ -81,15 +81,7 @@ class ClassicalConditioningTask(TaskGeneral):
             raise ValueError("Final prompt not defined for this task.")
 
     def process_choice(self):
-        round_data = self.get_round_data(self.current_round)
-        result = None
-        for cue in round_data:
-            if cue['name'] == self.current_answer:
-                result = cue['color']
-                break
-        # round_data = self.get_round_data(self.current_round)
-
-        return result
+        return "RED"
     
     def get_round_data(self, round_num: int) -> List[Dict]:
         """Get data for specific round."""
@@ -111,10 +103,7 @@ class ClassicalConditioningTask(TaskGeneral):
     
     def process_final_choice(self) -> bool:
         """Process the final choice and check if it's correct."""
-        if self.current_answer == "A":
-            self.received_reward = True
-            return True
-        return False
+        return "GREEN"
     
     def print_final_log(self):
         tqdm.write(f"LLM's final choice: {self.current_answer}")
@@ -128,12 +117,13 @@ class ClassicalConditioningTask(TaskGeneral):
 
     def give_final_feedback(self) -> str:
         """Return round results including trial number."""
-        result_text = self.current_result if self.current_result is not None else "Invalid choice"
-        prompt = load_prompt_from_xml(self.strings, 'feedback_prompt')
+        result_text = "GREEN" if self.received_reward else "PURPLE"
+        prompt = load_prompt_from_xml(self.strings, 'final_feedback')
         return prompt.format(
             current_trial=self.current_trial + 1,
             current_round=self.current_round + 2,
             available_cues=self.available_cues,
             current_answer=self.current_answer,
-            result_text=result_text
+            result_text=result_text,
+            reward_text = "REWARD +100 POINTS" if self.received_reward else "PUNISHMENT -1000 POINTS"
         )
