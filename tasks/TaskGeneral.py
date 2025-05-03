@@ -55,6 +55,19 @@ class TaskGeneral:
         except AttributeError:
             raise ValueError("Intermediate prompt not defined for this task.")
 
+    def get_final_prompt(self) -> str:
+        try:
+            prompt = load_prompt_from_xml(self.strings, 'final_prompt')
+            return prompt.format(
+                current_trial=self.current_trial + 1,
+                letters=self.letters
+            )
+        except AttributeError:
+            raise ValueError("Final prompt not defined for this task.")
+        
+    def give_final_feedback(self) -> Optional[str]:
+        pass
+
     def process_choice(self) -> Optional[str]:
         pass
 

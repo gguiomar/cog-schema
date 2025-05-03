@@ -38,5 +38,22 @@ Choose one cue by responding with just the letter and nothing else.
 
 You choose:
 </final_prompt>
+<final_feedback_prompt>
+Trial {current_trial}: Based on all observed colors, which cue {letters} do you think had the highest ratio of RED?
+
+You chose "{current_answer}" which was {feedback}.
+You received {score} points.
+
+
+</final_feedback_prompt>
+<feedback_correct>
+the biased cue
+</feedback_correct>
+<feedback_incorrect>
+not the biased cue. The biased cue was {biased_quadrant}
+</feedback_incorrect>
+<feedback_invalid>
+an invalid choice
+</feedback_invalid>
 </prompt>
 </prompts>

@@ -50,6 +50,8 @@ def parse_args():
     
     parser.add_argument('--log-stats', action='store_true', help='Enable stats logging during benchmark')
 
+    parser.add_argument('--activation-layer', type=str, 
+                        help='Layer to save activations for activation analysis, see model.named_modules() for options')
 
     return parser.parse_args()
 
@@ -73,6 +75,7 @@ def main():
         use_unsloth=args.use_unsloth,
         log_stats=args.log_stats,
         task_type=TaskSelector.from_string(args.task_type),
+        activation_layer=args.activation_layer,
     )
 
     # Run benchmarks

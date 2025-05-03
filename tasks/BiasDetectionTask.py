@@ -63,6 +63,25 @@ class BiasDetectionTask(TaskGeneral):
 
         return result
     
+    def give_final_feedback(self) -> str:
+        """Return final feedback after all rounds."""
+        prompt = load_prompt_from_xml(self.strings, 'final_feedback_prompt')
+        feedback_text = ""
+        if self.current_answer == self.letters[self.correct_answer]:
+            feedback_text = load_prompt_from_xml(self.strings, 'feedback_correct')
+        elif self.current_answer in self.letters:
+            feedback_text = load_prompt_from_xml(self.strings, 'feedback_incorrect').format(biased_quadrant=self.letters[self.correct_answer])
+        else:
+            feedback_text = load_prompt_from_xml(self.strings, 'feedback_invalid')
+
+        return prompt.format(
+            current_trial=self.current_trial + 1,
+            letters=self.letters,
+            current_answer=self.current_answer,
+            feedback=feedback_text,
+            score=100 if self.current_answer == self.letters[self.correct_answer] else -100
+        )
+    
     def process_final_choice(self) -> bool:
         """Process the final choice and check if it's correct."""
         if self.current_answer == self.letters[self.correct_answer]:
