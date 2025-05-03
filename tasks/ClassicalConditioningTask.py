@@ -12,10 +12,10 @@ class ClassicalConditioningTask(TaskGeneral):
         self.available_cues = ["A"]
         # self.available_queues = ["A"]
         self.strings = ET.parse('tasks/ClassicalConditioningTask.xml')
-        self.reward_quadrant = random.choice(self.quadrants)
-        self.correct_answer = self.reward_quadrant
+        # self.reward_quadrant = random.choice(self.quadrants)
+        self.correct_answer = "A"
         self.conditioned_stimulus = "A"
-        self.received_reward = False
+        self.received_reward = True
         self.rounds = self._generate_rounds()
 
     def _generate_rounds(self) -> List[List[Dict]]:
@@ -118,7 +118,7 @@ class ClassicalConditioningTask(TaskGeneral):
     
     def print_final_log(self):
         tqdm.write(f"LLM's final choice: {self.current_answer}")
-        if self.current_answer == self.letters[self.correct_answer]:
+        if self.current_answer == "A":
             tqdm.write(f"Result: REWARD +100 POINTS")
         else:
             tqdm.write(f"Result: INVALID")

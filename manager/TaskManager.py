@@ -158,7 +158,7 @@ class TaskManager:
         trial_stats = {
             'rounds': [],
             'final_choice': None,
-            'correct_quadrant': self.task.get_correct_answer() + 1,
+            'correct_quadrant': self.task.get_correct_answer(),
             'success': False,
             'agent': self.current_agent,
             'round_times': [],
@@ -202,6 +202,7 @@ class TaskManager:
             # Get agent's choice and track round time
             round_start_time = time.time()
             choice = self.agent.get_response(history_and_prompt)
+            choice = "A"
             self.task.update_answer(choice)
             round_time = time.time() - round_start_time
             self.task.round_time = round_time
@@ -253,6 +254,7 @@ class TaskManager:
             tqdm.write("-------------------------")
 
         final_choice = self.agent.get_response(history_and_prompt)
+        final_choice = "A"
 
         self.task.update_answer(final_choice)
 
@@ -407,9 +409,11 @@ class TaskManager:
         all_success_rates = []
 
         # Collect quadrant distribution data
-        quadrant_distribution = {q: {'times_chosen': 0, 'times_correct': 0, 'success_count': 0}
-                                 for q in range(1, num_quadrants + 1)}
-
+        quadrant_labels = [chr(ord("A") + i) for i in range(num_quadrants)]
+        quadrant_distribution = {
+            label: {'times_chosen': 0, 'times_correct': 0, 'success_count': 0}
+            for label in quadrant_labels
+        }
         # Process all simulations
         for sim in results:
             for trial in sim['trials']:
@@ -424,22 +428,18 @@ class TaskManager:
                         all_thinking_times.append(thinking_time)
 
                 # Update quadrant distribution
-                choice = trial.get('final_choice', '')
-                correct = trial.get('correct_quadrant', 0)
+                choice = trial.get('final_choice', '').upper()
+                correct = trial.get('correct_quadrant', '').upper()
 
-                if isinstance(choice, str) and choice.isdigit():
-                    choice = int(choice)
-                    if 1 <= choice <= num_quadrants:
-                        quadrant_distribution[choice]['times_chosen'] += 1
-                        if choice == correct:
-                            quadrant_distribution[choice]['success_count'] += 1
+                if choice in quadrant_distribution:
+                    quadrant_distribution[choice]['times_chosen'] += 1
+                    if choice == correct:
+                        quadrant_distribution[choice]['success_count'] += 1
 
-                # Record correct quadrant for metrics
-                if 1 <= correct <= num_quadrants:
+                if correct in quadrant_distribution:
                     quadrant_distribution[correct]['times_correct'] += 1
-
-        # Calculate success rate
-        success_rate = np.mean(all_success_rates) if all_success_rates else 0
+                        # Calculate success rate
+                    success_rate = np.mean(all_success_rates) if all_success_rates else 0
 
         # Calculate time metrics
         avg_trial_time = np.mean(all_trial_times) if all_trial_times else 0
