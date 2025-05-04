@@ -20,7 +20,7 @@ class LLMagent:
                  device_map: str = "cpu", 
                  max_seq_length: int = 32768, 
                  load_in_4bit: bool = True, 
-                 use_unsloth: bool = False,
+                 use_unsloth: bool = True,
                  openai_api_key: Optional[str] = None,
                  anthropic_api_key: Optional[str] = None,
                  reasoning_mode: str = "time",  # 'time' or 'tokens'
