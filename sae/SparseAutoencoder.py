@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.autograd as autograd
+from hooks import capture_activation
 
 
 class BaseAutoencoder(nn.Module):
@@ -66,11 +67,14 @@ class BatchTopKSAE(BaseAutoencoder):
     def __init__(self, cfg):
         super().__init__(cfg)
 
-    def forward(self, x):
+    def forward(self, x, capture_hook=False, text=None, tokens=None, file_name=None):
         x, x_mean, x_std = self.preprocess_input(x)
 
         x_cent = x - self.b_dec
         acts = F.relu(x_cent @ self.W_enc)
+        if capture_hook:
+            capture_activation(acts, text, tokens, file_name)
+
         acts_topk = torch.topk(acts.flatten(), self.cfg["top_k"] * x.shape[0], dim=-1)
         acts_topk = (
             torch.zeros_like(acts.flatten())
@@ -146,12 +150,15 @@ class TopKSAE(BaseAutoencoder):
     def __init__(self, cfg):
         super().__init__(cfg)
 
-    def forward(self, x):
+    def forward(self, x, capture_hook=False, text=None, tokens=None, file_name=None):
         x, x_mean, x_std = self.preprocess_input(x)
 
         x_cent = x - self.b_dec
         acts = F.relu(x_cent @ self.W_enc)
         acts_topk = torch.topk(acts, self.cfg["top_k"], dim=-1)
+        if capture_hook:
+            capture_activation(acts, text, tokens, file_name)
+
         acts_topk = torch.zeros_like(acts).scatter(
             -1, acts_topk.indices, acts_topk.values
         )
@@ -222,10 +229,13 @@ class VanillaSAE(BaseAutoencoder):
     def __init__(self, cfg):
         super().__init__(cfg)
 
-    def forward(self, x):
+    def forward(self, x, capture_hook=False, text=None, tokens=None, file_name=None):
         x, x_mean, x_std = self.preprocess_input(x)
         x_cent = x - self.b_dec
         acts = F.relu(x_cent @ self.W_enc + self.b_enc)
+        if capture_hook:
+            capture_activation(acts, text, tokens, file_name)
+
         x_reconstruct = acts @ self.W_dec + self.b_dec
         self.update_inactive_features(acts)
         output = self.get_loss_dict(x, x_reconstruct, acts, x_mean, x_std)
@@ -327,7 +337,7 @@ class JumpReLUSAE(BaseAutoencoder):
         super().__init__(cfg)
         self.jumprelu = JumpReLU(feature_size=cfg["dict_size"], bandwidth=cfg["bandwidth"], device=cfg["device"])
 
-    def forward(self, x, use_pre_enc_bias=False):
+    def forward(self, x, use_pre_enc_bias=False, capture_hook=False, text=None, tokens=None, file_name=None):
         x, x_mean, x_std = self.preprocess_input(x)
 
         if use_pre_enc_bias:
@@ -335,6 +345,8 @@ class JumpReLUSAE(BaseAutoencoder):
 
         pre_activations = torch.relu(x @ self.W_enc + self.b_enc)
         feature_magnitudes = self.jumprelu(pre_activations)
+        if capture_hook: #preactivations or feat mags??
+            capture_activation(feature_magnitudes, text, tokens, file_name) 
 
         x_reconstructed = feature_magnitudes @ self.W_dec + self.b_dec
 

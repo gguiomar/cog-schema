@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import os
+import json
 
 class Hook:
     """
@@ -16,6 +17,10 @@ class Hook:
         self.save_path = save_path
         if save_path is not None:
             os.makedirs(save_path, exist_ok=False)
+        self.activations = []
+        self.current_text = None
+        self.current_tokens = None
+        self.current_file_name = None
 
     def remove(self):
         """
@@ -28,6 +33,30 @@ class Hook:
         Hook to convert PyTorch tensors to NumPy arrays.
         """
         activations = output.detach().cpu().numpy()
-        if self.save_path is not None:
-            np.save(f"{self.save_path}/activations_{self.counter}.npy", activations)
-            self.counter += 1
+        self.activations.append({
+            "activations": activations,
+            "text": self.current_text,
+            "tokens": self.current_tokens.cpu() if self.current_tokens is not None else None,
+            "file_name": self.current_file_name
+        })
+        
+        # if self.save_path is not None:
+        #     np.save(f"{self.save_path}/activations_{self.counter}.npy", activations)
+        #     self.counter += 1
+
+    def save_all(self):
+        """Save all collected activations and metadata to disk."""
+        for i, item in enumerate(self.activations):
+            act_path = os.path.join(self.save_path, f"activations_{i}.npy")
+            meta_path = os.path.join(self.save_path, f"meta_{i}.json")
+
+            # Save activation
+            np.save(act_path, item["activations"])
+
+            # Save metadata
+            with open(meta_path, "w", encoding="utf-8") as f:
+                json.dump({
+                    "text": item["text"],
+                    "tokens": item["tokens"].tolist() if item["tokens"] is not None else None,
+                    "file_name": item["file_name"]
+                }, f, indent=2)

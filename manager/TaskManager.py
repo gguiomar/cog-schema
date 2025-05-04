@@ -143,6 +143,9 @@ class TaskManager:
             min_thinking_tokens=self.min_thinking_tokens,
             max_thinking_tokens=self.max_thinking_tokens
         )
+        # print("Named modules in the model:")
+        # for name, module in self.agent.model.named_modules():
+        #     print(name)
 
         # Set up the hook for saving activations if specified
         if not self.is_reasoning_model and self.activations_layer is not None:
@@ -239,6 +242,10 @@ class TaskManager:
 
             # Get agent's choice and track round time
             round_start_time = time.time()
+            if hasattr(self, "hook"):
+                self.hook.current_text = history_and_prompt
+                self.hook.current_tokens = None  # You can pass tokenized form if you want
+                self.hook.current_file_name = f"{self.current_agent}_trial{trial_num}_round{round_num}"
             choice = self.agent.get_response(history_and_prompt)
             choice = "A"
             self.task.update_answer(choice)
@@ -284,9 +291,6 @@ class TaskManager:
         history_and_prompt = self.conversation_history + self.task.get_final_prompt()
 
         #self.conversation_history += self.task.get_final_prompt()
-        history_and_prompt = self.conversation_history + self.task.get_final_prompt()
-
-        #self.conversation_history += self.task.get_final_prompt()
 
         if self.verbose:
             tqdm.write("\nFinal accumulated prompt shown to LLM:")
@@ -294,6 +298,11 @@ class TaskManager:
             tqdm.write(history_and_prompt)
             tqdm.write(history_and_prompt)
             tqdm.write("-------------------------")
+
+        if hasattr(self, "hook"):
+            self.hook.current_text = history_and_prompt
+            self.hook.current_tokens = None
+            self.hook.current_file_name = f"{self.current_agent}_trial{trial_num}_final"
 
         final_choice = self.agent.get_response(history_and_prompt)
         final_choice = "A"
@@ -440,6 +449,7 @@ class TaskManager:
             with open(log_filename, 'w') as f:
                 json.dump(results_data, f, indent=2)
             print(f"Benchmark complete! Results saved to logs/")
+        self.activation_saving()
 
         return metrics
 
@@ -867,3 +877,11 @@ class TaskManager:
         self.plot_generated = True
 
         return df
+    
+    def activation_saving(self):
+        """Save all collected activations and clean up the hook."""
+        if hasattr(self, "hook") and self.hook is not None:
+            print(f"Saving {len(self.hook.activations)} activations...")
+            self.hook.save_all()
+            self.hook.remove()
+            self.hook = None  # Clean up reference
