@@ -32,6 +32,8 @@ class Hook:
         """
         Hook to convert PyTorch tensors to NumPy arrays.
         """
+        if isinstance(output, tuple):
+            output = output[0]
         activations = output.detach().cpu().numpy()
         self.activations.append({
             "activations": activations,
