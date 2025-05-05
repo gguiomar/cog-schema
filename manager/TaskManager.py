@@ -143,9 +143,6 @@ class TaskManager:
             min_thinking_tokens=self.min_thinking_tokens,
             max_thinking_tokens=self.max_thinking_tokens
         )
-        # print("Named modules in the model:")
-        # for name, module in self.agent.model.named_modules():
-        #     print(name)
 
         # Set up the hook for saving activations if specified
         if not self.is_reasoning_model and self.activations_layer is not None:
@@ -245,7 +242,6 @@ class TaskManager:
             if hasattr(self, "hook"):
                 self.hook.current_text = history_and_prompt
                 self.hook.current_tokens = None  # You can pass tokenized form if you want
-                self.hook.current_file_name = f"{self.current_agent}_trial{trial_num}_round{round_num}"
             choice = self.agent.get_response(history_and_prompt)
             choice = "A"
             self.task.update_answer(choice)

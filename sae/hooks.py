@@ -13,14 +13,12 @@ class Hook:
         self.module = module
         self.hook_fn = self.hook_to_numpy
         self.handle = module.register_forward_hook(self.hook_fn)
-        self.counter = 0
         self.save_path = save_path
         if save_path is not None:
             os.makedirs(save_path, exist_ok=False)
         self.activations = []
         self.current_text = None
         self.current_tokens = None
-        self.current_file_name = None
 
     def remove(self):
         """
@@ -39,12 +37,7 @@ class Hook:
             "activations": activations,
             "text": self.current_text,
             "tokens": self.current_tokens.cpu() if self.current_tokens is not None else None,
-            "file_name": self.current_file_name
         })
-        
-        # if self.save_path is not None:
-        #     np.save(f"{self.save_path}/activations_{self.counter}.npy", activations)
-        #     self.counter += 1
 
     def save_all(self):
         """Save all collected activations and metadata to disk."""
@@ -60,5 +53,5 @@ class Hook:
                 json.dump({
                     "text": item["text"],
                     "tokens": item["tokens"].tolist() if item["tokens"] is not None else None,
-                    "file_name": item["file_name"]
+                    "file_name": f"activations_{i}.npy"
                 }, f, indent=2)
