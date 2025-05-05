@@ -9,6 +9,7 @@ from datetime import datetime
 from typing import Dict
 from tqdm import tqdm
 from sae.hooks import Hook
+from transformers import AutoTokenizer
 
 class TaskManager:
     def __init__(self,
@@ -122,6 +123,7 @@ class TaskManager:
         self.log_stats = log_stats
 
         self.activations_layer = activation_layer
+        
 
     def initialize_agent(self, agent_name):
         """Initialize an LLM agent with the specified model."""
@@ -166,6 +168,7 @@ class TaskManager:
 
         # Get the reasoning parameters that were actually set
         self.reasoning_params = self.agent.get_reasoning_parameters()
+        self.tokenizer = self.agent.tokenizer
 
         return self.agent
 
@@ -241,7 +244,9 @@ class TaskManager:
             round_start_time = time.time()
             if hasattr(self, "hook"):
                 self.hook.current_text = history_and_prompt
-                self.hook.current_tokens = None  # You can pass tokenized form if you want
+                tokens = self.tokenizer(history_and_prompt, return_tensors="pt")["input_ids"]
+                self.hook.current_tokens = tokens.squeeze(0)  # Remove batch dimension
+                self.hook.current_file_name = f"{self.current_agent}_trial{trial_num}_round{round_num}"
             choice = self.agent.get_response(history_and_prompt)
             choice = "A"
             self.task.update_answer(choice)
@@ -296,8 +301,9 @@ class TaskManager:
 
         if hasattr(self, "hook"):
             self.hook.current_text = history_and_prompt
-            self.hook.current_tokens = None
-            self.hook.current_file_name = f"{self.current_agent}_trial{trial_num}_final"
+            tokens = self.tokenizer(history_and_prompt, return_tensors="pt")["input_ids"]
+            self.hook.current_tokens = tokens.squeeze(0)  # Remove batch dimension
+            self.hook.current_file_name = f"{self.current_agent}_trial{trial_num}_round{round_num}"
 
         final_choice = self.agent.get_response(history_and_prompt)
         final_choice = "A"
