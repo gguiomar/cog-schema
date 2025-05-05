@@ -296,7 +296,6 @@ class TaskManager:
             tqdm.write("\nFinal accumulated prompt shown to LLM:")
             tqdm.write("-------------------------")
             tqdm.write(history_and_prompt)
-            tqdm.write(history_and_prompt)
             tqdm.write("-------------------------")
 
         if hasattr(self, "hook"):
@@ -308,8 +307,6 @@ class TaskManager:
         final_choice = "A"
 
         self.task.update_answer(final_choice)
-
-        self.conversation_history += self.task.give_final_feedback()
 
         self.conversation_history += self.task.give_final_feedback()
 
