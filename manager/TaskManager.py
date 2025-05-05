@@ -454,6 +454,7 @@ class TaskManager:
         all_round_times = []
         all_thinking_times = []
         all_success_rates = []
+        success_rate = 0
 
         # Collect quadrant distribution data
         quadrant_labels = [chr(ord("A") + i) for i in range(num_quadrants)]
@@ -476,7 +477,10 @@ class TaskManager:
 
                 # Update quadrant distribution
                 choice = trial.get('final_choice', '').upper()
-                correct = trial.get('correct_quadrant', '').upper()
+                correct = trial.get('correct_quadrant', '')
+                if int(correct):
+                    correct = chr(ord("A") + int(correct) - 1)
+                correct = correct.upper()
 
                 if choice in quadrant_distribution:
                     quadrant_distribution[choice]['times_chosen'] += 1
