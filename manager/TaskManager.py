@@ -8,6 +8,8 @@ from matplotlib.patches import Patch
 from datetime import datetime
 from typing import List, Dict, Tuple, Optional, Any, Union
 from tqdm import tqdm
+import re
+import torch
 
 from tasks.VSTtask import VSTtask
 
@@ -104,12 +106,21 @@ class TaskManager:
         """Initialize an LLM agent with the specified model."""
         from agents.LLMagent import LLMagent  # Import here to avoid circular imports
         
+        # Release memory of the previous agent if it exists
+        if hasattr(self, 'agent') and self.agent is not None:
+            print(f"Releasing memory for previous agent: {self.current_agent}")
+            self.agent.release_memory()
+        
+        # Reset agent state before initializing a new one
+        self.reset_agent() 
+        
         self.current_agent = agent_name
         
         # Check if this is a reasoning model - using the list from LLMagent
         self.is_reasoning_model = agent_name in self.reasoning_models
         
         # Initialize the LLM agent with reasoning parameters if applicable
+        print(f"Initializing new agent: {self.current_agent}")
         self.agent = LLMagent(
             model_name=agent_name,
             use_unsloth=self.use_unsloth,
@@ -125,6 +136,18 @@ class TaskManager:
         self.reasoning_params = self.agent.get_reasoning_parameters()
         
         return self.agent
+    
+    
+    def reset_agent(self):
+        """Reset the current agent and associated memory."""
+        self.agent = None
+        self.current_agent = None
+        self.is_reasoning_model = False
+        self.reasoning_params = None
+        self.conversation_history = ""
+        self.thinking_times = []  # Also reset thinking times list
+        if self.verbose:
+            tqdm.write("Agent and conversation history have been reset.")
     
     def build_prompt(self, available_cues: str, round_num: int, trial_num: int) -> str:
         """Build prompt including conversation history and trial number."""
@@ -239,15 +262,15 @@ class TaskManager:
             # Build and show prompt with accumulated history
             prompt = self.build_prompt(', '.join(available_cues), round_num, trial_num)
             
-            if self.verbose:
-                tqdm.write("\nAccumulated prompt shown to LLM:")
-                tqdm.write("--------------------")
-                tqdm.write(prompt)
-                tqdm.write("--------------------")
+            #if self.verbose:
+                #tqdm.write("\nAccumulated prompt shown to LLM:")
+                #tqdm.write("--------------------")
+                #tqdm.write(prompt)
+                #tqdm.write("--------------------")
             
             # Get agent's choice and track round time
             round_start_time = time.time()
-            print(f'!!! {prompt} !!!')
+            #print(f'!!! {prompt} !!!')
             choice = self.agent.get_response(prompt)
             round_time = time.time() - round_start_time
             trial_stats['round_times'].append(round_time)
@@ -263,12 +286,22 @@ class TaskManager:
                 trial_stats['thinking_times'].append(thinking_time)
             
             # Get logit distribution for this round
-            logits = self.agent.get_last_logits()
-            if logits is not None:
-                trial_stats['logits'].append(logits)  # Store the token-probability dictionary directly
+            raw_logits = self.agent.get_last_logits()
+            if raw_logits is not None:
+                cpu_logits = {}
+                for tok, prob in raw_logits.items():
+                    if isinstance(prob, torch.Tensor):
+                        # detach from graph and move to CPU
+                        cpu_logits[tok] = prob.detach().cpu().item()
+                    else:
+                        # already a float (or numpy), just cast
+                        cpu_logits[tok] = float(prob)
+                trial_stats['logits'].append(cpu_logits)
+                # drop the original to free any GPU memory
+                del raw_logits
             
             if self.verbose:
-                tqdm.write(f"\nLLM chose: {choice}")
+                #tqdm.write(f"\nLLM chose: {choice}")
                 if self.is_reasoning_model:
                     tqdm.write(f"Thinking time: {thinking_time:.2f} seconds")
                     if logits is not None:
@@ -312,9 +345,6 @@ class TaskManager:
             if self.is_reasoning_model and thinking_tokens:
                 round_stats['thinking_tokens'] = thinking_tokens
             
-            # Add token probabilities to round stats
-            if logits is not None:
-                round_stats['token_probabilities'] = logits
             
             trial_stats['rounds'].append(round_stats)
         
@@ -324,23 +354,36 @@ class TaskManager:
         
         final_prompt = self.get_final_prompt(num_quadrants, trial_num)
         
-        if self.verbose:
-            tqdm.write("\nFinal accumulated prompt shown to LLM:")
-            tqdm.write("-------------------------")
-            tqdm.write(final_prompt)
-            tqdm.write("-------------------------")
+        # if self.verbose:
+            #tqdm.write("\nFinal accumulated prompt shown to LLM:")
+            #tqdm.write("-------------------------")
+            #tqdm.write(final_prompt)
+            #tqdm.write("-------------------------")
         
-        print(f'!!! {final_prompt} !!!')
+        #print(f'!!! {final_prompt} !!!')
         final_choice = self.agent.get_response(final_prompt)
         
         # Get logit distribution for final choice
-        final_logits = self.agent.get_last_logits()
-        if final_logits is not None:
-            trial_stats['final_logits'] = final_logits  # Store the token-probability dictionary directly
+        # Get logit distribution for this round
+        raw_logits = self.agent.get_last_logits()
+        if raw_logits is not None:
+            cpu_logits = {}
+            for tok, prob in raw_logits.items():
+                if isinstance(prob, torch.Tensor):
+                    # detach from graph and move to CPU
+                    cpu_logits[tok] = prob.detach().cpu().item()
+                else:
+                    # already a float (or numpy), just cast
+                    cpu_logits[tok] = float(prob)
+            trial_stats['logits'].append(cpu_logits)
+            # drop the original to free any GPU memory
             if self.verbose:
                 tqdm.write("\nFinal choice token probabilities:")
-                for tok, prob in final_logits.items():
+                for tok, prob in raw_logits.items():
                     tqdm.write(f"  {tok!r}: {prob:.4f}")
+                    
+            del raw_logits
+                
         
         if self.verbose:
             tqdm.write(f"\nLLM's final choice: Quadrant {final_choice}")
@@ -867,4 +910,277 @@ class TaskManager:
         # Set a flag to indicate plot has been generated
         self.plot_generated = True
         
+        return df
+    
+    def plot_results_from_logs(self, target_timestamp: str, target_quadrants: int, output_filename: str = None):
+        """
+        Reads existing log files, filters them by timestamp and quadrant count,
+        and creates a horizontal bar chart of aggregated results per model.
+
+        Parameters:
+        -----------
+        target_timestamp : str
+            The timestamp string to filter logs by (e.g., "20250420_170958").
+        target_quadrants : int
+            The number of quadrants to filter logs by.
+        output_filename : str, optional
+            Filename for the saved plot. If None, generates a default name.
+
+        Returns:
+        --------
+        pandas.DataFrame
+            DataFrame containing the aggregated results that were plotted, or empty if no logs found.
+        """
+        print(f"Generating plot from logs for timestamp '{target_timestamp}' and {target_quadrants} quadrants...")
+
+        aggregated_data = {}
+        log_files_processed = []
+
+        # Regex to parse filename components
+        filename_pattern = re.compile(
+            r"^(?P<agent>.+?)_"
+            r"(?P<rounds>\d+)r_"
+            r"(?P<quadrants>\d+)q_"
+            r"(?P<trials>\d+)t_"
+            r"(?P<timestamp>\d{8}_\d{6})\.json$"
+        )
+
+        # Ensure logs directory exists
+        if not os.path.exists(self.logs_dir) or not os.path.isdir(self.logs_dir):
+            print(f"Error: Logs directory '{self.logs_dir}' not found.")
+            return pd.DataFrame()
+
+        # Iterate through agent directories in the logs folder
+        for agent_dir in os.listdir(self.logs_dir):
+            agent_path = os.path.join(self.logs_dir, agent_dir)
+            if not os.path.isdir(agent_path):
+                continue
+
+            # Iterate through json files in the agent directory
+            for filename in os.listdir(agent_path):
+                match = filename_pattern.match(filename)
+                if not match:
+                    if self.verbose:
+                        print(f"Skipping file with unexpected format: {filename}")
+                    continue
+
+                file_info = match.groupdict()
+                file_quadrants = int(file_info['quadrants'])
+                file_timestamp = file_info['timestamp']
+                agent_name = file_info['agent'] # Use agent name from filename
+
+                # Filter by timestamp and quadrants
+                if file_timestamp == target_timestamp and file_quadrants == target_quadrants:
+                    log_files_processed.append(filename)
+                    file_path = os.path.join(agent_path, filename)
+                    try:
+                        with open(file_path, 'r') as f:
+                            data = json.load(f)
+
+                        # Extract success_rate from metrics
+                        metrics = data.get('metrics')
+                        if metrics and 'success_rate' in metrics:
+                            success_rate = metrics['success_rate']
+                            if agent_name not in aggregated_data:
+                                aggregated_data[agent_name] = {'success_rates': []}
+                            aggregated_data[agent_name]['success_rates'].append(success_rate)
+                        else:
+                             # Fallback: Try to calculate from raw_results if metrics missing/incomplete
+                             if 'raw_results' in data:
+                                 sim_success_rates = [sim.get('success_rate', 0) for sim in data.get('raw_results', [])]
+                                 if sim_success_rates:
+                                     avg_success_rate = np.mean(sim_success_rates)
+                                     if agent_name not in aggregated_data:
+                                         aggregated_data[agent_name] = {'success_rates': []}
+                                     aggregated_data[agent_name]['success_rates'].append(avg_success_rate)
+                                 else:
+                                     if self.verbose:
+                                         print(f"Warning: No success rate found in metrics or raw_results for {filename}")
+                             elif self.verbose:
+                                 print(f"Warning: No metrics block found for {filename}")
+
+
+                    except FileNotFoundError:
+                         if self.verbose:
+                            print(f"Warning: Log file {file_path} not found during processing.")
+                    except json.JSONDecodeError:
+                         if self.verbose:
+                             print(f"Warning: Could not decode JSON from {file_path}")
+                    except Exception as e:
+                        if self.verbose:
+                            print(f"Error reading or processing {file_path}: {e}")
+
+
+        if not aggregated_data:
+            print(f"No log files found matching timestamp '{target_timestamp}' and {target_quadrants} quadrants.")
+            return pd.DataFrame() # Return empty DataFrame
+
+        print(f"Processed {len(log_files_processed)} log files.")
+        if self.verbose:
+            print(f"Files processed: {log_files_processed}")
+
+
+        # Calculate mean and std for aggregated success rates for each model
+        final_agg_data = {}
+        for model, data in aggregated_data.items():
+            rates = data['success_rates']
+            if rates: # Ensure there are rates to calculate
+                final_agg_data[model] = {
+                    "mean": np.mean(rates),
+                    "std": np.std(rates) # Std dev of the *average* success rates from matching files
+                }
+            else: # Handle cases where a model's files were found but had no usable rate data
+                final_agg_data[model] = {"mean": 0, "std": 0}
+                if self.verbose:
+                    print(f"Warning: No valid success rates found for model '{model}' in the filtered logs.")
+
+
+        # Create arrays for models, means, and stds (similar to plot_results)
+        model_names = list(final_agg_data.keys())
+        if not model_names:
+            print("No models with valid data found after aggregation.")
+            return pd.DataFrame()
+
+        model_means = np.array([final_agg_data[model]["mean"] for model in model_names])
+        model_stds = np.array([final_agg_data[model]["std"] for model in model_names])
+
+        # --- Plotting Logic (adapted from plot_results) ---
+
+        # Sort the data
+        sorted_indices = np.argsort(model_means)[::-1]
+        sorted_means = model_means[sorted_indices]
+        sorted_stds = model_stds[sorted_indices]
+        sorted_names = [model_names[i] for i in sorted_indices]
+
+        # Categorize models (reuse existing categorization from plot_results)
+        # (Assuming plot_results is available in the same class scope)
+        # Duplicating these here for clarity and self-containment of the function
+        model_category = {
+            "Deepseek_R1_1.5B_Qwen":   "Open Source (<= 1.5B)",
+            "Deepseek_R1_7B_Qwen":     "Open Source (> 1.5B)",
+            "Deepseek_R1_8B_Llama":    "Open Source (> 1.5B)",
+            "Deepseek_R1_14B_Qwen":    "Open Source (> 1.5B)",
+            "Deepseek_R1_32B_Qwen":    "Open Source (> 1.5B)",
+            "Qwen_0.5B":               "Open Source (<= 1.5B)",
+            "Qwen_1.5B":               "Open Source (<= 1.5B)",
+            "Qwen_3B":                 "Open Source (> 1.5B)",
+            "Qwen_7B":                 "Open Source (> 1.5B)",
+            "Qwen_14B":                "Open Source (> 1.5B)",
+            "Qwen_32B":                "Open Source (> 1.5B)",
+            "Qwen_0.5B_Instruct":      "Open Source (<= 1.5B)",
+            "Qwen_1.5B_Instruct":      "Open Source (<= 1.5B)",
+            "Qwen_3B_Instruct":        "Open Source (> 1.5B)",
+            "Qwen_7B_Instruct":        "Open Source (> 1.5B)",
+            "Qwen_14B_Instruct":       "Open Source (> 1.5B)",
+            "Qwen_32B_Instruct":       "Open Source (> 1.5B)",
+            "Centaur_8B":              "Open Source (> 1.5B)",
+            "Mistral_7B_Instruct":     "Open Source (> 1.5B)",
+            "Mistral_7B":              "Open Source (> 1.5B)",
+            "Phi_4_8B":                "Open Source (> 1.5B)",
+            "Phi_3.5_mini_Instruct":   "Open Source (> 1.5B)",
+            "Phi_3_mini_Instruct":     "Open Source (> 1.5B)",
+            "Phi_3.5_medium_Instruct": "Open Source (> 1.5B)",
+            "Gemma_2B":                "Open Source (> 1.5B)",
+            "Gemma_9B":                "Open Source (> 1.5B)",
+            "Gemma_27B":               "Open Source (> 1.5B)",
+            "Gemma_2B_Instruct":       "Open Source (> 1.5B)",
+            "Gemma_9B_Instruct":       "Open Source (> 1.5B)",
+            "Gemma_27B_Instruct":      "Open Source (> 1.5B)",
+            "gpt4o":                   "API",
+            "gpt4o-mini":              "API",
+            "o1-mini":                 "API",
+            "sonnet":                  "API",
+            "haiku":                   "API"
+        }
+
+        category_colors = {
+            "API":                     "royalblue",
+            "Open Source (> 1.5B)":    "darkred",
+            "Open Source (<= 1.5B)":   "darkgreen"
+        }
+
+        bar_colors = [category_colors.get(model_category.get(name, "API"), "gray") for name in sorted_names]
+
+        # Prepare asymmetric error bars
+        lower_errors = np.where(sorted_means - sorted_stds < 0, sorted_means, sorted_stds)
+        upper_errors = sorted_stds
+
+        # Plot
+        plt.figure(figsize=(7, 5)) # Adjust size if needed
+        y_positions = np.arange(len(sorted_means))
+
+        plt.barh(
+            y_positions,
+            sorted_means,
+            height=0.5,
+            xerr=[lower_errors, upper_errors],
+            color=bar_colors,
+            edgecolor='black',
+            capsize=0
+        )
+
+        plt.yticks(ticks=y_positions, labels=sorted_names)
+        plt.gca().invert_yaxis()
+        plt.subplots_adjust(left=0.35) # Adjust if labels are long/overlap
+        plt.xlabel("Aggregated Mean Success Rate (from Logs)")
+
+        # Modify title to reflect source and filters
+        title_params = f"q={target_quadrants}, ts={target_timestamp}"
+        # Attempt to add rounds/trials if consistent across found files
+        try:
+            first_file_info = filename_pattern.match(log_files_processed[0]).groupdict()
+            # Check if all files have the same rounds/trials
+            all_rounds = [filename_pattern.match(f).groupdict()['rounds'] for f in log_files_processed]
+            all_trials = [filename_pattern.match(f).groupdict()['trials'] for f in log_files_processed]
+            if len(set(all_rounds)) == 1 and len(set(all_trials)) == 1:
+                title_params = f"r={all_rounds[0]}, q={target_quadrants}, t={all_trials[0]}, ts={target_timestamp}"
+            else:
+                 # Indicate variability if rounds/trials differ across files
+                 title_params = f"r=multi, q={target_quadrants}, t=multi, ts={target_timestamp}"
+
+        except Exception:
+             pass # Keep simpler title if parsing fails or no files processed
+
+        plt.title(f"G1Bbon benchmark (Logs: {title_params})")
+
+        # Legend (reuse from plot_results)
+        legend_handles = [
+            Patch(facecolor='royalblue',  label='API',                      edgecolor='black'),
+            Patch(facecolor='darkred',    label='Open Source (> 1.5B)',     edgecolor='black'),
+            Patch(facecolor='darkgreen',  label='Open Source (<= 1.5B)',    edgecolor='black'),
+        ]
+        plt.legend(handles=legend_handles, loc="lower right")
+
+        plt.tight_layout()
+
+        # Ensure benchmarks_plots directory exists
+        os.makedirs(self.benchmarks_plots_dir, exist_ok=True)
+
+        # Save plot
+        if output_filename is None:
+            # Create a more specific default name based on filters
+            output_filename = f"benchmark_logPlot_q{target_quadrants}_ts{target_timestamp}.png"
+
+        # Prepend directory to filename
+        output_path = os.path.join(self.benchmarks_plots_dir, output_filename)
+
+        try:
+            plt.savefig(output_path, dpi=300)
+            print(f"Filtered benchmark plot saved to {output_path}")
+        except Exception as e:
+            print(f"Error saving plot to {output_path}: {e}")
+
+
+        # Create DataFrame for return value
+        plot_df_rows = []
+        for i, model_name in enumerate(sorted_names):
+             plot_df_rows.append({
+                 "Model": model_name,
+                 "Mean_Success_Rate": sorted_means[i],
+                 "Std_Success_Rate": sorted_stds[i],
+                 "Category": model_category.get(model_name, "Unknown"), # Add category
+                 "_Source_Log_Count": len(aggregated_data.get(model_name, {}).get('success_rates', [])) # How many logs contributed
+             })
+        df = pd.DataFrame(plot_df_rows)
+
         return df
