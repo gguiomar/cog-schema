@@ -29,7 +29,7 @@ def parse_args():
     # Hardware settings
     parser.add_argument('--device', type=str, default='cuda:0',
                         help='Device to run inference on')
-    parser.add_argument('--no-unsloth', action='store_false', dest='use_unsloth',
+    parser.add_argument('--no-unsloth', action='store_false', dest='use_unsloth', default=False,
                         help='Disable unsloth optimization')
 
     # API keys (optional)
@@ -50,7 +50,7 @@ def parse_args():
     
     parser.add_argument('--log-stats', action='store_true', help='Enable stats logging during benchmark')
 
-    parser.add_argument('--activation-layer', type=str, 
+    parser.add_argument('--activation-layer', type=str, default='model.layers[-1].post_attention_layernorm',
                         help='Layer to save activations for activation analysis, see model.named_modules() for options')
 
     return parser.parse_args()

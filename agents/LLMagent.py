@@ -165,6 +165,14 @@ class LLMagent:
                 max_seq_length = 4096  # adjust if Qwen requires a different sequence length
             self.model, self.tokenizer = FastLanguageModel.from_pretrained(model_name=model_alias, max_seq_length=max_seq_length)
             FastLanguageModel.for_inference(self.model)
+        elif model_name in model_aliases and device_map == "cuda:0" and not use_unsloth:
+            model_alias = model_aliases[model_name]
+            print("Using transformers with GPU")
+            self.model = transformers.AutoModelForCausalLM.from_pretrained(
+                model_alias,
+                device_map=device_map,
+            )
+            self.tokenizer = transformers.AutoTokenizer.from_pretrained(model_alias)
         elif model_name in model_aliases and device_map == "cpu": 
             model_alias = model_aliases[model_name]
             print("Using transformers with CPU")
