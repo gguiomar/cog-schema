@@ -66,10 +66,14 @@ def load_checkpoint(run_id, checkpoint_name, device="cuda"):
     artifact = wandb_run.use_artifact(checkpoint_name, type='model')
     artifact_dir = artifact.download()
     model_path = os.path.join(artifact_dir, "sae.pt")
+    optimizer_path = os.path.join(artifact_dir, "optimizer.pt")
+    scheduler_path = os.path.join(artifact_dir, "scheduler.pt")
     config_path = os.path.join(artifact_dir, "config.json")
 
     with open(config_path, "r") as f:
         cfg = json.load(f)
 
     model = torch.load(model_path, map_location=device)
-    return model, cfg
+    optimizer = torch.load(optimizer_path, map_location=device)
+    scheduler = torch.load(scheduler_path, map_location=device)
+    return model, optimizer, scheduler, cfg
