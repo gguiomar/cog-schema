@@ -46,7 +46,7 @@ def train_sparse_autoencoder(model, data_loader, cfg, wandb_cfg, wandb_run = Non
         epoch_range.set_postfix({"Average loss": f"{avg_loss:.4f}"})
 
         if wandb_run is not None and i % wandb_cfg["save_interval"] == 0:
-            save_checkpoint(wandb_run, model, cfg, wandb_cfg, i)
+            save_checkpoint(wandb_run, model, optimizer, scheduler, cfg, wandb_cfg, i)
 
         scheduler.step(avg_loss)
 
@@ -54,7 +54,7 @@ if __name__ == "__main__":
     cfg = get_default_cfg()
     parser = argparse.ArgumentParser(description="Train a Sparse Autoencoder")
     parser.add_argument("--device", type=str, default="cuda", help="Device to run the training on (e.g., 'cpu', 'cuda', 'mps')")
-    parser.add_argument("--data", type=str, help="Directory containing activation data")
+    parser.add_argument("--data", type=str, help="Directory containing activation data", default='Qwen_0.5B/model_layers[-1]_post_attention_layernorm_20250507_155112')
     parser.add_argument("--sae_type", type=str, default="topk", choices=["vanilla", "topk", "batchtopk", "jumprelu"], help="Type of Sparse Autoencoder to use")
     parser.add_argument("-wandb", action="store_true", help="Enable Weights & Biases logging")
     parser.add_argument("--wandb_name", type=str, default=None, help="Weights & Biases run name")
@@ -73,7 +73,7 @@ if __name__ == "__main__":
     wandb_cfg = {
         "project": "SAE training",
         "name": args.wandb_name if args.wandb_name is not None else f"{cfg['sae_type']}_{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}",
-        "save_interval": 10,
+        "save_interval": 50,
         "log_batch_interval": 10,
     }
     if args.wandb:

@@ -8,6 +8,7 @@ from SparseAutoencoder import *
 from config import get_default_cfg
 from dataset import SAEDataLoader
 from logs import init_wandb, log_batch_wandb, save_checkpoint
+from tqdm import tqdm
 
 import sys
 import os
@@ -65,8 +66,7 @@ def pretrain(device, agent_name: str, activation_layer, dataset_path, num_tokens
 
     num_runs = num_tokens // context_size
 
-    for run in range(num_runs):
-        print("Run", run)
+    for run in tqdm(range(num_runs), desc="Generating Activations"):
         all_tokens = torch.empty(0, device=agent.model.device)
         while len(all_tokens) < context_size:
             batch = next(dataset)
@@ -107,7 +107,7 @@ if __name__ == "__main__":
     wandb_cfg = {
         "project": "SAE training",
         "name": args.wandb_name if args.wandb_name is not None else f"{cfg['sae_type']}_{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}",
-        "save_interval": 10,
+        "save_interval": 50,
         "log_batch_interval": 10,
     }
     if args.wandb:

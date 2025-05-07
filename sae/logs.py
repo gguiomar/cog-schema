@@ -15,13 +15,21 @@ def log_batch_wandb(output, wandb_run):
 
     wandb_run.log(log_dict)
 
-def save_checkpoint(wandb_run, sae, cfg, wandb_cfg, epoch):
+def save_checkpoint(wandb_run, sae, optimizer, scheduler, cfg, wandb_cfg, epoch):
     save_dir = f"checkpoints/{wandb_cfg['name']}_{epoch}"
     os.makedirs(save_dir, exist_ok=True)
 
     # Save model state
     sae_path = os.path.join(save_dir, "sae.pt")
     torch.save(sae.state_dict(), sae_path)
+
+    # Save optimizer state
+    optimizer_path = os.path.join(save_dir, "optimizer.pt")
+    torch.save(optimizer.state_dict(), optimizer_path)
+
+    # Save scheduler state
+    scheduler_path = os.path.join(save_dir, "scheduler.pt")
+    torch.save(scheduler.state_dict(), scheduler_path)
 
     # Prepare config for JSON serialization
     json_safe_cfg = {}
@@ -45,6 +53,8 @@ def save_checkpoint(wandb_run, sae, cfg, wandb_cfg, epoch):
         description=f"Model checkpoint at epoch {epoch}",
     )
     artifact.add_file(sae_path)
+    artifact.add_file(optimizer_path)
+    artifact.add_file(scheduler_path)
     artifact.add_file(config_path)
     wandb_run.log_artifact(artifact)
 
