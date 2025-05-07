@@ -106,7 +106,7 @@ if __name__ == "__main__":
 
     wandb_cfg = {
         "project": "SAE training",
-        "name": args.wandb_name if args.wandb_name is not None else f"{cfg['sae_type']}_{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}",
+        "name": args.wandb_name if args.wandb_name is not None else f"{cfg['model']}_{cfg['sae_type']}_{cfg['dataset']}_{cfg['num_tokens']}_{cfg['context_size']},{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}",
         "save_interval": 50,
         "log_batch_interval": 10,
     }

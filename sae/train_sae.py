@@ -50,6 +50,9 @@ def train_sparse_autoencoder(model, data_loader, cfg, wandb_cfg, wandb_run = Non
 
         scheduler.step(avg_loss)
 
+    save_checkpoint(wandb_run, model, optimizer, scheduler, cfg, wandb_cfg, len(epoch_range)-1)
+    wandb_run.finish()
+
 if __name__ == "__main__":
     cfg = get_default_cfg()
     parser = argparse.ArgumentParser(description="Train a Sparse Autoencoder")
