@@ -116,6 +116,9 @@ class TaskManager:
         # Check if this is a reasoning model - using the list from LLMagent
         self.is_reasoning_model = agent_name in self.reasoning_models
 
+        # Unload the previous model first, since python doesn't do this automatically and can easily run out of VRAM
+        self.agent = None
+
         # Initialize the LLM agent with reasoning parameters if applicable
         print(f"Initializing new agent: {self.current_agent}")
         self.agent = LLMagent(
