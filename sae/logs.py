@@ -49,3 +49,17 @@ def save_checkpoint(wandb_run, sae, cfg, wandb_cfg, epoch):
     wandb_run.log_artifact(artifact)
 
     tqdm.write(f"Model and config saved as artifact at epoch {epoch}")
+
+def load_checkpoint(run_id, checkpoint_name, device="cuda"):
+    api = wandb.Api()
+    wandb_run = api.run(f"gibbon-sae/SAE training/{run_id}")
+    artifact = wandb_run.use_artifact(checkpoint_name, type='model')
+    artifact_dir = artifact.download()
+    model_path = os.path.join(artifact_dir, "sae.pt")
+    config_path = os.path.join(artifact_dir, "config.json")
+
+    with open(config_path, "r") as f:
+        cfg = json.load(f)
+
+    model = torch.load(model_path, map_location=device)
+    return model, cfg
