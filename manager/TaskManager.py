@@ -9,6 +9,8 @@ from datetime import datetime
 from typing import Dict
 from tqdm import tqdm
 
+from tasks.VSTtask import VSTtask
+
 class TaskManager:
     def __init__(self, agents=None, rounds=None, quadrants=None, n_simulations=10,
                  n_trials=1, num_cues=1, device="cuda:0", verbose=False,
@@ -108,13 +110,14 @@ class TaskManager:
     def initialize_agent(self, agent_name):
         """Initialize an LLM agent with the specified model."""
         from agents.LLMagent import LLMagent  # Import here to avoid circular imports
-
+        
         self.current_agent = agent_name
 
         # Check if this is a reasoning model - using the list from LLMagent
         self.is_reasoning_model = agent_name in self.reasoning_models
 
         # Initialize the LLM agent with reasoning parameters if applicable
+        print(f"Initializing new agent: {self.current_agent}")
         self.agent = LLMagent(
             model_name=agent_name,
             use_unsloth=self.use_unsloth,
@@ -162,7 +165,8 @@ class TaskManager:
             'success': False,
             'agent': self.current_agent,
             'round_times': [],
-            'thinking_times': []
+            'thinking_times': [],
+            'logits': []  # Store logit distributions for each round
         }
 
         # Add a trial separator in the conversation history if this is not the first trial
@@ -201,8 +205,8 @@ class TaskManager:
 
             # Get agent's choice and track round time
             round_start_time = time.time()
-            choice = self.agent.get_response(history_and_prompt)
-            self.task.update_answer(choice)
+            print(f'!!! {prompt} !!!')
+            choice = self.agent.get_response(prompt)
             round_time = time.time() - round_start_time
             self.task.round_time = round_time
             trial_stats['round_times'].append(round_time)
@@ -217,12 +221,12 @@ class TaskManager:
                     thinking_tokens = self.agent.last_thinking_tokens
                 self.thinking_times.append(thinking_time)
                 trial_stats['thinking_times'].append(thinking_time)
-
+            
             if self.verbose:
-                tqdm.write(f"\nLLM chose: {choice}")
+                #tqdm.write(f"\nLLM chose: {choice}")
                 if self.is_reasoning_model:
                     tqdm.write(f"Thinking time: {thinking_time:.2f} seconds")
-
+            
             # Process choice
             result = self.task.process_choice()
             self.task.update_result(result)
@@ -235,7 +239,7 @@ class TaskManager:
             # For reasoning models, add thinking tokens
             if self.is_reasoning_model and thinking_tokens:
                 round_stats['thinking_tokens'] = thinking_tokens
-
+            
             trial_stats['rounds'].append(round_stats)
 
         # Get final answer

@@ -6,7 +6,7 @@ import time
 import anthropic
 from typing import Optional, List, Union
 from openai import OpenAI
-
+import numpy as np
 class LLMagent:
     # Define reasoning models as a class variable
     REASONING_MODELS = ["Deepseek_R1_1.5B_Qwen",
@@ -68,19 +68,25 @@ class LLMagent:
             "Deepseek_R1_32B_Qwen": "unsloth/DeepSeek-R1-Distill-Qwen-32B-bnb-4bit",
             "Qwen_0.5B": "unsloth/Qwen2.5-0.5B-bnb-4bit",
             "Qwen_1.5B": "unsloth/Qwen2.5-1.5B-bnb-4bit",
-            "Qwen_3B": "unsloth/Qwen2.5-3B-bnb-4bit",
-            "Qwen_7B": "unsloth/Qwen2.5-7B-bnb-4bit",
+            "Qwen_3B_quantized": "unsloth/Qwen2.5-3B-bnb-4bit",
+            "Qwen_3B": "unsloth/Qwen2.5-3B",
+            "Qwen_7B_quantized": "unsloth/Qwen2.5-7B-bnb-4bit",
+            "Qwen_7B": "unsloth/Qwen2.5-7B",
             "Qwen_14B": "unsloth/Qwen2.5-14B-bnb-4bit",
             "Qwen_32B": "unsloth/Qwen2.5-32B-bnb-4bit",
             "Qwen_0.5B_Instruct": "unsloth/Qwen2.5-0.5B-Instruct-bnb-4bit",
             "Qwen_1.5B_Instruct": "unsloth/Qwen2.5-1.5B-Instruct-bnb-4bit",
-            "Qwen_3B_Instruct": "unsloth/Qwen2.5-3B-Instruct-bnb-4bit",
-            "Qwen_7B_Instruct": "unsloth/Qwen2.5-7B-Instruct-bnb-4bit",
-            "Qwen_14B_Instruct": "unsloth/Qwen2.5-14B-Instruct-bnb-4bit",
-            "Qwen_32B_Instruct": "unsloth/Qwen2.5-32B-Instruct-bnb-4bit",
-            "Centaur_8B":    "marcelbinz/Llama-3.1-Centaur-8B-adapter",
-            "Mistral_7B_Instruct": "unsloth/mistral-7b-instruct-v0.3-bnb-4bit",
-            "Mistral_7B": "unsloth/mistral-7b-v0.3-bnb-4bit",
+            "Qwen_3B_Instruct": "unsloth/Qwen2.5-3B-Instruct",
+            "Qwen_7B_Instruct": "unsloth/Qwen2.5-7B-Instruct",
+            "Qwen_3B_Instruct_quantized": "unsloth/Qwen2.5-3B-Instruct-bnb-4bit",
+            "Qwen_7B_Instruct_quantized": "unsloth/Qwen2.5-7B-Instruct-bnb-4bit",
+            "Qwen_14B_Instruct_quantized": "unsloth/Qwen2.5-14B-Instruct-bnb-4bit",
+            "Qwen_32B_Instruct_quantized": "unsloth/Qwen2.5-32B-Instruct-bnb-4bit",
+            "Centaur_8B": "marcelbinz/Llama-3.1-Centaur-8B-adapter",
+            "Mistral_7B_Instruct_quantized": "unsloth/mistral-7b-instruct-v0.3-bnb-4bit",
+            "Mistral_7B_quantized": "unsloth/mistral-7b-v0.3-bnb-4bit",
+            "Mistral_7B_Instruct": "unsloth/mistral-7b-instruct-v0.3",
+            "Mistral_7B": "unsloth/mistral-7b-v0.3",
             "Phi_4_8B": "unsloth/phi-4-bnb-4bit",
             "Phi_3.5_mini_Instruct": "unsloth/Phi-3.5-mini-instruct-bnb-4bit",
             "Phi_3_mini_Instruct": "unsloth/Phi-3-mini-4k-instruct-bnb-4bit",
@@ -328,16 +334,27 @@ class LLMagent:
             generated_text = self.tokenizer.decode(answer_output[0, -2], skip_special_tokens=True)
 
         else:
+            
+            allowed_ids = [self.tokenizer.encode(ch, add_special_tokens=False)[0]
+               for ch in ["A","B","C","D"]]
+            
+            
+            def only_abcd(batch_id, input_ids):
+                return allowed_ids
+
             self.pipe = transformers.pipeline(
                 "text-generation",
                 model=self.model,
                 tokenizer=self.tokenizer,
                 trust_remote_code=True,
                 pad_token_id=0,
-                do_sample=True,
+                do_sample=False,
                 temperature=1.0,
                 max_new_tokens=1,
+                prefix_allowed_tokens_fn=only_abcd
             )
+            
+            self.generate_with_logits(prompt, only_abcd)
 
             # Use the local pipeline (unsloth or transformers)
             generated_text = self.pipe(prompt)[0]["generated_text"][len(prompt):].strip()
@@ -347,6 +364,64 @@ class LLMagent:
     def get_thinking_tokens(self):
         """Get the most recent thinking tokens for reasoning models."""
         return self.last_thinking_tokens
+    
+    
+    def generate_with_logits(self, prompt: str, only_abcd: callable):
+        # Tokenize and move to model device
+        inputs = self.tokenizer(
+            prompt,
+            return_tensors="pt",
+            padding=True,
+        )
+        inputs = {k: v.to(self.model.device) for k, v in inputs.items()}
+        
+
+        # Generate exactly one new token, returning raw scores
+        gen_out = self.model.generate(
+            **inputs,
+            max_new_tokens=1,
+            do_sample=False,  # Disable sampling to always pick highest probability
+            temperature=1.0,  # Set temperature to 0 for deterministic output
+            return_dict_in_generate=True,
+            output_scores=True,
+            pad_token_id=self.tokenizer.eos_token_id,
+            prefix_allowed_tokens_fn=only_abcd
+        )
+
+        # Extract the single-step logits
+        logits = gen_out.scores[0][0].detach().cpu().numpy()  # shape (vocab_size,)
+
+        # Convert to probabilities
+        probs = torch.softmax(torch.tensor(logits), dim=0).numpy()
+
+        # Filter indices by probability threshold
+        threshold = 0.01
+        idxs = np.where(probs > threshold)[0]
+        probs_filtered = probs[idxs]
+        # Sort token IDs by probability descending
+        order = np.argsort(probs_filtered)[::-1]
+        top_idxs = idxs[order]
+        top_probs = probs_filtered[order]
+
+        # Decode tokens into human-readable strings
+        top_tokens = [self.tokenizer.decode([int(i)]) for i in top_idxs]
+        
+        # Create dictionary of tokens and their probabilities
+        token_probs = {tok: float(prob) for tok, prob in zip(top_tokens, top_probs)}
+        
+        # Store the token-probability dictionary
+        self.last_logits = token_probs
+        
+        # Print the probabilities
+        # print("Top tokens >0.01:")
+        # for tok, p in token_probs.items():
+        #     print(f"  {tok!r}: {p:.4f}")
+        
+        return top_tokens, top_probs
+        
+    def get_last_logits(self):
+        """Get the logit distribution from the last response."""
+        return self.last_logits
         
     def get_reasoning_parameters(self):
         """Get the current reasoning parameters."""
@@ -375,3 +450,47 @@ class LLMagent:
                 "min_thinking_tokens": None,
                 "max_thinking_tokens": None
             }
+            
+    def release_memory(self):
+        """Release memory associated with the loaded model and tokenizer."""
+        device = None
+        if hasattr(self, 'model') and self.model is not None:
+            # Check device before deleting the model
+            try:
+                device = next(self.model.parameters()).device
+            except Exception: # Handle cases where model might not have parameters or other issues
+                pass 
+            del self.model
+            self.model = None
+            print("LLM model deleted.")
+
+        if hasattr(self, 'tokenizer') and self.tokenizer is not None:
+            del self.tokenizer
+            self.tokenizer = None
+            print("Tokenizer deleted.")
+            
+        if hasattr(self, 'client') and self.client is not None:
+            del self.client
+            self.client = None
+            print("API client deleted.")
+
+        if hasattr(self, 'pipe') and self.pipe is not None:
+             del self.pipe
+             self.pipe = None
+             print("Pipeline deleted.")
+
+        # Attempt to clear GPU cache if a CUDA device was potentially used
+        if device and 'cuda' in str(device):
+            try:
+                import torch
+                torch.cuda.empty_cache()
+                print("CUDA cache cleared.")
+            except ImportError:
+                print("PyTorch not found, skipping CUDA cache clearing.")
+            except Exception as e:
+                print(f"Could not clear CUDA cache: {e}")
+        
+        # Suggest garbage collection
+        import gc
+        gc.collect()
+        print("Garbage collection triggered.")
