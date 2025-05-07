@@ -335,12 +335,12 @@ class LLMagent:
 
         else:
             
-            allowed_ids = [self.tokenizer.encode(ch, add_special_tokens=False)[0]
-               for ch in ["A","B","C","D"]]
+            # allowed_ids = [self.tokenizer.encode(ch, add_special_tokens=False)[0]
+            #    for ch in ["A","B","C","D"]]
             
             
-            def only_abcd(batch_id, input_ids):
-                return allowed_ids
+            # def only_abcd(batch_id, input_ids):
+            #     return allowed_ids
 
             self.pipe = transformers.pipeline(
                 "text-generation",
@@ -351,7 +351,7 @@ class LLMagent:
                 do_sample=False,
                 temperature=1.0,
                 max_new_tokens=1,
-                prefix_allowed_tokens_fn=only_abcd
+                #prefix_allowed_tokens_fn=only_abcd
             )
             
             self.generate_with_logits(prompt, only_abcd)
@@ -385,7 +385,7 @@ class LLMagent:
             return_dict_in_generate=True,
             output_scores=True,
             pad_token_id=self.tokenizer.eos_token_id,
-            prefix_allowed_tokens_fn=only_abcd
+            #prefix_allowed_tokens_fn=only_abcd
         )
 
         # Extract the single-step logits
@@ -413,9 +413,9 @@ class LLMagent:
         self.last_logits = token_probs
         
         # Print the probabilities
-        # print("Top tokens >0.01:")
-        # for tok, p in token_probs.items():
-        #     print(f"  {tok!r}: {p:.4f}")
+        print("Top tokens >0.01:")
+        for tok, p in token_probs.items():
+            print(f"  {tok!r}: {p:.4f}")
         
         return top_tokens, top_probs
         
@@ -450,47 +450,3 @@ class LLMagent:
                 "min_thinking_tokens": None,
                 "max_thinking_tokens": None
             }
-            
-    def release_memory(self):
-        """Release memory associated with the loaded model and tokenizer."""
-        device = None
-        if hasattr(self, 'model') and self.model is not None:
-            # Check device before deleting the model
-            try:
-                device = next(self.model.parameters()).device
-            except Exception: # Handle cases where model might not have parameters or other issues
-                pass 
-            del self.model
-            self.model = None
-            print("LLM model deleted.")
-
-        if hasattr(self, 'tokenizer') and self.tokenizer is not None:
-            del self.tokenizer
-            self.tokenizer = None
-            print("Tokenizer deleted.")
-            
-        if hasattr(self, 'client') and self.client is not None:
-            del self.client
-            self.client = None
-            print("API client deleted.")
-
-        if hasattr(self, 'pipe') and self.pipe is not None:
-             del self.pipe
-             self.pipe = None
-             print("Pipeline deleted.")
-
-        # Attempt to clear GPU cache if a CUDA device was potentially used
-        if device and 'cuda' in str(device):
-            try:
-                import torch
-                torch.cuda.empty_cache()
-                print("CUDA cache cleared.")
-            except ImportError:
-                print("PyTorch not found, skipping CUDA cache clearing.")
-            except Exception as e:
-                print(f"Could not clear CUDA cache: {e}")
-        
-        # Suggest garbage collection
-        import gc
-        gc.collect()
-        print("Garbage collection triggered.")
