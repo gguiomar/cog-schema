@@ -339,8 +339,8 @@ class LLMagent:
             #    for ch in ["A","B","C","D"]]
             
             
-            # def only_abcd(batch_id, input_ids):
-            #     return allowed_ids
+            def only_abcd(batch_id, input_ids):
+                return allowed_ids
 
             self.pipe = transformers.pipeline(
                 "text-generation",
@@ -413,9 +413,9 @@ class LLMagent:
         self.last_logits = token_probs
         
         # Print the probabilities
-        print("Top tokens >0.01:")
-        for tok, p in token_probs.items():
-            print(f"  {tok!r}: {p:.4f}")
+        # print("Top tokens >0.01:")
+        # for tok, p in token_probs.items():
+        #     print(f"{tok!r}: {p:.4f}")
         
         return top_tokens, top_probs
         

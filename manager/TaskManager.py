@@ -8,6 +8,7 @@ from matplotlib.patches import Patch
 from datetime import datetime
 from typing import Dict
 from tqdm import tqdm
+import torch
 
 from tasks.VSTtask import VSTtask
 
@@ -209,7 +210,8 @@ class TaskManager:
             # Get agent's choice and track round time
             round_start_time = time.time()
             print(f'!!! {prompt} !!!')
-            choice = self.agent.get_response(prompt)
+            choice = self.agent.get_response(history_and_prompt)
+            self.task.update_answer(choice)
             round_time = time.time() - round_start_time
             self.task.round_time = round_time
             trial_stats['round_times'].append(round_time)
@@ -224,6 +226,20 @@ class TaskManager:
                     thinking_tokens = self.agent.last_thinking_tokens
                 self.thinking_times.append(thinking_time)
                 trial_stats['thinking_times'].append(thinking_time)
+                
+            # Get logit distribution for this round
+            raw_logits = self.agent.get_last_logits()
+            if raw_logits is not None:
+                cpu_logits = {}
+                for tok, prob in raw_logits.items():
+                    if isinstance(prob, torch.Tensor):
+                        # detach from graph and move to CPU
+                        cpu_logits[tok] = prob.detach().cpu().item()
+                    else:
+                        # already a float (or numpy), just cast
+                        cpu_logits[tok] = float(prob)
+                trial_stats['logits'].append(cpu_logits)
+                del raw_logits
             
             if self.verbose:
                 #tqdm.write(f"\nLLM chose: {choice}")
@@ -260,7 +276,26 @@ class TaskManager:
             tqdm.write("-------------------------")
 
         final_choice = self.agent.get_response(history_and_prompt)
+        
+        raw_logits = self.agent.get_last_logits()
+        if raw_logits is not None:
+            cpu_logits = {}
+            for tok, prob in raw_logits.items():
+                if isinstance(prob, torch.Tensor):
+                    # detach from graph and move to CPU
+                    cpu_logits[tok] = prob.detach().cpu().item()
+                else:
+                    # already a float (or numpy), just cast
+                    cpu_logits[tok] = float(prob)
+            trial_stats['logits'].append(cpu_logits)
+            if self.verbose:
+                tqdm.write("\nFinal choice token probabilities:")
+                for tok, prob in raw_logits.items():
+                    tqdm.write(f"  {tok!r}: {prob:.4f}")
+                    
+            del raw_logits
 
+        print("final choice: ", final_choice)
         self.task.update_answer(final_choice)
 
         self.conversation_history += self.task.give_final_feedback()
