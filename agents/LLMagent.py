@@ -8,7 +8,25 @@ from typing import Optional, List, Union
 from openai import OpenAI
 import numpy as np
 class LLMagent:
-    # Define reasoning models as a class variable
+
+    INSTRUCT_MODELS = ["Mistral_7B_Instruct",
+                        "Llama-3.2-3B-Instruct",
+                        "Qwen_7B_Instruct",
+                        "Gemma_2B_Instruct",
+                        "Qwen_0.5B_Instruct",
+                        "Qwen_1.5B_Instruct",
+                        "Qwen_3B_Instruct",
+                        "Qwen_14B_Instruct",
+                        "Phi_4_mini_Instruct",
+                        "Qwen3-4B",
+                        "Qwen3-8B",
+                        "Qwen3-1.7B",
+                        "Qwen3-0.6B",
+                        "Gemma_3B_Instruct",
+                        "Gemma_12B_Instruct",
+                        "Gemma_1B_Instruct",
+                        "Llama-3.2-1B-Instruct"]
+    
     REASONING_MODELS = ["Deepseek_R1_1.5B_Qwen",
                         "Deepseek_R1_7B_Qwen",
                         "Deepseek_R1_8B_Llama",
@@ -66,18 +84,10 @@ class LLMagent:
             "Deepseek_R1_8B_Llama": "unsloth/DeepSeek-R1-Distill-Llama-8B-unsloth-bnb-4bit", 
             "Deepseek_R1_14B_Qwen": "unsloth/DeepSeek-R1-Distill-Qwen-14B-unsloth-bnb-4bit",
             "Deepseek_R1_32B_Qwen": "unsloth/DeepSeek-R1-Distill-Qwen-32B-bnb-4bit",
-            "Qwen_0.5B": "unsloth/Qwen2.5-0.5B-bnb-4bit",
-            "Qwen_1.5B": "unsloth/Qwen2.5-1.5B-bnb-4bit",
             "Qwen_3B_quantized": "unsloth/Qwen2.5-3B-bnb-4bit",
-            "Qwen_3B": "unsloth/Qwen2.5-3B",
             "Qwen_7B_quantized": "unsloth/Qwen2.5-7B-bnb-4bit",
-            "Qwen_7B": "unsloth/Qwen2.5-7B",
             "Qwen_14B": "unsloth/Qwen2.5-14B-bnb-4bit",
             "Qwen_32B": "unsloth/Qwen2.5-32B-bnb-4bit",
-            "Qwen_0.5B_Instruct": "unsloth/Qwen2.5-0.5B-Instruct-bnb-4bit",
-            "Qwen_1.5B_Instruct": "unsloth/Qwen2.5-1.5B-Instruct-bnb-4bit",
-            "Qwen_3B_Instruct": "unsloth/Qwen2.5-3B-Instruct",
-            "Qwen_7B_Instruct": "unsloth/Qwen2.5-7B-Instruct",
             "Qwen_3B_Instruct_quantized": "unsloth/Qwen2.5-3B-Instruct-bnb-4bit",
             "Qwen_7B_Instruct_quantized": "unsloth/Qwen2.5-7B-Instruct-bnb-4bit",
             "Qwen_14B_Instruct_quantized": "unsloth/Qwen2.5-14B-Instruct-bnb-4bit",
@@ -86,17 +96,43 @@ class LLMagent:
             "Mistral_7B_Instruct_quantized": "unsloth/mistral-7b-instruct-v0.3-bnb-4bit",
             "Mistral_7B_quantized": "unsloth/mistral-7b-v0.3-bnb-4bit",
             "Mistral_7B_Instruct": "unsloth/mistral-7b-instruct-v0.3",
-            "Mistral_7B": "unsloth/mistral-7b-v0.3",
             "Phi_4_8B": "unsloth/phi-4-bnb-4bit",
             "Phi_3.5_mini_Instruct": "unsloth/Phi-3.5-mini-instruct-bnb-4bit",
             "Phi_3_mini_Instruct": "unsloth/Phi-3-mini-4k-instruct-bnb-4bit",
             "Phi_3_medium_Instruct": "unsloth/Phi-3-medium-4k-instruct-bnb-4bit",
-            "Gemma_2B": "unsloth/gemma-2-2b-bnb-4bit",
             "Gemma_9B": "unsloth/gemma-2-9b-bnb-4bit",
             "Gemma_27B": "unsloth/gemma-2-27b-bnb-4bit",
+            "Qwen_3B": "unsloth/Qwen2.5-3B",
             "Gemma_2B_Instruct": "unsloth/gemma-2-2b-it-bnb-4bit",
             "Gemma_9B_Instruct": "unsloth/gemma-2-9b-it-bnb-4bit",
             "Gemma_27B_Instruct": "unsloth/gemma-2-27b-it-bnb-4bit",
+            "Qwen_0.5B_Instruct": "unsloth/Qwen2.5-0.5B-Instruct",
+            "Qwen_1.5B_Instruct": "unsloth/Qwen2.5-1.5B-Instruct",
+            "Qwen_3B_Instruct": "unsloth/Qwen2.5-3B-Instruct",
+            "Qwen_7B_Instruct": "unsloth/Qwen2.5-7B-Instruct",
+            "Qwen_14B_Instruct": "unsloth/Qwen2.5-14B-Instruct",
+            "Gemma_2B_Instruct": "unsloth/gemma-2-2b-it",
+            "Phi_4_mini_Instruct": "microsoft/Phi-4-mini-instruct",
+            "Qwen3-4B": "unsloth/Qwen3-4B",
+            "Qwen3-8B": "unsloth/Qwen3-8B",
+            "Qwen3-1.7B": "unsloth/Qwen3-1.7B",
+            "Qwen3-0.6B": "unsloth/Qwen3-0.6B",
+            "Llama-3.2-3B-Instruct": "unsloth/Llama-3.2-3B-Instruct",
+            "Llama-3.2-1B-Instruct": "unsloth/Llama-3.2-3B-Instruct",
+            "Llama-3.1-8B-Instruct": "unsloth/Llama-3.2-1B-Instruct",
+            "Centaur_8B": "marcelbinz/Llama-3.1-Minitaur-8B-adapter",
+            "Gemma_3B_Instruct": "unsloth/gemma-3-4b-it",
+            "Gemma_1B_Instruct": "unsloth/gemma-3-1b-it",
+            "Gemma_12B_Instruct": "unsloth/gemma-3-12b-it",
+            
+            "Qwen_0.5B": "unsloth/Qwen2.5-0.5B",
+            "Qwen_1.5B": "unsloth/Qwen2.5-1.5B",
+            "Qwen_3B": "unsloth/Qwen2.5-3B",
+            "Qwen_7B": "unsloth/Qwen2.5-7B",
+            "Gemma_2B": "unsloth/gemma-2-2b",
+            "Llama-3.2-3B": "unsloth/Llama-3.2-3B",
+            "Llama-3.1-8B": "unsloth/Meta-Llama-3.1-8B",
+            "Mistral_7B": "unsloth/mistral-7b-v0.3",
         }
 
         model_aliases_mps = {
@@ -146,6 +182,7 @@ class LLMagent:
 
         # Check if this is a reasoning model
         self.is_reasoning_model = model_name in self.REASONING_MODELS
+        self.is_instruct_model = model_name in self.INSTRUCT_MODELS
         self.model_name = model_name  # Store the friendly model name
 
         # Set this so that it doesn't print the device at every inference
@@ -195,6 +232,11 @@ class LLMagent:
     def get_reasoning_models(cls) -> List[str]:
         """Return the list of models that support internal reasoning."""
         return cls.REASONING_MODELS
+    
+    @classmethod
+    def get_instruct_models(cls) -> List[str]:
+        """Return the list of models that were finetuned for instruction/chat."""
+        return cls.INSTRUCT_MODELS
 
     def get_response(self, prompt: str) -> str:
         """Get response from the LLM."""
@@ -338,26 +380,10 @@ class LLMagent:
             # allowed_ids = [self.tokenizer.encode(ch, add_special_tokens=False)[0]
             #    for ch in ["A","B","C","D"]]
             
-            
             def only_abcd(batch_id, input_ids):
                 return allowed_ids
-
-            self.pipe = transformers.pipeline(
-                "text-generation",
-                model=self.model,
-                tokenizer=self.tokenizer,
-                trust_remote_code=True,
-                pad_token_id=0,
-                do_sample=False,
-                temperature=1.0,
-                max_new_tokens=1,
-                #prefix_allowed_tokens_fn=only_abcd
-            )
             
-            self.generate_with_logits(prompt, only_abcd)
-
-            # Use the local pipeline (unsloth or transformers)
-            generated_text = self.pipe(prompt)[0]["generated_text"][len(prompt):].strip()
+            generated_text = self.generate_with_logits(prompt, only_abcd)
 
         return generated_text
         
@@ -366,14 +392,32 @@ class LLMagent:
         return self.last_thinking_tokens
     
     
-    def generate_with_logits(self, prompt: str, only_abcd: callable):
-        # Tokenize and move to model device
-        inputs = self.tokenizer(
-            prompt,
-            return_tensors="pt",
-            padding=True,
-        )
-        inputs = {k: v.to(self.model.device) for k, v in inputs.items()}
+    def generate_with_logits(self, prompt, only_abcd: callable): 
+        """Generate a single token and return the logits for all tokens in the vocabulary."""
+        
+        if not isinstance(prompt, str):        
+            text = self.tokenizer.apply_chat_template(
+                    prompt,
+                    tokenize=False,
+                    add_generation_prompt=True,
+                    enable_thinking=False
+            )
+            
+            inputs = self.tokenizer(
+                [text],
+                return_tensors="pt",
+                padding=True,
+            )
+            inputs = {k: v.to(self.model.device) for k, v in inputs.items()}
+        else:
+            # Tokenize and move to model device
+            inputs = self.tokenizer(
+                prompt + "\nYou choose:", 
+                return_tensors="pt",
+                padding=True,
+            )
+            inputs = {k: v.to(self.model.device) for k, v in inputs.items()}
+        
         
 
         # Generate exactly one new token, returning raw scores
@@ -387,6 +431,15 @@ class LLMagent:
             pad_token_id=self.tokenizer.eos_token_id,
             #prefix_allowed_tokens_fn=only_abcd
         )
+        
+        full_sequence = gen_out.sequences[0]  # shape: (input_len + 1,)
+        input_len = inputs["input_ids"].shape[-1]
+
+        # grab only the new token IDs
+        new_token_ids = full_sequence[input_len:]
+        # decode them to a string and strip whitespace
+        generated_text = self.tokenizer.decode(new_token_ids, 
+                                            skip_special_tokens=True).strip()
 
         # Extract the single-step logits
         logits = gen_out.scores[0][0].detach().cpu().numpy()  # shape (vocab_size,)
@@ -417,7 +470,7 @@ class LLMagent:
         # for tok, p in token_probs.items():
         #     print(f"{tok!r}: {p:.4f}")
         
-        return top_tokens, top_probs
+        return generated_text
         
     def get_last_logits(self):
         """Get the logit distribution from the last response."""

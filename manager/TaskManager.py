@@ -90,13 +90,15 @@ class TaskManager:
 
         self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.conversation_history = None
+        self.messages_conversation_history = []
         self.current_agent = None
         self.is_reasoning_model = False
+        self.is_instruct_model = False
         self.thinking_times = []
 
         # Create new directory structure
         self.benchmarks_plots_dir = "benchmarks_plots"
-        self.logs_dir = "logs"
+        self.logs_dir = "logs_new"
         os.makedirs(self.benchmarks_plots_dir, exist_ok=True)
         os.makedirs(self.logs_dir, exist_ok=True)
 
@@ -105,6 +107,9 @@ class TaskManager:
 
         # Get reasoning models list from LLMagent
         self.reasoning_models = LLMagent.get_reasoning_models()
+        
+        # Get instruct models list from LLMagent
+        self.instruct_models = LLMagent.get_instruct_models()
         
         self.log_stats = log_stats
 
@@ -116,6 +121,8 @@ class TaskManager:
 
         # Check if this is a reasoning model - using the list from LLMagent
         self.is_reasoning_model = agent_name in self.reasoning_models
+        
+        self.is_instruct_model = agent_name in self.instruct_models
 
         # Unload the previous model first, since python doesn't do this automatically and can easily run out of VRAM
         self.agent = None
@@ -161,6 +168,7 @@ class TaskManager:
         self.task.verbose = self.verbose # This is not a nice fix, kinda scrappy
         self.task.update_trial(trial_num)
         self.thinking_times = []  # Reset thinking times for this trial
+        
 
         trial_stats = {
             'rounds': [],
@@ -176,6 +184,7 @@ class TaskManager:
         # Add a trial separator in the conversation history if this is not the first trial
         if trial_num > 0:
             self.conversation_history += self.task.get_trial_separator()
+            #self.messages_conversation_history.append({"role": "system", "content": self.task.get_trial_separator()})
 
         # If this is the first trial or we want to start fresh, initialize conversation with task description
         if not self.conversation_history:
@@ -197,9 +206,18 @@ class TaskManager:
                 tqdm.write(f"\n--- Trial {trial_num + 1}, Round {round_num + 1} ---")
 
             # Build and show prompt with accumulated history
-            prompt = self.task.get_intermediate_prompt()
+            prompt_base = self.task.get_intermediate_prompt()
+            if(round_num == 0):
+                prompt_instruct = task_description + "\n" + self.task.get_intermediate_prompt()
+            else:
+                # Update conversation history with feedback
+                self.conversation_history += self.task.give_feedback()
+                prompt_instruct = self.task.give_feedback() + "\n" + self.task.get_intermediate_prompt()
 
+            prompt = self.task.get_intermediate_prompt()
             history_and_prompt = self.conversation_history + prompt
+            
+            self.messages_conversation_history.append({"role": "user", "content": prompt_instruct})
 
             if self.verbose:
                 tqdm.write("\nAccumulated prompt shown to LLM:")
@@ -210,8 +228,13 @@ class TaskManager:
             # Get agent's choice and track round time
             round_start_time = time.time()
             print(f'!!! {prompt} !!!')
-            choice = self.agent.get_response(history_and_prompt)
+            if self.is_instruct_model:
+                choice = self.agent.get_response(self.messages_conversation_history)
+            else:
+                choice = self.agent.get_response(history_and_prompt)
+                
             self.task.update_answer(choice)
+            self.messages_conversation_history.append({"role": "assistant", "content": choice})
             round_time = time.time() - round_start_time
             self.task.round_time = round_time
             trial_stats['round_times'].append(round_time)
@@ -249,10 +272,8 @@ class TaskManager:
             # Process choice
             result = self.task.process_choice()
             self.task.update_result(result)
-
             # Update conversation history with feedback
             self.conversation_history += self.task.give_feedback()
-
             round_stats = self.task.create_round_stats()
 
             # For reasoning models, add thinking tokens
@@ -266,6 +287,8 @@ class TaskManager:
             tqdm.write(f"\n=== Trial {trial_num + 1} Final Decision ===")
 
         history_and_prompt = self.conversation_history + self.task.get_final_prompt()
+        
+        self.messages_conversation_history.append({"role": "user", "content": self.task.give_feedback() + "\n" + self.task.get_final_prompt()})
 
         #self.conversation_history += self.task.get_final_prompt()
 
@@ -275,8 +298,12 @@ class TaskManager:
             tqdm.write(history_and_prompt)
             tqdm.write("-------------------------")
 
-        final_choice = self.agent.get_response(history_and_prompt)
-        
+        if self.is_instruct_model:
+            final_choice = self.agent.get_response(self.messages_conversation_history)
+            self.messages_conversation_history.append({"role": "assistant", "content": final_choice})
+        else:
+            final_choice = self.agent.get_response(history_and_prompt)
+            
         raw_logits = self.agent.get_last_logits()
         if raw_logits is not None:
             cpu_logits = {}
@@ -299,6 +326,7 @@ class TaskManager:
         self.task.update_answer(final_choice)
 
         self.conversation_history += self.task.give_final_feedback()
+        self.messages_conversation_history.append({"role": "user", "content": self.task.give_final_feedback()})
 
         success = self.task.process_final_choice()
         trial_stats['final_choice'] = final_choice
@@ -332,6 +360,7 @@ class TaskManager:
 
         # Reset conversation history for new set of trials
         self.conversation_history = ""
+        self.messages_conversation_history = []
 
         for trial_num in range(self.n_trials):
             # Run a single trial and track time
@@ -632,9 +661,14 @@ class TaskManager:
         all_agent_trial_times = {}
         all_agent_round_times = {}
         all_agent_thinking_times = {}
+        
 
         # First pass: collect all time metrics for each agent
         for model, rounds_dict in self.results.items():
+            
+            print(model)
+            print(rounds_dict)
+            
             all_agent_trial_times[model] = []
             all_agent_round_times[model] = []
             all_agent_thinking_times[model] = []
@@ -652,6 +686,7 @@ class TaskManager:
                     file_path = os.path.join(agent_path, filename)
                     try:
                         with open(file_path, 'r') as f:
+                            print(f"Reading {file_path}")
                             data = json.load(f)
 
                             # Extract time metrics from all simulations and trials
