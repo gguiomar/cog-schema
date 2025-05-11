@@ -34,7 +34,7 @@ class TokenActivationsDataset(Dataset):
 
 
 class SAEDataLoader(DataLoader):
-    def __init__(self, activations_dir, batch_size=4096, shuffle=True, num_workers=0):
+    def __init__(self, activations_path, batch_size=4096, shuffle=True, num_workers=0):
         """
         Custom DataLoader for loading token activations.
         Args:
@@ -43,7 +43,7 @@ class SAEDataLoader(DataLoader):
             shuffle (bool): Whether to shuffle the data.
             num_workers (int): Number of worker threads for data loading.
         """
-        dataset = TokenActivationsDataset(f"../activations/{activations_dir}")
+        dataset = TokenActivationsDataset(activations_path)
         super(SAEDataLoader, self).__init__(dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers)
 
     def get_activation_dim(self):
