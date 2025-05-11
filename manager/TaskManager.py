@@ -10,6 +10,9 @@ from typing import Dict
 from tqdm import tqdm
 from sae.hooks import Hook
 from transformers import AutoTokenizer
+import torch
+
+from tasks.VSTtask import VSTtask
 
 class TaskManager:
     def __init__(self,
@@ -32,7 +35,8 @@ class TaskManager:
                  max_thinking_tokens=500,
                  task_type=None,
                  log_stats = False,
-                 activation_layer=None,
+                 activation_layers=None,
+                 automate_activations_gathering=False,
                  ):
         """
         Initialize task manager with benchmark capabilities.
@@ -104,8 +108,10 @@ class TaskManager:
 
         self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.conversation_history = None
+        self.messages_conversation_history = []
         self.current_agent = None
         self.is_reasoning_model = False
+        self.is_instruct_model = False
         self.thinking_times = []
 
         # Create new directory structure
@@ -120,10 +126,17 @@ class TaskManager:
         # Get reasoning models list from LLMagent
         self.reasoning_models = LLMagent.get_reasoning_models()
         
+        # Get instruct models list from LLMagent
+        self.instruct_models = LLMagent.get_instruct_models()
+
         self.log_stats = log_stats
 
-        self.activations_layer = activation_layer
-        
+        self.automate_activations_gathering = automate_activations_gathering
+        if type(activation_layers) != list and self.automate_activations_gathering == False:
+            activation_layers = [activation_layers]
+
+        self.activations_layers = activation_layers
+        self.hooks = list()
 
     def initialize_agent(self, agent_name):
         """Initialize an LLM agent with the specified model."""
@@ -134,7 +147,13 @@ class TaskManager:
         # Check if this is a reasoning model - using the list from LLMagent
         self.is_reasoning_model = agent_name in self.reasoning_models
 
+        self.is_instruct_model = agent_name in self.instruct_models
+
+        # Unload the previous model first, since python doesn't do this automatically and can easily run out of VRAM
+        self.agent = None
+
         # Initialize the LLM agent with reasoning parameters if applicable
+        print(f"Initializing new agent: {self.current_agent}")
         self.agent = LLMagent(
             model_name=agent_name,
             use_unsloth=self.use_unsloth,
@@ -146,26 +165,37 @@ class TaskManager:
             max_thinking_tokens=self.max_thinking_tokens
         )
 
+        if self.automate_activations_gathering == True:
+            if not isinstance(self.activations_layers, str):
+                raise ValueError("activation_layers should be a string when automate_activations_gathering is True")
+            activations_layers = list()
+            layer_ending = self.activations_layers
+            layer_num = len(self.agent.model.model.layers)
+            for layer in range(layer_num):
+                layer_name = f"model.layers[{layer}].{layer_ending}"
+                activations_layers.append(layer_name)
+            self.activations_layers = activations_layers
         # Set up the hook for saving activations if specified
-        if not self.is_reasoning_model and self.activations_layer is not None:
-            path_parts = self.activations_layer.split('.')
-            layer = self.agent.model
-            # Get the model component from the input string
-            for part in path_parts:
-                if '[' in part and ']' in part:
-                    list_name, index = part.split('[')
-                    index = int(index[:-1])
-                    layer = getattr(layer, list_name)[index]
-                else:
-                    layer = getattr(layer, part)
+        if not self.is_reasoning_model and type(self.activations_layers) is not None:
+            for activations_layer in self.activations_layers:
+                path_parts = activations_layer.split('.')
+                layer = self.agent.model
+                # Get the model component from the input string
+                for part in path_parts:
+                    if '[' in part and ']' in part:
+                        list_name, index = part.split('[')
+                        index = int(index[:-1])
+                        layer = getattr(layer, list_name)[index]
+                    else:
+                        layer = getattr(layer, part)
 
-            # Create the directory for saving activations
-            path = os.path.join("./activations", self.current_agent, f"{'_'.join(path_parts)}_{self.timestamp}")
-            os.makedirs(os.path.dirname(path), exist_ok=True)
-            print(f"Saving activations to {path}")
+                # Create the directory for saving activations
+                path = os.path.join("./activations", self.current_agent, '_'.join(path_parts), f"{self.timestamp}")
+                os.makedirs(os.path.dirname(path), exist_ok=True)
+                print(f"Saving activations to {path}")
 
-            self.hook = Hook(layer, save_path=path)
-
+                hook = Hook(layer, save_path=path)
+                self.hooks.append(hook)
         # Get the reasoning parameters that were actually set
         self.reasoning_params = self.agent.get_reasoning_parameters()
         self.tokenizer = self.agent.tokenizer
@@ -196,6 +226,7 @@ class TaskManager:
         self.task.update_trial(trial_num)
         self.thinking_times = []  # Reset thinking times for this trial
 
+
         trial_stats = {
             'rounds': [],
             'final_choice': None,
@@ -203,16 +234,16 @@ class TaskManager:
             'success': False,
             'agent': self.current_agent,
             'round_times': [],
-            'thinking_times': []
+            'thinking_times': [],
+            'logits': []  # Store logit distributions for each round
         }
 
         # Add a trial separator in the conversation history if this is not the first trial
         if trial_num > 0:
             self.conversation_history += self.task.get_trial_separator()
-
+        task_description = self.task.get_initial_prompt()
         # If this is the first trial or we want to start fresh, initialize conversation with task description
         if not self.conversation_history:
-            task_description = self.task.get_initial_prompt()
             self.conversation_history = task_description + "\n" + self.task.get_trial_separator()
 
             if self.verbose:
@@ -230,9 +261,18 @@ class TaskManager:
                 tqdm.write(f"\n--- Trial {trial_num + 1}, Round {round_num + 1} ---")
 
             # Build and show prompt with accumulated history
-            prompt = self.task.get_intermediate_prompt()
+            prompt_base = self.task.get_intermediate_prompt()
+            if(round_num == 0):
+                prompt_instruct = task_description + "\n" + self.task.get_intermediate_prompt()
+            else:
+                # Update conversation history with feedback
+                self.conversation_history += self.task.give_feedback()
+                prompt_instruct = self.task.give_feedback() + "\n" + self.task.get_intermediate_prompt()
 
+            prompt = self.task.get_intermediate_prompt()
             history_and_prompt = self.conversation_history + prompt
+
+            self.messages_conversation_history.append({"role": "user", "content": prompt_instruct})
 
             if self.verbose:
                 tqdm.write("\nAccumulated prompt shown to LLM:")
@@ -247,9 +287,17 @@ class TaskManager:
                 tokens = self.tokenizer(history_and_prompt, return_tensors="pt")["input_ids"]
                 self.hook.current_tokens = tokens.squeeze(0)  # Remove batch dimension
                 self.hook.current_file_name = f"{self.current_agent}_trial{trial_num}_round{round_num}"
-            choice = self.agent.get_response(history_and_prompt)
-            choice = "A"
+            # choice = self.agent.get_response(history_and_prompt)
+            # choice = "A"
+            #print(f'!!! {prompt} !!!')
+            if self.is_instruct_model:
+                choice = self.agent.get_response(self.messages_conversation_history)
+            else:
+                choice = self.agent.get_response(history_and_prompt)
+            if self.task_type == "ClassicalConditioning":
+                choice = "A"
             self.task.update_answer(choice)
+            self.messages_conversation_history.append({"role": "assistant", "content": choice})
             round_time = time.time() - round_start_time
             self.task.round_time = round_time
             trial_stats['round_times'].append(round_time)
@@ -265,18 +313,30 @@ class TaskManager:
                 self.thinking_times.append(thinking_time)
                 trial_stats['thinking_times'].append(thinking_time)
 
+            # Get logit distribution for this round
+            raw_logits = self.agent.get_last_logits()
+            if raw_logits is not None:
+                cpu_logits = {}
+                for tok, prob in raw_logits.items():
+                    if isinstance(prob, torch.Tensor):
+                        # detach from graph and move to CPU
+                        cpu_logits[tok] = prob.detach().cpu().item()
+                    else:
+                        # already a float (or numpy), just cast
+                        cpu_logits[tok] = float(prob)
+                trial_stats['logits'].append(cpu_logits)
+                del raw_logits
+
             if self.verbose:
-                tqdm.write(f"\nLLM chose: {choice}")
+                #tqdm.write(f"\nLLM chose: {choice}")
                 if self.is_reasoning_model:
                     tqdm.write(f"Thinking time: {thinking_time:.2f} seconds")
 
             # Process choice
             result = self.task.process_choice()
             self.task.update_result(result)
-
             # Update conversation history with feedback
             self.conversation_history += self.task.give_feedback()
-
             round_stats = self.task.create_round_stats()
 
             # For reasoning models, add thinking tokens
@@ -290,6 +350,8 @@ class TaskManager:
             tqdm.write(f"\n=== Trial {trial_num + 1} Final Decision ===")
 
         history_and_prompt = self.conversation_history + self.task.get_final_prompt()
+
+        self.messages_conversation_history.append({"role": "user", "content": self.task.give_feedback() + "\n" + self.task.get_final_prompt()})
 
         #self.conversation_history += self.task.get_final_prompt()
 
@@ -305,12 +367,38 @@ class TaskManager:
             self.hook.current_tokens = tokens.squeeze(0)  # Remove batch dimension
             self.hook.current_file_name = f"{self.current_agent}_trial{trial_num}_round{round_num}"
 
-        final_choice = self.agent.get_response(history_and_prompt)
-        final_choice = "A"
+        if self.is_instruct_model:
+            final_choice = self.agent.get_response(self.messages_conversation_history)
+            self.messages_conversation_history.append({"role": "assistant", "content": final_choice})
+        else:
+            final_choice = self.agent.get_response(history_and_prompt)
+        if self.task_type == "ClassicalConditioning":
+                final_choice = "A"
+
+        raw_logits = self.agent.get_last_logits()
+        if raw_logits is not None:
+            cpu_logits = {}
+            for tok, prob in raw_logits.items():
+                if isinstance(prob, torch.Tensor):
+                    # detach from graph and move to CPU
+                    cpu_logits[tok] = prob.detach().cpu().item()
+                else:
+                    # already a float (or numpy), just cast
+                    cpu_logits[tok] = float(prob)
+            trial_stats['logits'].append(cpu_logits)
+            if self.verbose:
+                tqdm.write("\nFinal choice token probabilities:")
+                for tok, prob in raw_logits.items():
+                    tqdm.write(f"  {tok!r}: {prob:.4f}")
+
+            del raw_logits
+
+        #print("final choice: ", final_choice)
 
         self.task.update_answer(final_choice)
 
         self.conversation_history += self.task.give_final_feedback()
+        self.messages_conversation_history.append({"role": "user", "content": self.task.give_final_feedback()})
 
         success = self.task.process_final_choice()
         trial_stats['final_choice'] = final_choice
@@ -344,6 +432,7 @@ class TaskManager:
 
         # Reset conversation history for new set of trials
         self.conversation_history = ""
+        self.messages_conversation_history = []
 
         for trial_num in range(self.n_trials):
             # Run a single trial and track time
@@ -482,11 +571,11 @@ class TaskManager:
                         all_thinking_times.append(thinking_time)
 
                 # Update quadrant distribution
-                choice = trial.get('final_choice', '').upper()
+                choice = trial.get('final_choice', '')
                 correct = trial.get('correct_quadrant', '')
                 if int(correct):
                     correct = chr(ord("A") + int(correct) - 1)
-                correct = correct.upper()
+                correct = correct
 
                 if choice in quadrant_distribution:
                     quadrant_distribution[choice]['times_chosen'] += 1
@@ -648,8 +737,13 @@ class TaskManager:
         all_agent_round_times = {}
         all_agent_thinking_times = {}
 
+
         # First pass: collect all time metrics for each agent
         for model, rounds_dict in self.results.items():
+
+            #print(model)
+            #print(rounds_dict)
+
             all_agent_trial_times[model] = []
             all_agent_round_times[model] = []
             all_agent_thinking_times[model] = []
@@ -667,6 +761,7 @@ class TaskManager:
                     file_path = os.path.join(agent_path, filename)
                     try:
                         with open(file_path, 'r') as f:
+                            #print(f"Reading {file_path}")
                             data = json.load(f)
 
                             # Extract time metrics from all simulations and trials
