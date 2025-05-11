@@ -209,7 +209,7 @@ class LLMagent:
             self.model, self.tokenizer = FastLanguageModel.from_pretrained(model_name=model_alias, max_seq_length=max_seq_length)
             FastLanguageModel.for_inference(self.model)
         elif model_name in model_aliases and device_map == "cuda:0" and not use_unsloth:
-            model_alias = model_aliases[model_name]
+            model_alias = model_aliases_mps[model_name]
             print("Using transformers with GPU")
             self.model = transformers.AutoModelForCausalLM.from_pretrained(
                 model_alias,
