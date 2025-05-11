@@ -282,7 +282,7 @@ class TaskManager:
 
             # Get agent's choice and track round time
             round_start_time = time.time()
-            print(f'!!! {prompt} !!!')
+            #print(f'!!! {prompt} !!!')
             if self.is_instruct_model:
                 choice = self.agent.get_response(self.messages_conversation_history)
             else:
@@ -377,7 +377,7 @@ class TaskManager:
 
             del raw_logits
 
-        print("final choice: ", final_choice)
+        #print("final choice: ", final_choice)
         self.task.update_answer(final_choice)
 
         self.conversation_history += self.task.give_final_feedback()
@@ -721,8 +721,8 @@ class TaskManager:
         # First pass: collect all time metrics for each agent
         for model, rounds_dict in self.results.items():
 
-            print(model)
-            print(rounds_dict)
+            #print(model)
+            #print(rounds_dict)
 
             all_agent_trial_times[model] = []
             all_agent_round_times[model] = []
@@ -741,7 +741,7 @@ class TaskManager:
                     file_path = os.path.join(agent_path, filename)
                     try:
                         with open(file_path, 'r') as f:
-                            print(f"Reading {file_path}")
+                            #print(f"Reading {file_path}")
                             data = json.load(f)
 
                             # Extract time metrics from all simulations and trials
