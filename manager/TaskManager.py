@@ -704,8 +704,8 @@ class TaskManager:
         """
         # Initialize the LLM agent
         self.initialize_agent(agent_name)
-        for name, module in self.agent.model.named_modules():
-            print(name)
+        # for name, module in self.agent.model.named_modules():
+        #     print(name)
 
         # Dictionary to store results for this agent
         agent_results = {}
