@@ -282,11 +282,21 @@ class TaskManager:
 
             # Get agent's choice and track round time
             round_start_time = time.time()
-            if hasattr(self, "hook"):
-                self.hook.current_text = history_and_prompt
-                tokens = self.tokenizer(history_and_prompt, return_tensors="pt")["input_ids"]
-                self.hook.current_tokens = tokens.squeeze(0)  # Remove batch dimension
-                self.hook.current_file_name = f"{self.current_agent}_trial{trial_num}_round{round_num}"
+            # right before you call self.agent.get_response(...)
+            if self.hooks:
+                # one tokenization call for all
+                tokens = self.tokenizer(history_and_prompt, return_tensors="pt")["input_ids"].squeeze(0)
+                for idx, hook in enumerate(self.hooks):
+                    hook.current_text = history_and_prompt
+                    hook.current_tokens = tokens
+                    # if you want distinct filenames:
+                    hook.current_file_name = f"{self.current_agent}_trial{trial_num}_round{round_num}_hook{idx}"
+
+            # if hasattr(self, "hook"):
+            #     self.hook.current_text = history_and_prompt
+            #     tokens = self.tokenizer(history_and_prompt, return_tensors="pt")["input_ids"]
+            #     self.hook.current_tokens = tokens.squeeze(0)  # Remove batch dimension
+            #     self.hook.current_file_name = f"{self.current_agent}_trial{trial_num}_round{round_num}"
             # choice = self.agent.get_response(history_and_prompt)
             # choice = "A"
             #print(f'!!! {prompt} !!!')
@@ -294,6 +304,7 @@ class TaskManager:
                 choice = self.agent.get_response(self.messages_conversation_history)
             else:
                 choice = self.agent.get_response(history_and_prompt)
+            # print(self.task_type)
             if self.task_type == "ClassicalConditioning":
                 choice = "A"
             self.task.update_answer(choice)
@@ -395,6 +406,25 @@ class TaskManager:
 
         #print("final choice: ", final_choice)
 
+        raw_logits = self.agent.get_last_logits()
+        if raw_logits is not None:
+            cpu_logits = {}
+            for tok, prob in raw_logits.items():
+                if isinstance(prob, torch.Tensor):
+                    # detach from graph and move to CPU
+                    cpu_logits[tok] = prob.detach().cpu().item()
+                else:
+                    # already a float (or numpy), just cast
+                    cpu_logits[tok] = float(prob)
+            trial_stats['logits'].append(cpu_logits)
+            if self.verbose:
+                tqdm.write("\nFinal choice token probabilities:")
+                for tok, prob in raw_logits.items():
+                    tqdm.write(f"  {tok!r}: {prob:.4f}")
+
+            del raw_logits
+
+        #print("final choice: ", final_choice)
         self.task.update_answer(final_choice)
 
         self.conversation_history += self.task.give_final_feedback()
@@ -571,12 +601,15 @@ class TaskManager:
                         all_thinking_times.append(thinking_time)
 
                 # Update quadrant distribution
-                choice = trial.get('final_choice', '')
-                correct = trial.get('correct_quadrant', '')
-                if int(correct):
-                    correct = chr(ord("A") + int(correct) - 1)
-                correct = correct
+                choice = trial.get('final_choice', '').upper()
+                raw = trial.get('correct_quadrant', '')
 
+                # only cast digits → letters, otherwise assume it's already "A","B", etc.
+                if raw.isdigit():
+                    # e.g. "1" → 1 → "A"
+                    correct = chr(ord("A") + int(raw) - 1)
+                else:
+                    correct = raw.upper()
                 if choice in quadrant_distribution:
                     quadrant_distribution[choice]['times_chosen'] += 1
                     if choice == correct:
@@ -671,6 +704,8 @@ class TaskManager:
         """
         # Initialize the LLM agent
         self.initialize_agent(agent_name)
+        for name, module in self.agent.model.named_modules():
+            print(name)
 
         # Dictionary to store results for this agent
         agent_results = {}
@@ -976,10 +1011,17 @@ class TaskManager:
 
         return df
     
+    # def activation_saving(self):
+    #     """Save all collected activations and clean up the hook."""
+    #     if hasattr(self, "hook") and self.hook is not None:
+    #         print(f"Saving {len(self.hook.activations)} activations...")
+    #         self.hook.save_all()
+    #         self.hook.remove()
+    #         self.hook = None  # Clean up reference
+
     def activation_saving(self):
-        """Save all collected activations and clean up the hook."""
-        if hasattr(self, "hook") and self.hook is not None:
-            print(f"Saving {len(self.hook.activations)} activations...")
-            self.hook.save_all()
-            self.hook.remove()
-            self.hook = None  # Clean up reference
+        for hook in self.hooks:
+            print(f"Saving {len(hook.activations)} activations to {hook.save_path}")
+            hook.save_all()
+            hook.remove()
+        self.hooks.clear()
