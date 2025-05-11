@@ -50,8 +50,12 @@ def parse_args():
     
     parser.add_argument('--log-stats', action='store_true', help='Enable stats logging during benchmark')
 
-    parser.add_argument('--activation-layers', type=str, default=['model.layers[-1].post_attention_layernorm', 'model.layers[-2].post_attention_layernorm'],
+    parser.add_argument('--activation-layers', type=str, default='post_attention_layernorm',
                         help='Layers to save activations for activation analysis, see model.named_modules() for options')
+
+    parser.add_argument('--automate-activations-gathering', action='store_true', default=True,
+                        help='Whether to automate the gathering of activations based on the layer ending. If True, activation-layers argument'
+                             'will represent layer ending, e.g. post_attention_layernorm')
 
     return parser.parse_args()
 
@@ -76,6 +80,7 @@ def main():
         log_stats=args.log_stats,
         task_type=TaskSelector.from_string(args.task_type),
         activation_layers=args.activation_layers,
+        automate_activations_gathering=args.automate_activations_gathering,
     )
 
     # Run benchmarks

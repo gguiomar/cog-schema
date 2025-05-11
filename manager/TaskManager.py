@@ -32,6 +32,7 @@ class TaskManager:
                  task_type=None,
                  log_stats = False,
                  activation_layers=None,
+                 automate_activations_gathering=False,
                  ):
         """
         Initialize task manager with benchmark capabilities.
@@ -121,8 +122,10 @@ class TaskManager:
         
         self.log_stats = log_stats
 
-        if type(activation_layers) != list:
+        self.automate_activations_gathering = automate_activations_gathering
+        if type(activation_layers) != list and self.automate_activations_gathering == False:
             activation_layers = [activation_layers]
+
         self.activations_layers = activation_layers
         self.hooks = list()
 
@@ -147,8 +150,18 @@ class TaskManager:
             max_thinking_tokens=self.max_thinking_tokens
         )
 
+        if self.automate_activations_gathering == True:
+            if not isinstance(self.activations_layers, str):
+                raise ValueError("activation_layers should be a string when automate_activations_gathering is True")
+            activations_layers = list()
+            layer_ending = self.activations_layers
+            layer_num = len(self.agent.model.model.layers)
+            for layer in range(layer_num):
+                layer_name = f"model.layers[{layer}].{layer_ending}"
+                activations_layers.append(layer_name)
+            self.activations_layers = activations_layers
         # Set up the hook for saving activations if specified
-        if not self.is_reasoning_model and self.activations_layers is not None:
+        if not self.is_reasoning_model and type(self.activations_layers) is not None:
             for activations_layer in self.activations_layers:
                 path_parts = activations_layer.split('.')
                 layer = self.agent.model
