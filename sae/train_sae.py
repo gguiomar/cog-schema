@@ -49,9 +49,9 @@ def train_sparse_autoencoder(model, data_loader, cfg, wandb_cfg, wandb_run = Non
             save_checkpoint(wandb_run, model, optimizer, scheduler, cfg, wandb_cfg, i)
 
         scheduler.step(avg_loss)
-
-    save_checkpoint(wandb_run, model, optimizer, scheduler, cfg, wandb_cfg, len(epoch_range)-1)
-    wandb_run.finish()
+    if wandb_run is not None:
+        save_checkpoint(wandb_run, model, optimizer, scheduler, cfg, wandb_cfg, len(epoch_range)-1)
+        wandb_run.finish()
 
 if __name__ == "__main__":
     cfg = get_default_cfg()
