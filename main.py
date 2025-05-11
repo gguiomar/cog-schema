@@ -50,7 +50,7 @@ def parse_args():
     
     parser.add_argument('--log-stats', action='store_true', help='Enable stats logging during benchmark')
 
-    parser.add_argument('--activation-layers', type=str, default='post_attention_layernorm',
+    parser.add_argument('--activation-layers', type=str, default=None,
                         help='Layers to save activations for activation analysis, see model.named_modules() for options')
 
     parser.add_argument('--automate-activations-gathering', action='store_true', default=False,

@@ -132,9 +132,11 @@ class TaskManager:
         self.log_stats = log_stats
 
         self.automate_activations_gathering = automate_activations_gathering
-        if type(activation_layers) != list and self.automate_activations_gathering == False:
-            activation_layers = [activation_layers]
 
+        if activation_layers is None:
+            activation_layers = None
+        elif type(activation_layers) != list and self.automate_activations_gathering == False:
+            activation_layers = [activation_layers]
         self.activations_layers = activation_layers
         self.hooks = list()
 
@@ -176,7 +178,7 @@ class TaskManager:
                 activations_layers.append(layer_name)
             self.activations_layers = activations_layers
         # Set up the hook for saving activations if specified
-        if not self.is_reasoning_model and type(self.activations_layers) is not None:
+        if not self.is_reasoning_model and self.activations_layers:
             for activations_layer in self.activations_layers:
                 path_parts = activations_layer.split('.')
                 layer = self.agent.model
