@@ -31,7 +31,7 @@ class TaskManager:
                  max_thinking_tokens=500,
                  task_type=None,
                  log_stats = False,
-                 activation_layer=None,
+                 activation_layers=None,
                  ):
         """
         Initialize task manager with benchmark capabilities.
@@ -121,7 +121,10 @@ class TaskManager:
         
         self.log_stats = log_stats
 
-        self.activations_layer = activation_layer
+        if type(activation_layers) != list:
+            activation_layers = [activation_layers]
+        self.activations_layers = activation_layers
+        self.hooks = list()
 
     def initialize_agent(self, agent_name):
         """Initialize an LLM agent with the specified model."""
@@ -145,25 +148,26 @@ class TaskManager:
         )
 
         # Set up the hook for saving activations if specified
-        if not self.is_reasoning_model and self.activations_layer is not None:
-            path_parts = self.activations_layer.split('.')
-            layer = self.agent.model
-            # Get the model component from the input string
-            for part in path_parts:
-                if '[' in part and ']' in part:
-                    list_name, index = part.split('[')
-                    index = int(index[:-1])
-                    layer = getattr(layer, list_name)[index]
-                else:
-                    layer = getattr(layer, part)
+        if not self.is_reasoning_model and self.activations_layers is not None:
+            for activations_layer in self.activations_layers:
+                path_parts = activations_layer.split('.')
+                layer = self.agent.model
+                # Get the model component from the input string
+                for part in path_parts:
+                    if '[' in part and ']' in part:
+                        list_name, index = part.split('[')
+                        index = int(index[:-1])
+                        layer = getattr(layer, list_name)[index]
+                    else:
+                        layer = getattr(layer, part)
 
-            # Create the directory for saving activations
-            path = os.path.join("./activations", self.current_agent, f"{'_'.join(path_parts)}_{self.timestamp}")
-            os.makedirs(os.path.dirname(path), exist_ok=True)
-            print(f"Saving activations to {path}")
+                # Create the directory for saving activations
+                path = os.path.join("./activations", self.current_agent, '_'.join(path_parts), f"{self.timestamp}")
+                os.makedirs(os.path.dirname(path), exist_ok=True)
+                print(f"Saving activations to {path}")
 
-            self.hook = Hook(layer, save_path=path)
-
+                hook = Hook(layer, save_path=path)
+                self.hooks.append(hook)
         # Get the reasoning parameters that were actually set
         self.reasoning_params = self.agent.get_reasoning_parameters()
 
