@@ -570,7 +570,6 @@ class TaskManager:
             with open(log_filename, 'w') as f:
                 json.dump(results_data, f, indent=2)
             print(f"Benchmark complete! Results saved to logs/")
-        self.activation_saving()
 
         return metrics
 
@@ -736,7 +735,7 @@ class TaskManager:
                     "round_time": metrics.get('avg_round_time', 0),
                     "thinking_time": metrics.get('avg_thinking_time', 0) if self.is_reasoning_model else 0
                 }
-
+        self.activation_saving()
         return agent_results
 
     def multiple_benchmarks(self):
@@ -753,7 +752,6 @@ class TaskManager:
         for agent_name in self.agents:
             print(f"Running benchmark for agent: {agent_name}")
             self.results[agent_name] = self.single_benchmark(agent_name)
-
         elapsed_time = time.time() - start_time
         print(f"Total elapsed time: {elapsed_time:.2f} seconds")
 
