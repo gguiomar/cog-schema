@@ -132,6 +132,8 @@ class TaskManager:
         self.log_stats = log_stats
 
         self.automate_activations_gathering = automate_activations_gathering
+        if self.automate_activations_gathering and activation_layers is None:
+            activation_layers = "post_attention_layernorm"
 
         if activation_layers is None:
             activation_layers = None
