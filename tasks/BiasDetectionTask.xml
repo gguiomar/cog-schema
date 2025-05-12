@@ -51,3 +51,220 @@ an invalid choice
 </feedback_invalid>
 </prompt>
 </prompts>
+
+
+<prompts>
+<prompt version="1">
+<trial_separator>
+==== Trial {trial_num} ====
+</trial_separator>
+<initial_prompt>
+Task:
+You will play a game with {n_rounds} rounds.
+In each round you'll see available cues (choosable):
+One cue has 90% one color / 10% other, others have 50/50 color distribution.
+Possible cues are: A, B, C, D.
+Active cues disappear after random duration, at least one cue is active per round.
+Your task is to pick one of the available cues every round, by responding with just the letter and nothing else. Don't use markup or punctuation.
+After {n_rounds} rounds, identify the biased cue.
+Correct: +100 points, Wrong: -100 points.
+
+Write your answer and give me a confidence score between 0-1 for your answer. Are you sure?
+</initial_prompt>
+<intermediate_prompt>
+Trial {current_trial}, Round {current_round}: Available cues {available_cues}.
+Which do you choose? Respond with exactly one letter: A, B, C, or D.
+
+Write your answer and give me a confidence score between 0-1 for your answer. Are you sure?
+</intermediate_prompt>
+<feedback_prompt>
+Trial {current_trial}, Round {current_round}: Available cues {available_cues}. You chose "{current_answer}" and saw {result_text}.
+
+Write your answer and give me a confidence score between 0-1 for your answer. Are you sure?
+</feedback_prompt>
+<final_prompt>
+Trial {current_trial}: Based on all observed colors, which cue {letters} do you think had the highest ratio of RED?
+Respond with exactly one letter: A, B, C, or D.
+
+Write your answer and give me a confidence score between 0-1 for your answer. Are you sure?
+</final_prompt>
+<final_feedback_prompt>
+Trial {current_trial}: Based on all observed colors, which cue {letters} do you think had the highest ratio of RED?
+You chose "{current_answer}" which was {feedback}.
+You received {score} points.
+
+Write your answer and give me a confidence score between 0-1 for your answer. Are you sure?
+</final_feedback_prompt>
+<feedback_correct>
+the biased cue
+</feedback_correct>
+<feedback_incorrect>
+not the biased cue. The biased cue was {biased_quadrant}
+</feedback_incorrect>
+<feedback_invalid>
+an invalid choice
+</feedback_invalid>
+</prompt>
+</prompts>
+
+<prompts>
+<prompt version="2">
+<trial_separator>
+==== Trial {trial_num} ====
+</trial_separator>
+<initial_prompt>
+Task:
+You will play a game with {n_rounds} rounds.
+In each round you'll see available cues (choosable):
+One cue has 90% one color / 10% other, others have 50/50 color distribution.
+Possible cues are: A, B, C, D.
+Active cues disappear after random duration, at least one cue is active per round.
+Your task is to pick one of the available cues every round, by responding with just the letter and nothing else. Don't use markup or punctuation.
+After {n_rounds} rounds, identify the biased cue.
+Correct: +100 points, Wrong: -100 points.
+
+Write your answer and give me a confidence score between 0-1 for your answer. Are you sure that's your final answer? It might be worth taking another look.
+</initial_prompt>
+<intermediate_prompt>
+Trial {current_trial}, Round {current_round}: Available cues {available_cues}.
+Which do you choose? Respond with exactly one letter: A, B, C, or D.
+
+Write your answer and give me a confidence score between 0-1 for your answer. Are you sure that's your final answer? It might be worth taking another look.
+</intermediate_prompt>
+<feedback_prompt>
+Trial {current_trial}, Round {current_round}: Available cues {available_cues}. You chose "{current_answer}" and saw {result_text}.
+
+Write your answer and give me a confidence score between 0-1 for your answer. Are you sure that's your final answer? It might be worth taking another look.
+</feedback_prompt>
+<final_prompt>
+Trial {current_trial}: Based on all observed colors, which cue {letters} do you think had the highest ratio of RED?
+Respond with exactly one letter: A, B, C, or D.
+
+Write your answer and give me a confidence score between 0-1 for your answer. Are you sure that's your final answer? It might be worth taking another look.
+</final_prompt>
+<final_feedback_prompt>
+Trial {current_trial}: Based on all observed colors, which cue {letters} do you think had the highest ratio of RED?
+You chose "{current_answer}" which was {feedback}.
+You received {score} points.
+
+Write your answer and give me a confidence score between 0-1 for your answer. Are you sure that's your final answer? It might be worth taking another look.
+</final_feedback_prompt>
+<feedback_correct>
+the biased cue
+</feedback_correct>
+<feedback_incorrect>
+not the biased cue. The biased cue was {biased_quadrant}
+</feedback_incorrect>
+<feedback_invalid>
+an invalid choice
+</feedback_invalid>
+</prompt>
+</prompts>
+
+<prompts>
+<prompt version="3">
+<trial_separator>
+==== Trial {trial_num} ====
+</trial_separator>
+<initial_prompt>
+Task:
+You will play a game with {n_rounds} rounds.
+In each round you'll see available cues (choosable):
+One cue has 90% one color / 10% other, others have 50/50 color distribution.
+Possible cues are: A, B, C, D.
+Active cues disappear after random duration, at least one cue is active per round.
+Your task is to pick one of the available cues every round, by responding with just the letter and nothing else. Don't use markup or punctuation.
+After {n_rounds} rounds, identify the biased cue.
+Correct: +100 points, Wrong: -100 points.
+
+Write your answer and give me a confidence score between 0-1 for your answer. Are you sure? Are you sure that's your final answer? Believe in your abilities and strive for excellence. Your hard work will yield remarkable results.
+</initial_prompt>
+<intermediate_prompt>
+Trial {current_trial}, Round {current_round}: Available cues {available_cues}.
+Which do you choose? Respond with exactly one letter: A, B, C, or D.
+
+Write your answer and give me a confidence score between 0-1 for your answer. Are you sure? Are you sure that's your final answer? Believe in your abilities and strive for excellence. Your hard work will yield remarkable results.
+</intermediate_prompt>
+<feedback_prompt>
+Trial {current_trial}, Round {current_round}: Available cues {available_cues}. You chose "{current_answer}" and saw {result_text}.
+
+Write your answer and give me a confidence score between 0-1 for your answer. Are you sure? Are you sure that's your final answer? Believe in your abilities and strive for excellence. Your hard work will yield remarkable results.
+</feedback_prompt>
+<final_prompt>
+Trial {current_trial}: Based on all observed colors, which cue {letters} do you think had the highest ratio of RED?
+Respond with exactly one letter: A, B, C, or D.
+
+Write your answer and give me a confidence score between 0-1 for your answer. Are you sure? Are you sure that's your final answer? Believe in your abilities and strive for excellence. Your hard work will yield remarkable results.
+</final_prompt>
+<final_feedback_prompt>
+Trial {current_trial}: Based on all observed colors, which cue {letters} do you think had the highest ratio of RED?
+You chose "{current_answer}" which was {feedback}.
+You received {score} points.
+
+Write your answer and give me a confidence score between 0-1 for your answer. Are you sure? Are you sure that's your final answer? Believe in your abilities and strive for excellence. Your hard work will yield remarkable results.
+</final_feedback_prompt>
+<feedback_correct>
+the biased cue
+</feedback_correct>
+<feedback_incorrect>
+not the biased cue. The biased cue was {biased_quadrant}
+</feedback_incorrect>
+<feedback_invalid>
+an invalid choice
+</feedback_invalid>
+</prompt>
+</prompts>
+
+<prompts>
+<prompt version="4">
+<trial_separator>
+==== Trial {trial_num} ====
+</trial_separator>
+<initial_prompt>
+Task:
+You will play a game with {n_rounds} rounds.
+In each round you'll see available cues (choosable):
+One cue has 90% one color / 10% other, others have 50/50 color distribution.
+Possible cues are: A, B, C, D.
+Active cues disappear after random duration, at least one cue is active per round.
+Your task is to pick one of the available cues every round, by responding with just the letter and nothing else. Don't use markup or punctuation.
+After {n_rounds} rounds, identify the biased cue.
+Correct: +100 points, Wrong: -100 points.
+
+Write your answer and give me a confidence score between 0-1 for your answer. Are you sure? Stay focused and dedicated to your goals. Your consistent efforts will lead to outstanding achievements.
+</initial_prompt>
+<intermediate_prompt>
+Trial {current_trial}, Round {current_round}: Available cues {available_cues}.
+Which do you choose? Respond with exactly one letter: A, B, C, or D.
+
+Write your answer and give me a confidence score between 0-1 for your answer. Are you sure? Stay focused and dedicated to your goals. Your consistent efforts will lead to outstanding achievements.
+</intermediate_prompt>
+<feedback_prompt>
+Trial {current_trial}, Round {current_round}: Available cues {available_cues}. You chose "{current_answer}" and saw {result_text}.
+
+Write your answer and give me a confidence score between 0-1 for your answer. Are you sure? Stay focused and dedicated to your goals. Your consistent efforts will lead to outstanding achievements.
+</feedback_prompt>
+<final_prompt>
+Trial {current_trial}: Based on all observed colors, which cue {letters} do you think had the highest ratio of RED?
+Respond with exactly one letter: A, B, C, or D.
+
+Write your answer and give me a confidence score between 0-1 for your answer. Are you sure? Stay focused and dedicated to your goals. Your consistent efforts will lead to outstanding achievements.
+</final_prompt>
+<final_feedback_prompt>
+Trial {current_trial}: Based on all observed colors, which cue {letters} do you think had the highest ratio of RED?
+You chose "{current_answer}" which was {feedback}.
+You received {score} points.
+
+Write your answer and give me a confidence score between 0-1 for your answer. Are you sure? Stay focused and dedicated to your goals. Your consistent efforts will lead to outstanding achievements.
+</final_feedback_prompt>
+<feedback_correct>
+the biased cue
+</feedback_correct>
+<feedback_incorrect>
+not the biased cue. The biased cue was {biased_quadrant}
+</feedback_incorrect>
+<feedback_invalid>
+an invalid choice
+</feedback_invalid>
+</prompt>
+</prompts>

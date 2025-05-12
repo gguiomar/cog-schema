@@ -6,7 +6,7 @@ from tasks.TaskGeneral import TaskGeneral
 from util.util import *
 
 class BiasDetectionTask(TaskGeneral):
-    def __init__(self, n_rounds: int = 1, n_quadrants: int = 4, n_cues: int = 1):
+    def __init__(self, n_rounds: int = 1, n_quadrants: int = 4, n_cues: int = 1, prompt_version: int = 0):
         super().__init__(n_rounds, n_quadrants, n_cues)
 
         self.biased_quadrant = random.choice(self.quadrants)
@@ -16,6 +16,8 @@ class BiasDetectionTask(TaskGeneral):
         self.available_cues = None
 
         self.strings = ET.parse('tasks/BiasDetectionTask.xml')
+        self.prompt_version = prompt_version
+
 
     def get_round_data(self, round_num: int) -> List[Dict]:
         """Get data for specific round."""
@@ -26,7 +28,7 @@ class BiasDetectionTask(TaskGeneral):
     def give_feedback(self) -> str:
         """Return round results including trial number."""
         result_text = self.current_result if self.current_result is not None else "Invalid choice"
-        prompt = load_prompt_from_xml(self.strings, 'feedback_prompt')
+        prompt = load_prompt_from_xml(self.strings, 'feedback_prompt', self.prompt_version)
         return prompt.format(
             current_trial=self.current_trial + 1,
             current_round=self.current_round + 1,
@@ -65,14 +67,14 @@ class BiasDetectionTask(TaskGeneral):
     
     def give_final_feedback(self) -> str:
         """Return final feedback after all rounds."""
-        prompt = load_prompt_from_xml(self.strings, 'final_feedback_prompt')
+        prompt = load_prompt_from_xml(self.strings, 'final_feedback_prompt', self.prompt_version)
         feedback_text = ""
         if self.current_answer == self.letters[self.correct_answer]:
-            feedback_text = load_prompt_from_xml(self.strings, 'feedback_correct')
+            feedback_text = load_prompt_from_xml(self.strings, 'feedback_correct', self.prompt_version)
         elif self.current_answer in self.letters:
-            feedback_text = load_prompt_from_xml(self.strings, 'feedback_incorrect').format(biased_quadrant=self.letters[self.correct_answer])
+            feedback_text = load_prompt_from_xml(self.strings, 'feedback_incorrect', self.prompt_version).format(biased_quadrant=self.letters[self.correct_answer])
         else:
-            feedback_text = load_prompt_from_xml(self.strings, 'feedback_invalid')
+            feedback_text = load_prompt_from_xml(self.strings, 'feedback_invalid', self.prompt_version)
 
         return prompt.format(
             current_trial=self.current_trial + 1,
@@ -157,25 +159,3 @@ class BiasDetectionTask(TaskGeneral):
                 return False
 
         return True
-    
-    def create_round_stats(self) -> Dict:
-        # Create round stats
-        return {
-            'available_cues': self.available_cues,
-            'choice': self.current_answer,
-            'quadrant': self.quadrant,
-            'result': self.current_result,
-            'round_time': self.round_time,
-            'thinking_time': self.thinking_time
-        }
-    
-    def get_final_prompt(self) -> str:
-        try:
-            prompt = load_prompt_from_xml(self.strings, 'final_prompt')
-            return prompt.format(
-                current_trial=self.current_trial + 1,
-                letters=self.letters
-            )
-        except AttributeError:
-            raise ValueError("Final prompt not defined for this task.")
-
