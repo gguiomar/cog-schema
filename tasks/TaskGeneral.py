@@ -42,11 +42,11 @@ class TaskGeneral:
 
             # Build and show prompt with accumulated history
             self.available_cues = ', '.join(available_cues)
-            print("-------------------------------------")
-            print(self.strings)
+            #print("-------------------------------------")
+            #print(self.strings)
 
             prompt = load_prompt_from_xml(self.strings, 'intermediate_prompt')
-            print(prompt)
+            #print(prompt)
             return prompt.format(
                 current_trial=self.current_trial + 1,
                 current_round=self.current_round + 1,
