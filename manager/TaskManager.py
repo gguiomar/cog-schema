@@ -308,8 +308,7 @@ class TaskManager:
                 choice = self.agent.get_response(self.messages_conversation_history)
             else:
                 choice = self.agent.get_response(history_and_prompt)
-            # print(self.task_type)
-            if self.task_type == "ClassicalConditioning":
+            if self.task_type._task_name == "ClassicalConditioning":
                 choice = "A"
             self.task.update_answer(choice)
             self.messages_conversation_history.append({"role": "assistant", "content": choice})
@@ -387,8 +386,8 @@ class TaskManager:
             self.messages_conversation_history.append({"role": "assistant", "content": final_choice})
         else:
             final_choice = self.agent.get_response(history_and_prompt)
-        if self.task_type == "ClassicalConditioning":
-                final_choice = "A"
+        if self.task_type._task_name == "ClassicalConditioning":
+            final_choice = "A"
 
         raw_logits = self.agent.get_last_logits()
         if raw_logits is not None:
