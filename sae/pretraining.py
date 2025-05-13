@@ -22,7 +22,7 @@ from LLMagent import LLMagent
 
 #from ..agents.LLMagent import LLMagent
 
-def pretrain(device, agent_name: str, activation_layers, automate_activations_gathering, dataset_path, num_tokens, context_size=1024):
+def pretrain(device, agent_name: str, activation_layers, automate_activations_gathering, dataset_path, context_size=1024):
     if device == 'cuda':
         device = 'cuda:0'
     agent = LLMagent(
@@ -82,12 +82,13 @@ def pretrain(device, agent_name: str, activation_layers, automate_activations_ga
     else:
         raise ValueError("Dataset must have a 'tokens', 'input_ids', or 'text' column.")
 
-    num_runs = num_tokens // context_size
-
-    for run in tqdm(range(num_runs), desc="Generating Activations"):
+    while True:
         all_tokens = torch.empty(0, device=agent.model.device)
         while len(all_tokens) < context_size:
-            batch = next(dataset)
+            try:
+                batch = next(dataset)
+            except StopIteration: # Dataset out of tokens
+                break
             if tokens_column == "text":
                 tokens = agent.tokenizer.encode(batch["text"], return_tensors="pt").to(agent.model.device)
             else:
@@ -113,7 +114,6 @@ if __name__ == "__main__":
     parser.add_argument("--dataset", type=str, default="NeelNanda/c4-10k", help="Huggingface dataset on which to pretrain")
     parser.add_argument("-wandb", action="store_true", help="Enable Weights & Biases logging", default=False)
     parser.add_argument("--wandb_name", type=str, default=None, help="Weights & Biases run name")
-    parser.add_argument("--num_tokens", type = int, default=1024, help="Number of tokens to pretrain on")
     parser.add_argument("--context_size", type=str, default=512, help="Context size for pretraining")
 
 
@@ -122,9 +122,8 @@ if __name__ == "__main__":
     cfg['model'] = args.model
     cfg['dataset'] = args.dataset
     cfg['context_size'] = args.context_size
-    cfg['num_tokens'] = args.num_tokens
 
-    layers = pretrain(args.device, args.model, args.activations_layer, args.automate_activations_gathering, args.dataset, args.num_tokens, args.context_size)
+    layers = pretrain(args.device, args.model, args.activations_layer, args.automate_activations_gathering, args.dataset, args.context_size)
     for layer in layers:
         cfg["data"] = layer
         train_loader = SAEDataLoader(cfg["data"], batch_size=cfg["batch_size"], shuffle=True)
@@ -135,7 +134,7 @@ if __name__ == "__main__":
 
         wandb_cfg = {
             "project": "SAE training",
-            "name": args.wandb_name if args.wandb_name is not None else f"{cfg['model']}_{layer}_{cfg['sae_type']}_{cfg['dataset']}_{cfg['num_tokens']}_{cfg['context_size']},{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}",
+            "name": args.wandb_name if args.wandb_name is not None else f"{cfg['model']}_{layer}_{cfg['sae_type']}_{cfg['dataset']}_{cfg['context_size']},{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}",
             "save_interval": 50,
             "log_batch_interval": 10,
         }
