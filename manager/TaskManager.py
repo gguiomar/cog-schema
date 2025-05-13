@@ -571,6 +571,9 @@ class TaskManager:
                 json.dump(results_data, f, indent=2)
             print(f"Benchmark complete! Results saved to logs/")
 
+        self.activation_saving()
+        self.activation_reset()
+
         return metrics
 
 
@@ -735,7 +738,7 @@ class TaskManager:
                     "round_time": metrics.get('avg_round_time', 0),
                     "thinking_time": metrics.get('avg_thinking_time', 0) if self.is_reasoning_model else 0
                 }
-        self.activation_saving()
+        self.hook_deleting()
         return agent_results
 
     def multiple_benchmarks(self):
@@ -1024,5 +1027,10 @@ class TaskManager:
         for hook in self.hooks:
             print(f"Saving {len(hook.activations)} activations to {hook.save_path}")
             hook.save_all()
+    def activation_reset(self):
+        for hook in self.hooks:
+            hook.reset()
+    def hook_deleting(self):
+        for hook in self.hooks:
             hook.remove()
         self.hooks.clear()
