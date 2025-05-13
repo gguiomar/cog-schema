@@ -81,8 +81,9 @@ def pretrain(device, agent_name: str, activation_layers, automate_activations_ga
         tokens_column = "text"
     else:
         raise ValueError("Dataset must have a 'tokens', 'input_ids', or 'text' column.")
-
+    run = 0
     while True:
+        run += 1
         all_tokens = torch.empty(0, device=agent.model.device)
         while len(all_tokens) < context_size:
             try:
@@ -95,9 +96,17 @@ def pretrain(device, agent_name: str, activation_layers, automate_activations_ga
                 tokens = batch[tokens_column]
             tokens = tokens.view(-1)
             all_tokens = torch.cat((all_tokens, tokens))
-        token_tensor = torch.tensor(all_tokens, dtype=torch.long, device=agent.model.device)[:context_size]
+        token_tensor = torch.tensor(all_tokens, dtype=torch.long, device=agent.model.device)[:int(context_size)]
         # Generate tokens by passing directly the tokenized input
         agent.model.generate(input_ids=token_tensor.view(1,-1), max_new_tokens=1, do_sample=True, temperature=1.0)
+        if run % 50 == 0:
+            for hook in hooks:
+                #print(f"Saving {len(hook.activations)} activations to {hook.save_path}")
+                hook.save_all()
+                hook.reset()
+    agent = None # Free up memory
+    for hook in hooks:
+        hook.remove()
 
     return paths
 
