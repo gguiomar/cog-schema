@@ -55,3 +55,6 @@ class Hook:
                     "tokens": item["tokens"].tolist() if item["tokens"] is not None else None,
                     "file_name": f"activations_{i}.npy"
                 }, f, indent=2)
+
+    def reset(self):
+        self.activations = []
