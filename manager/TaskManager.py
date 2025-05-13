@@ -267,11 +267,12 @@ class TaskManager:
             # Build and show prompt with accumulated history
             prompt_base = self.task.get_intermediate_prompt()
             if(round_num == 0):
-                prompt_instruct = task_description + "\n" + self.task.get_intermediate_prompt()
+                self.messages_conversation_history.append({"role": "system", "content": task_description})
+                prompt_instruct = "\n" + self.task.get_intermediate_prompt()
             else:
                 # Update conversation history with feedback
                 self.conversation_history += self.task.give_feedback()
-                prompt_instruct = self.task.give_feedback() + "\n" + self.task.get_intermediate_prompt()
+                prompt_instruct = "\n" + self.task.give_feedback() + "\n" + self.task.get_intermediate_prompt()
 
             prompt = self.task.get_intermediate_prompt()
             history_and_prompt = self.conversation_history + prompt
@@ -279,19 +280,30 @@ class TaskManager:
             self.messages_conversation_history.append({"role": "user", "content": prompt_instruct})
 
             if self.verbose:
-                tqdm.write("\nAccumulated prompt shown to LLM:")
-                tqdm.write("--------------------")
-                tqdm.write(history_and_prompt)
-                tqdm.write("--------------------")
+                if self.is_instruct_model:
+                    tqdm.write("\nAccumulated prompt shown to LLM:")
+                    tqdm.write("--------------------")
+                    tqdm.write(self.conversation_history)
+                    tqdm.write("--------------------")
+                else:
+                    tqdm.write("\nAccumulated prompt shown to LLM:")
+                    tqdm.write("--------------------")
+                    tqdm.write(history_and_prompt)
+                    tqdm.write("--------------------")
 
             # Get agent's choice and track round time
             round_start_time = time.time()
             # right before you call self.agent.get_response(...)
             if self.hooks:
                 # one tokenization call for all
-                tokens = self.tokenizer(history_and_prompt, return_tensors="pt")["input_ids"].squeeze(0)
+                if self.is_instruct_model:
+                    tokens = self.tokenizer(self.conversation_history, return_tensors="pt")["input_ids"].squeeze(0)
+                else :
+                    tokens = self.tokenizer(history_and_prompt, return_tensors="pt")["input_ids"].squeeze(0)
+
                 for idx, hook in enumerate(self.hooks):
-                    hook.current_text = history_and_prompt
+
+                    hook.current_text = (self.conversation_history if self.is_instruct_model else history_and_prompt)
                     hook.current_tokens = tokens
                     # if you want distinct filenames:
                     hook.current_file_name = f"{self.current_agent}_trial{trial_num}_round{round_num}_hook{idx}"
