@@ -164,8 +164,10 @@ class LLMagent:
             "Gemma_9B": "google/gemma-9b",
             "Gemma_27B": "google/gemma-27b",
             "Gemma_2B_Instruct": "google/gemma-2b-it",
+            "Gemma_3B_Instruct": "google/gemma-3b-it",
             "Gemma_9B_Instruct": "google/gemma-9b-it",
             "Gemma_27B_Instruct": "google/gemma-27b-it",
+            "Gemma3_4B_Instruct": "google/gemma-3-4b-it",
         }
 
         model_openai = {

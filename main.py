@@ -29,8 +29,8 @@ def parse_args():
     # Hardware settings
     parser.add_argument('--device', type=str, default='cuda:0',
                         help='Device to run inference on')
-    parser.add_argument('--no-unsloth', action='store_false', dest='use_unsloth', default=False,
-                        help='Disable unsloth optimization')
+    parser.add_argument('--unsloth', action='store_true', dest='use_unsloth', default=False,
+                        help='Enable unsloth optimization')
 
     # API keys (optional)
     parser.add_argument('--openai-key', type=str, default=None,
