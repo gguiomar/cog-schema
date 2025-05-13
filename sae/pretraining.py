@@ -98,7 +98,11 @@ def pretrain(device, agent_name: str, activation_layers, automate_activations_ga
             all_tokens = torch.cat((all_tokens, tokens))
         token_tensor = torch.tensor(all_tokens, dtype=torch.long, device=agent.model.device)[:int(context_size)]
         # Generate tokens by passing directly the tokenized input
-        agent.model.generate(input_ids=token_tensor.view(1,-1), max_new_tokens=1, do_sample=True, temperature=1.0)
+        try:
+            agent.model.generate(input_ids=token_tensor.view(1,-1), max_new_tokens=1, do_sample=True, temperature=1.0)
+        except:
+            print("Error during generation, skipping this batch")
+            break
         if run % 50 == 0:
             for hook in hooks:
                 #print(f"Saving {len(hook.activations)} activations to {hook.save_path}")
