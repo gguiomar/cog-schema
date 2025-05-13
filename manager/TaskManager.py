@@ -37,6 +37,7 @@ class TaskManager:
                  log_stats = False,
                  activation_layers=None,
                  automate_activations_gathering=False,
+                 add_padding=False,
                  ):
         """
         Initialize task manager with benchmark capabilities.
@@ -142,6 +143,8 @@ class TaskManager:
         self.activations_layers = activation_layers
         self.hooks = list()
 
+        self.add_padding = add_padding
+
     def initialize_agent(self, agent_name):
         """Initialize an LLM agent with the specified model."""
         from agents.LLMagent import LLMagent  # Import here to avoid circular imports
@@ -166,7 +169,8 @@ class TaskManager:
             min_thinking_time=self.min_thinking_time,
             max_thinking_time=self.max_thinking_time,
             min_thinking_tokens=self.min_thinking_tokens,
-            max_thinking_tokens=self.max_thinking_tokens
+            max_thinking_tokens=self.max_thinking_tokens,
+            add_padding=self.add_padding,
         )
 
         if self.automate_activations_gathering == True:
