@@ -154,7 +154,7 @@ class LLMagent:
             "Qwen_14B_Instruct": "Qwen/Qwen2.5-14B-Instruct",
             "Qwen_32B_Instruct": "Qwen/Qwen2.5-32B-Instruct",
             "Centaur_8B": "marcelbinz/Llama-3.1-Centaur-8B",
-            "Mistral_7B_Instruct": "mistralai/Mistral-7B-Instruct-v0.3",
+            "Mistral_7B_Instruct": "alokabhishek/Mistral-7B-Instruct-v0.2-bnb-4bit", # mistralai/Mistral-7B-Instruct-v0.3
             "Mistral_7B": "mistralai/Mistral-7B-v0.3",
             "Phi_4_8B": "microsoft/phi-4",
             "Phi_3.5_mini_Instruct": "microsoft/Phi-3.5-mini-instruct",
@@ -164,7 +164,6 @@ class LLMagent:
             "Gemma_9B": "google/gemma-9b",
             "Gemma_27B": "google/gemma-27b",
             "Gemma_2B_Instruct": "google/gemma-2b-it",
-            "Gemma_3B_Instruct": "google/gemma-3b-it",
             "Gemma_9B_Instruct": "google/gemma-9b-it",
             "Gemma_27B_Instruct": "google/gemma-27b-it",
             "Gemma3_4B_Instruct": "google/gemma-3-4b-it",

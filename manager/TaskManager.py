@@ -267,8 +267,7 @@ class TaskManager:
             # Build and show prompt with accumulated history
             prompt_base = self.task.get_intermediate_prompt()
             if(round_num == 0):
-                self.messages_conversation_history.append({"role": "system", "content": task_description})
-                prompt_instruct = "\n" + self.task.get_intermediate_prompt()
+                prompt_instruct = task_description + "\n" + self.task.get_intermediate_prompt()
             else:
                 # Update conversation history with feedback
                 self.conversation_history += self.task.give_feedback()
