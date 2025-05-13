@@ -19,6 +19,7 @@ class Hook:
         self.activations = []
         self.current_text = None
         self.current_tokens = None
+        self.last_activ = -1
 
     def remove(self):
         """
@@ -41,9 +42,11 @@ class Hook:
 
     def save_all(self):
         """Save all collected activations and metadata to disk."""
+        activ_num = -1
         for i, item in enumerate(self.activations):
-            act_path = os.path.join(self.save_path, f"activations_{i}.npy")
-            meta_path = os.path.join(self.save_path, f"meta_{i}.json")
+            activ_num = i + self.last_activ + 1
+            act_path = os.path.join(self.save_path, f"activations_{activ_num}.npy")
+            meta_path = os.path.join(self.save_path, f"meta_{activ_num}.json")
 
             # Save activation
             np.save(act_path, item["activations"])
@@ -53,8 +56,9 @@ class Hook:
                 json.dump({
                     "text": item["text"],
                     "tokens": item["tokens"].tolist() if item["tokens"] is not None else None,
-                    "file_name": f"activations_{i}.npy"
+                    "file_name": f"activations_{activ_num}.npy"
                 }, f, indent=2)
+        self.last_activ = activ_num
 
     def reset(self):
         self.activations = []
