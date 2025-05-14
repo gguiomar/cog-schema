@@ -38,14 +38,15 @@ class LLMagent:
                  device_map: str = "cpu", 
                  max_seq_length: int = 32768, 
                  load_in_4bit: bool = True, 
-                 use_unsloth: bool = False,
+                 use_unsloth: bool = True,
                  openai_api_key: Optional[str] = None,
                  anthropic_api_key: Optional[str] = None,
                  reasoning_mode: str = "time",  # 'time' or 'tokens'
                  min_thinking_time: float = 5.0,
                  max_thinking_time: float = 10.0,
                  min_thinking_tokens: int = 200,
-                 max_thinking_tokens: int = 500):
+                 max_thinking_tokens: int = 500,
+                 add_padding: bool = False):
         """
         Initialize LLM agent with specified model and backend.
         
@@ -76,6 +77,7 @@ class LLMagent:
         self.min_thinking_tokens = min_thinking_tokens
         self.max_thinking_tokens = max_thinking_tokens
         self.token_count = 0  # Track token count for token-based reasoning
+        self.add_padding = add_padding
 
         # Map friendly model names to their corresponding Hugging Face repository strings.
         model_aliases = {
@@ -154,7 +156,7 @@ class LLMagent:
             "Qwen_14B_Instruct": "Qwen/Qwen2.5-14B-Instruct",
             "Qwen_32B_Instruct": "Qwen/Qwen2.5-32B-Instruct",
             "Centaur_8B": "marcelbinz/Llama-3.1-Centaur-8B",
-            "Mistral_7B_Instruct": "mistralai/Mistral-7B-Instruct-v0.3",
+            "Mistral_7B_Instruct": "alokabhishek/Mistral-7B-Instruct-v0.2-bnb-4bit", # mistralai/Mistral-7B-Instruct-v0.3
             "Mistral_7B": "mistralai/Mistral-7B-v0.3",
             "Phi_4_8B": "microsoft/phi-4",
             "Phi_3.5_mini_Instruct": "microsoft/Phi-3.5-mini-instruct",
@@ -166,6 +168,7 @@ class LLMagent:
             "Gemma_2B_Instruct": "google/gemma-2b-it",
             "Gemma_9B_Instruct": "google/gemma-9b-it",
             "Gemma_27B_Instruct": "google/gemma-27b-it",
+            "Gemma3_4B_Instruct": "google/gemma-3-4b-it",
         }
 
         model_openai = {
@@ -208,6 +211,14 @@ class LLMagent:
                 max_seq_length = 4096  # adjust if Qwen requires a different sequence length
             self.model, self.tokenizer = FastLanguageModel.from_pretrained(model_name=model_alias, max_seq_length=max_seq_length)
             FastLanguageModel.for_inference(self.model)
+        elif model_name in model_aliases and device_map == "cuda:0" and not use_unsloth:
+            model_alias = model_aliases_mps[model_name]
+            print("Using transformers with GPU")
+            self.model = transformers.AutoModelForCausalLM.from_pretrained(
+                model_alias,
+                device_map=device_map,
+            )
+            self.tokenizer = transformers.AutoTokenizer.from_pretrained(model_alias)
         elif model_name in model_aliases and device_map == "cpu": 
             model_alias = model_aliases[model_name]
             print("Using transformers with CPU")
@@ -226,6 +237,10 @@ class LLMagent:
             self.tokenizer = transformers.AutoTokenizer.from_pretrained(model_alias)
         else:
             raise ValueError("Unsupported model or configuration")
+
+        if self.add_padding:
+            self.tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+            self.model.resize_token_embeddings(len(self.tokenizer))
 
 
     @classmethod

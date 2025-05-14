@@ -29,8 +29,8 @@ def parse_args():
     # Hardware settings
     parser.add_argument('--device', type=str, default='cuda:0',
                         help='Device to run inference on')
-    parser.add_argument('--no-unsloth', action='store_false', dest='use_unsloth',
-                        help='Disable unsloth optimization')
+    parser.add_argument('--unsloth', action='store_true', dest='use_unsloth', default=False,
+                        help='Enable unsloth optimization')
 
     # API keys (optional)
     parser.add_argument('--openai-key', type=str, default=None,
@@ -50,6 +50,15 @@ def parse_args():
     
     parser.add_argument('--log-stats', action='store_true', help='Enable stats logging during benchmark')
 
+    parser.add_argument('--activation-layers', type=str, default='post_attention_layernorm',
+                        help='Layers to save activations for activation analysis, see model.named_modules() for options')
+
+    parser.add_argument('--automate-activations-gathering', action='store_true',
+                        help='Whether to automate the gathering of activations based on the layer ending. If True, activation-layers argument'
+                             'will represent layer ending, e.g. post_attention_layernorm')
+
+    parser.add_argument('--add-padding', action='store_true',
+                        help='Whether to add a special padding token to the tokenizer. This fixes an issue for models that do not have a padding token. Default is False')
 
     return parser.parse_args()
 
@@ -73,6 +82,9 @@ def main():
         use_unsloth=args.use_unsloth,
         log_stats=args.log_stats,
         task_type=TaskSelector.from_string(args.task_type),
+        activation_layers=args.activation_layers,
+        automate_activations_gathering=args.automate_activations_gathering,
+        add_padding=args.add_padding
     )
 
     # Run benchmarks

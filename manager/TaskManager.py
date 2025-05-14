@@ -8,18 +8,37 @@ from matplotlib.patches import Patch
 from datetime import datetime
 from typing import Dict
 from tqdm import tqdm
+from sae.hooks import Hook
+from transformers import AutoTokenizer
 import torch
 
 from tasks.VSTtask import VSTtask
 
 class TaskManager:
-    def __init__(self, agents=None, rounds=None, quadrants=None, n_simulations=10,
-                 n_trials=1, num_cues=1, device="cuda:0", verbose=False,
-                 output_dir="simulation_results", openai_api_key=None,
-                 anthropic_api_key=None, use_unsloth=True,
-                 reasoning_mode="time", min_thinking_time=5.0, max_thinking_time=10.0,
-                 min_thinking_tokens=200, max_thinking_tokens=500,
-                 task_type=None,log_stats = False):  # Note: fix task_type not being implemented
+    def __init__(self,
+                 agents=None,
+                 rounds=None,
+                 quadrants=None,
+                 n_simulations=10,
+                 n_trials=1,
+                 num_cues=1,
+                 device="cuda:0",
+                 verbose=False,
+                 output_dir="simulation_results",
+                 openai_api_key=None,
+                 anthropic_api_key=None,
+                 use_unsloth=True,
+                 reasoning_mode="time",
+                 min_thinking_time=5.0,
+                 max_thinking_time=10.0,
+                 min_thinking_tokens=200,
+                 max_thinking_tokens=500,
+                 task_type=None,
+                 log_stats = False,
+                 activation_layers=None,
+                 automate_activations_gathering=False,
+                 add_padding=False,
+                 ):
         """
         Initialize task manager with benchmark capabilities.
 
@@ -98,7 +117,7 @@ class TaskManager:
 
         # Create new directory structure
         self.benchmarks_plots_dir = "benchmarks_plots"
-        self.logs_dir = "logs_new"
+        self.logs_dir = "logs"
         os.makedirs(self.benchmarks_plots_dir, exist_ok=True)
         os.makedirs(self.logs_dir, exist_ok=True)
 
@@ -110,18 +129,31 @@ class TaskManager:
         
         # Get instruct models list from LLMagent
         self.instruct_models = LLMagent.get_instruct_models()
-        
+
         self.log_stats = log_stats
+
+        self.automate_activations_gathering = automate_activations_gathering
+        if self.automate_activations_gathering and activation_layers is None:
+            activation_layers = "post_attention_layernorm"
+
+        if activation_layers is None:
+            activation_layers = None
+        elif type(activation_layers) != list and self.automate_activations_gathering == False:
+            activation_layers = [activation_layers]
+        self.activations_layers = activation_layers
+        self.hooks = list()
+
+        self.add_padding = add_padding
 
     def initialize_agent(self, agent_name):
         """Initialize an LLM agent with the specified model."""
         from agents.LLMagent import LLMagent  # Import here to avoid circular imports
-        
+
         self.current_agent = agent_name
 
         # Check if this is a reasoning model - using the list from LLMagent
         self.is_reasoning_model = agent_name in self.reasoning_models
-        
+
         self.is_instruct_model = agent_name in self.instruct_models
 
         # Unload the previous model first, since python doesn't do this automatically and can easily run out of VRAM
@@ -137,11 +169,44 @@ class TaskManager:
             min_thinking_time=self.min_thinking_time,
             max_thinking_time=self.max_thinking_time,
             min_thinking_tokens=self.min_thinking_tokens,
-            max_thinking_tokens=self.max_thinking_tokens
+            max_thinking_tokens=self.max_thinking_tokens,
+            add_padding=self.add_padding,
         )
 
+        if self.automate_activations_gathering == True:
+            if not isinstance(self.activations_layers, str):
+                raise ValueError("activation_layers should be a string when automate_activations_gathering is True")
+            activations_layers = list()
+            layer_ending = self.activations_layers
+            layer_num = len(self.agent.model.model.layers)
+            for layer in range(layer_num):
+                layer_name = f"model.layers[{layer}].{layer_ending}"
+                activations_layers.append(layer_name)
+            self.activations_layers = activations_layers
+        # Set up the hook for saving activations if specified
+        if not self.is_reasoning_model and self.activations_layers:
+            for activations_layer in self.activations_layers:
+                path_parts = activations_layer.split('.')
+                layer = self.agent.model
+                # Get the model component from the input string
+                for part in path_parts:
+                    if '[' in part and ']' in part:
+                        list_name, index = part.split('[')
+                        index = int(index[:-1])
+                        layer = getattr(layer, list_name)[index]
+                    else:
+                        layer = getattr(layer, part)
+
+                # Create the directory for saving activations
+                path = os.path.join("./activations", self.current_agent, '_'.join(path_parts), f"{self.timestamp}")
+                os.makedirs(os.path.dirname(path), exist_ok=True)
+                print(f"Saving activations to {path}")
+
+                hook = Hook(layer, save_path=path)
+                self.hooks.append(hook)
         # Get the reasoning parameters that were actually set
         self.reasoning_params = self.agent.get_reasoning_parameters()
+        self.tokenizer = self.agent.tokenizer
 
         return self.agent
 
@@ -168,12 +233,12 @@ class TaskManager:
         self.task.verbose = self.verbose # This is not a nice fix, kinda scrappy
         self.task.update_trial(trial_num)
         self.thinking_times = []  # Reset thinking times for this trial
-        
+
 
         trial_stats = {
             'rounds': [],
             'final_choice': None,
-            'correct_quadrant': self.task.get_correct_answer() + 1,
+            'correct_quadrant': self.task.get_correct_answer(),
             'success': False,
             'agent': self.current_agent,
             'round_times': [],
@@ -184,11 +249,9 @@ class TaskManager:
         # Add a trial separator in the conversation history if this is not the first trial
         if trial_num > 0:
             self.conversation_history += self.task.get_trial_separator()
-            #self.messages_conversation_history.append({"role": "system", "content": self.task.get_trial_separator()})
-
+        task_description = self.task.get_initial_prompt()
         # If this is the first trial or we want to start fresh, initialize conversation with task description
         if not self.conversation_history:
-            task_description = self.task.get_initial_prompt()
             self.conversation_history = task_description + "\n" + self.task.get_trial_separator()
 
             if self.verbose:
@@ -212,27 +275,56 @@ class TaskManager:
             else:
                 # Update conversation history with feedback
                 self.conversation_history += self.task.give_feedback()
-                prompt_instruct = self.task.give_feedback() + "\n" + self.task.get_intermediate_prompt()
+                prompt_instruct = "\n" + self.task.give_feedback() + "\n" + self.task.get_intermediate_prompt()
 
             prompt = self.task.get_intermediate_prompt()
             history_and_prompt = self.conversation_history + prompt
-            
+
             self.messages_conversation_history.append({"role": "user", "content": prompt_instruct})
 
             if self.verbose:
-                tqdm.write("\nAccumulated prompt shown to LLM:")
-                tqdm.write("--------------------")
-                tqdm.write(history_and_prompt)
-                tqdm.write("--------------------")
+                if self.is_instruct_model:
+                    tqdm.write("\nAccumulated prompt shown to LLM:")
+                    tqdm.write("--------------------")
+                    tqdm.write(self.conversation_history)
+                    tqdm.write("--------------------")
+                else:
+                    tqdm.write("\nAccumulated prompt shown to LLM:")
+                    tqdm.write("--------------------")
+                    tqdm.write(history_and_prompt)
+                    tqdm.write("--------------------")
 
             # Get agent's choice and track round time
             round_start_time = time.time()
-            print(f'!!! {prompt} !!!')
+            # right before you call self.agent.get_response(...)
+            if self.hooks:
+                # one tokenization call for all
+                if self.is_instruct_model:
+                    tokens = self.tokenizer(self.conversation_history, return_tensors="pt")["input_ids"].squeeze(0)
+                else :
+                    tokens = self.tokenizer(history_and_prompt, return_tensors="pt")["input_ids"].squeeze(0)
+
+                for idx, hook in enumerate(self.hooks):
+
+                    hook.current_text = (self.conversation_history if self.is_instruct_model else history_and_prompt)
+                    hook.current_tokens = tokens
+                    # if you want distinct filenames:
+                    hook.current_file_name = f"{self.current_agent}_trial{trial_num}_round{round_num}_hook{idx}"
+
+            # if hasattr(self, "hook"):
+            #     self.hook.current_text = history_and_prompt
+            #     tokens = self.tokenizer(history_and_prompt, return_tensors="pt")["input_ids"]
+            #     self.hook.current_tokens = tokens.squeeze(0)  # Remove batch dimension
+            #     self.hook.current_file_name = f"{self.current_agent}_trial{trial_num}_round{round_num}"
+            # choice = self.agent.get_response(history_and_prompt)
+            # choice = "A"
+            #print(f'!!! {prompt} !!!')
             if self.is_instruct_model:
                 choice = self.agent.get_response(self.messages_conversation_history)
             else:
                 choice = self.agent.get_response(history_and_prompt)
-                
+            if self.task_type._task_name == "ClassicalConditioning":
+                choice = "A"
             self.task.update_answer(choice)
             self.messages_conversation_history.append({"role": "assistant", "content": choice})
             round_time = time.time() - round_start_time
@@ -249,7 +341,7 @@ class TaskManager:
                     thinking_tokens = self.agent.last_thinking_tokens
                 self.thinking_times.append(thinking_time)
                 trial_stats['thinking_times'].append(thinking_time)
-                
+
             # Get logit distribution for this round
             raw_logits = self.agent.get_last_logits()
             if raw_logits is not None:
@@ -263,12 +355,12 @@ class TaskManager:
                         cpu_logits[tok] = float(prob)
                 trial_stats['logits'].append(cpu_logits)
                 del raw_logits
-            
+
             if self.verbose:
                 #tqdm.write(f"\nLLM chose: {choice}")
                 if self.is_reasoning_model:
                     tqdm.write(f"Thinking time: {thinking_time:.2f} seconds")
-            
+
             # Process choice
             result = self.task.process_choice()
             self.task.update_result(result)
@@ -279,7 +371,7 @@ class TaskManager:
             # For reasoning models, add thinking tokens
             if self.is_reasoning_model and thinking_tokens:
                 round_stats['thinking_tokens'] = thinking_tokens
-            
+
             trial_stats['rounds'].append(round_stats)
 
         # Get final answer
@@ -287,7 +379,7 @@ class TaskManager:
             tqdm.write(f"\n=== Trial {trial_num + 1} Final Decision ===")
 
         history_and_prompt = self.conversation_history + self.task.get_final_prompt()
-        
+
         self.messages_conversation_history.append({"role": "user", "content": self.task.give_feedback() + "\n" + self.task.get_final_prompt()})
 
         #self.conversation_history += self.task.get_final_prompt()
@@ -298,12 +390,20 @@ class TaskManager:
             tqdm.write(history_and_prompt)
             tqdm.write("-------------------------")
 
+        if hasattr(self, "hook"):
+            self.hook.current_text = history_and_prompt
+            tokens = self.tokenizer(history_and_prompt, return_tensors="pt")["input_ids"]
+            self.hook.current_tokens = tokens.squeeze(0)  # Remove batch dimension
+            self.hook.current_file_name = f"{self.current_agent}_trial{trial_num}_round{round_num}"
+
         if self.is_instruct_model:
             final_choice = self.agent.get_response(self.messages_conversation_history)
             self.messages_conversation_history.append({"role": "assistant", "content": final_choice})
         else:
             final_choice = self.agent.get_response(history_and_prompt)
-            
+        if self.task_type._task_name == "ClassicalConditioning":
+            final_choice = "A"
+
         raw_logits = self.agent.get_last_logits()
         if raw_logits is not None:
             cpu_logits = {}
@@ -319,10 +419,30 @@ class TaskManager:
                 tqdm.write("\nFinal choice token probabilities:")
                 for tok, prob in raw_logits.items():
                     tqdm.write(f"  {tok!r}: {prob:.4f}")
-                    
+
             del raw_logits
 
-        print("final choice: ", final_choice)
+        #print("final choice: ", final_choice)
+
+        raw_logits = self.agent.get_last_logits()
+        if raw_logits is not None:
+            cpu_logits = {}
+            for tok, prob in raw_logits.items():
+                if isinstance(prob, torch.Tensor):
+                    # detach from graph and move to CPU
+                    cpu_logits[tok] = prob.detach().cpu().item()
+                else:
+                    # already a float (or numpy), just cast
+                    cpu_logits[tok] = float(prob)
+            trial_stats['logits'].append(cpu_logits)
+            if self.verbose:
+                tqdm.write("\nFinal choice token probabilities:")
+                for tok, prob in raw_logits.items():
+                    tqdm.write(f"  {tok!r}: {prob:.4f}")
+
+            del raw_logits
+
+        #print("final choice: ", final_choice)
         self.task.update_answer(final_choice)
 
         self.conversation_history += self.task.give_final_feedback()
@@ -466,6 +586,9 @@ class TaskManager:
                 json.dump(results_data, f, indent=2)
             print(f"Benchmark complete! Results saved to logs/")
 
+        self.activation_saving()
+        self.activation_reset()
+
         return metrics
 
 
@@ -476,11 +599,14 @@ class TaskManager:
         all_round_times = []
         all_thinking_times = []
         all_success_rates = []
+        success_rate = 0
 
         # Collect quadrant distribution data
-        quadrant_distribution = {q: {'times_chosen': 0, 'times_correct': 0, 'success_count': 0}
-                                 for q in range(1, num_quadrants + 1)}
-
+        quadrant_labels = [chr(ord("A") + i) for i in range(num_quadrants)]
+        quadrant_distribution = {
+            label: {'times_chosen': 0, 'times_correct': 0, 'success_count': 0}
+            for label in quadrant_labels
+        }
         # Process all simulations
         for sim in results:
             for trial in sim['trials']:
@@ -495,22 +621,24 @@ class TaskManager:
                         all_thinking_times.append(thinking_time)
 
                 # Update quadrant distribution
-                choice = trial.get('final_choice', '')
-                correct = trial.get('correct_quadrant', 0)
+                choice = trial.get('final_choice', '').upper()
+                raw = trial.get('correct_quadrant', '')
 
-                if isinstance(choice, str) and choice.isdigit():
-                    choice = int(choice)
-                    if 1 <= choice <= num_quadrants:
-                        quadrant_distribution[choice]['times_chosen'] += 1
-                        if choice == correct:
-                            quadrant_distribution[choice]['success_count'] += 1
+                # only cast digits → letters, otherwise assume it's already "A","B", etc.
+                if raw.isdigit():
+                    # e.g. "1" → 1 → "A"
+                    correct = chr(ord("A") + int(raw) - 1)
+                else:
+                    correct = raw.upper()
+                if choice in quadrant_distribution:
+                    quadrant_distribution[choice]['times_chosen'] += 1
+                    if choice == correct:
+                        quadrant_distribution[choice]['success_count'] += 1
 
-                # Record correct quadrant for metrics
-                if 1 <= correct <= num_quadrants:
+                if correct in quadrant_distribution:
                     quadrant_distribution[correct]['times_correct'] += 1
-
-        # Calculate success rate
-        success_rate = np.mean(all_success_rates) if all_success_rates else 0
+                        # Calculate success rate
+                    success_rate = np.mean(all_success_rates) if all_success_rates else 0
 
         # Calculate time metrics
         avg_trial_time = np.mean(all_trial_times) if all_trial_times else 0
@@ -596,6 +724,8 @@ class TaskManager:
         """
         # Initialize the LLM agent
         self.initialize_agent(agent_name)
+        # for name, module in self.agent.model.named_modules():
+        #     print(name)
 
         # Dictionary to store results for this agent
         agent_results = {}
@@ -623,7 +753,7 @@ class TaskManager:
                     "round_time": metrics.get('avg_round_time', 0),
                     "thinking_time": metrics.get('avg_thinking_time', 0) if self.is_reasoning_model else 0
                 }
-
+        self.hook_deleting()
         return agent_results
 
     def multiple_benchmarks(self):
@@ -640,7 +770,6 @@ class TaskManager:
         for agent_name in self.agents:
             print(f"Running benchmark for agent: {agent_name}")
             self.results[agent_name] = self.single_benchmark(agent_name)
-
         elapsed_time = time.time() - start_time
         print(f"Total elapsed time: {elapsed_time:.2f} seconds")
 
@@ -661,14 +790,14 @@ class TaskManager:
         all_agent_trial_times = {}
         all_agent_round_times = {}
         all_agent_thinking_times = {}
-        
+
 
         # First pass: collect all time metrics for each agent
         for model, rounds_dict in self.results.items():
-            
-            print(model)
-            print(rounds_dict)
-            
+
+            #print(model)
+            #print(rounds_dict)
+
             all_agent_trial_times[model] = []
             all_agent_round_times[model] = []
             all_agent_thinking_times[model] = []
@@ -686,7 +815,7 @@ class TaskManager:
                     file_path = os.path.join(agent_path, filename)
                     try:
                         with open(file_path, 'r') as f:
-                            print(f"Reading {file_path}")
+                            #print(f"Reading {file_path}")
                             data = json.load(f)
 
                             # Extract time metrics from all simulations and trials
@@ -900,3 +1029,23 @@ class TaskManager:
         self.plot_generated = True
 
         return df
+    
+    # def activation_saving(self):
+    #     """Save all collected activations and clean up the hook."""
+    #     if hasattr(self, "hook") and self.hook is not None:
+    #         print(f"Saving {len(self.hook.activations)} activations...")
+    #         self.hook.save_all()
+    #         self.hook.remove()
+    #         self.hook = None  # Clean up reference
+
+    def activation_saving(self):
+        for hook in self.hooks:
+            print(f"Saving {len(hook.activations)} activations to {hook.save_path}")
+            hook.save_all()
+    def activation_reset(self):
+        for hook in self.hooks:
+            hook.reset()
+    def hook_deleting(self):
+        for hook in self.hooks:
+            hook.remove()
+        self.hooks.clear()

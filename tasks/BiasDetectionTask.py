@@ -157,4 +157,25 @@ class BiasDetectionTask(TaskGeneral):
                 return False
 
         return True
+    
+    def create_round_stats(self) -> Dict:
+        # Create round stats
+        return {
+            'available_cues': self.available_cues,
+            'choice': self.current_answer,
+            'quadrant': self.quadrant,
+            'result': self.current_result,
+            'round_time': self.round_time,
+            'thinking_time': self.thinking_time
+        }
+    
+    def get_final_prompt(self) -> str:
+        try:
+            prompt = load_prompt_from_xml(self.strings, 'final_prompt')
+            return prompt.format(
+                current_trial=self.current_trial + 1,
+                letters=self.letters
+            )
+        except AttributeError:
+            raise ValueError("Final prompt not defined for this task.")
 
