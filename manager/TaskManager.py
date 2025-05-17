@@ -136,9 +136,7 @@ class TaskManager:
         if self.automate_activations_gathering and activation_layers is None:
             activation_layers = "post_attention_layernorm"
 
-        if activation_layers is None:
-            activation_layers = None
-        elif type(activation_layers) != list and self.automate_activations_gathering == False:
+        if activation_layers is not None and type(activation_layers) != list and self.automate_activations_gathering == False:
             activation_layers = [activation_layers]
         self.activations_layers = activation_layers
         self.hooks = list()
