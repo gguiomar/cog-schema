@@ -7,7 +7,7 @@ import numpy as np
 
 def main():
     # Configuration
-    model_name = "Qwen_0.5B_Instruct"  
+    model_name = "Qwen_3B_Instruct"  
     rounds = range(2,14)
     quadrants = [4]
     n_simulations = 10
