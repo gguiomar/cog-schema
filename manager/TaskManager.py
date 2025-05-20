@@ -607,12 +607,14 @@ class TaskManager:
                 choice = trial.get('final_choice', '').upper()
                 raw = trial.get('correct_quadrant', '')
 
-                # only cast digits → letters, otherwise assume it's already "A","B", etc.
-                if raw.isdigit():
-                    # e.g. "1" → 1 → "A"
+                if isinstance(raw, int):
                     correct = chr(ord("A") + int(raw) - 1)
-                else:
+                elif isinstance(raw, str) and raw.isdigit():
+                    correct = chr(ord("A") + int(raw) - 1)
+                elif isinstance(raw, str):
                     correct = raw.upper()
+                else:
+                    correct = "?" 
                 if choice in quadrant_distribution:
                     quadrant_distribution[choice]['times_chosen'] += 1
                     if choice == correct:
