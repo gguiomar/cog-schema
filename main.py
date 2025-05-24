@@ -57,6 +57,9 @@ def parse_args():
                         help='Whether to automate the gathering of activations based on the layer ending. If True, activation-layers argument'
                              'will represent layer ending, e.g. post_attention_layernorm')
 
+    parser.add_argument('--add-padding', action='store_true',
+                        help='Whether to add a special padding token to the tokenizer. This fixes an issue for models that do not have a padding token. Default is False')
+
     return parser.parse_args()
 
 
@@ -81,6 +84,7 @@ def main():
         task_type=TaskSelector.from_string(args.task_type),
         activation_layers=args.activation_layers,
         automate_activations_gathering=args.automate_activations_gathering,
+        add_padding=args.add_padding
     )
 
     # Run benchmarks

@@ -21,7 +21,7 @@ if module_dir not in sys.path:
 from LLMagent import LLMagent
 
 #from ..agents.LLMagent import LLMagent
-
+print("Crew, prepare for takeoff")
 def pretrain(device, agent_name: str, activation_layers, automate_activations_gathering, dataset_path, context_size=1024):
     if device == 'cuda':
         device = 'cuda:0'
@@ -81,53 +81,65 @@ def pretrain(device, agent_name: str, activation_layers, automate_activations_ga
         tokens_column = "text"
     else:
         raise ValueError("Dataset must have a 'tokens', 'input_ids', or 'text' column.")
-    run = 0
+    activ_num = 200
+    total_runs = 0
     while True:
-        run += 1
-        all_tokens = torch.empty(0, device=agent.model.device)
-        while len(all_tokens) < context_size:
+        for run in tqdm(range(activ_num), desc='Obtaining 200 activation runs'):
+            all_tokens = torch.empty(0, device=agent.model.device)
+            while len(all_tokens) < context_size:
+                try:
+                    batch = next(dataset)
+                except StopIteration: # Dataset out of tokens
+                    print("Dataset out of tokens")
+                    for hook in hooks:
+                        # print(f"Saving {len(hook.activations)} activations to {hook.save_path}")
+                        hook.save_all()
+                        hook.reset()
+                    agent = None  # Free up memory
+                    for hook in hooks:
+                        hook.remove()
+                    print("There should be", total_runs, "activations")
+                    return paths
+                if tokens_column == "text":
+                    tokens = agent.tokenizer.encode(batch["text"], return_tensors="pt").to(agent.model.device)
+                else:
+                    tokens = batch[tokens_column]
+                tokens = tokens.view(-1)
+                all_tokens = torch.cat((all_tokens, tokens))
+            token_tensor = torch.tensor(all_tokens, dtype=torch.long, device=agent.model.device)[:int(context_size)]
+            # Generate tokens by passing directly the tokenized input
             try:
-                batch = next(dataset)
-            except StopIteration: # Dataset out of tokens
-                break
-            if tokens_column == "text":
-                tokens = agent.tokenizer.encode(batch["text"], return_tensors="pt").to(agent.model.device)
-            else:
-                tokens = batch[tokens_column]
-            tokens = tokens.view(-1)
-            all_tokens = torch.cat((all_tokens, tokens))
-        token_tensor = torch.tensor(all_tokens, dtype=torch.long, device=agent.model.device)[:int(context_size)]
-        # Generate tokens by passing directly the tokenized input
-        try:
-            agent.model.generate(input_ids=token_tensor.view(1,-1), max_new_tokens=1, do_sample=True, temperature=1.0)
-        except:
-            print("Error during generation, skipping this batch")
-            break
-        if run % 50 == 0:
-            for hook in hooks:
-                #print(f"Saving {len(hook.activations)} activations to {hook.save_path}")
-                hook.save_all()
-                hook.reset()
-    agent = None # Free up memory
-    for hook in hooks:
-        hook.remove()
-
-    return paths
+                agent.model.generate(input_ids=token_tensor.view(1,-1), max_new_tokens=1, do_sample=True, temperature=1.0)
+                total_runs += 1
+            except:
+                print("Error during generation, skipping this batch")
+                print("PRINTING ARTIFACTS")
+                print("\nbatch", batch)
+                print("\ntokens", tokens)
+                print("\nall_tokens", all_tokens)
+                print("\ntoken_tensor", token_tensor)
+                print("\nEND OF ARTIFACTS")
+                exit()
+            if run == activ_num-1:
+                for hook in hooks:
+                    #print(f"Saving {len(hook.activations)} activations to {hook.save_path}")
+                    hook.save_all()
+                    hook.reset()
 
 if __name__ == "__main__":
     cfg = get_default_cfg()
     parser = argparse.ArgumentParser(description="Pretrain Sparse Autoencoders")
     parser.add_argument("--device", type=str, default="cuda", help="Device to run the training on (e.g., 'cpu', 'cuda', 'mps')")
-    parser.add_argument("--model", type=str, default="Qwen_0.5B", help="LLM to use for pretraining SAE")
+    parser.add_argument("--model", type=str, default="Qwen_0.5B_Instruct", help="LLM to use for pretraining SAE")
     parser.add_argument("--activations_layer", type=str, default='post_attention_layernorm', help="Model layer from which to store activations)")
     parser.add_argument('--automate-activations-gathering', action='store_true', default=True,
                         help='Whether to automate the gathering of activations based on the layer ending. If True, activation-layers argument'
                              'will represent layer ending, e.g. post_attention_layernorm')
     parser.add_argument("--sae_type", type=str, default="topk", choices=["vanilla", "topk", "batchtopk", "jumprelu"], help="Type of Sparse Autoencoder to use")
     parser.add_argument("--dataset", type=str, default="NeelNanda/c4-10k", help="Huggingface dataset on which to pretrain")
-    parser.add_argument("-wandb", action="store_true", help="Enable Weights & Biases logging", default=False)
+    parser.add_argument("--wandb", action="store_true", help="Enable Weights & Biases logging", default=False)
     parser.add_argument("--wandb_name", type=str, default=None, help="Weights & Biases run name")
-    parser.add_argument("--context_size", type=str, default=512, help="Context size for pretraining")
+    parser.add_argument("--context_size", type=int, default=512, help="Context size for pretraining")
 
 
     args = parser.parse_args()
@@ -145,10 +157,13 @@ if __name__ == "__main__":
         cfg["sae_type"] = args.sae_type
         cfg["dict_size"] = cfg["act_size"] * 16
 
+        layer_name = layer.split("/")[2].split("]")[1][1:]
+        layer_num = layer.split("/")[2].split("[")[1][0]
+
         wandb_cfg = {
             "project": "SAE training",
-            "name": args.wandb_name if args.wandb_name is not None else f"{cfg['model']}_{layer}_{cfg['sae_type']}_{cfg['dataset']}_{cfg['context_size']},{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}",
-            "save_interval": 50,
+            "name": f"{args.wandb_name}_{layer_name}_{layer_num}" if args.wandb_name is not None else f"{cfg['model']}_{layer}_{cfg['sae_type']}_{cfg['dataset']}_{cfg['context_size']},{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}",
+            "save_interval": 1000,
             "log_batch_interval": 10,
         }
         if args.wandb:

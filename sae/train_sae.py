@@ -47,7 +47,7 @@ def train_sparse_autoencoder(model, data_loader, cfg, wandb_cfg, wandb_run = Non
         avg_loss = total_loss / len(data_loader)
         epoch_range.set_postfix({"Average loss": f"{avg_loss:.4f}"})
 
-        if wandb_run is not None and i % wandb_cfg["save_interval"] == 0:
+        if wandb_run is not None and i % wandb_cfg["save_interval"] == 0 and i != 0:
             save_checkpoint(wandb_run, model, optimizer, scheduler, cfg, wandb_cfg, i)
 
         scheduler.step(avg_loss)

@@ -37,6 +37,7 @@ class TaskManager:
                  log_stats = False,
                  activation_layers=None,
                  automate_activations_gathering=False,
+                 add_padding=False,
                  ):
         """
         Initialize task manager with benchmark capabilities.
@@ -135,12 +136,12 @@ class TaskManager:
         if self.automate_activations_gathering and activation_layers is None:
             activation_layers = "post_attention_layernorm"
 
-        if activation_layers is None:
-            activation_layers = None
-        elif type(activation_layers) != list and self.automate_activations_gathering == False:
+        if activation_layers is not None and type(activation_layers) != list and self.automate_activations_gathering == False:
             activation_layers = [activation_layers]
         self.activations_layers = activation_layers
         self.hooks = list()
+
+        self.add_padding = add_padding
 
     def initialize_agent(self, agent_name):
         """Initialize an LLM agent with the specified model."""
@@ -166,7 +167,8 @@ class TaskManager:
             min_thinking_time=self.min_thinking_time,
             max_thinking_time=self.max_thinking_time,
             min_thinking_tokens=self.min_thinking_tokens,
-            max_thinking_tokens=self.max_thinking_tokens
+            max_thinking_tokens=self.max_thinking_tokens,
+            add_padding=self.add_padding,
         )
 
         if self.automate_activations_gathering == True:
@@ -270,7 +272,6 @@ class TaskManager:
                 prompt_instruct = task_description + "\n" + self.task.get_intermediate_prompt()
             else:
                 # Update conversation history with feedback
-                self.conversation_history += self.task.give_feedback()
                 prompt_instruct = "\n" + self.task.give_feedback() + "\n" + self.task.get_intermediate_prompt()
 
             prompt = self.task.get_intermediate_prompt()
@@ -307,14 +308,6 @@ class TaskManager:
                     # if you want distinct filenames:
                     hook.current_file_name = f"{self.current_agent}_trial{trial_num}_round{round_num}_hook{idx}"
 
-            # if hasattr(self, "hook"):
-            #     self.hook.current_text = history_and_prompt
-            #     tokens = self.tokenizer(history_and_prompt, return_tensors="pt")["input_ids"]
-            #     self.hook.current_tokens = tokens.squeeze(0)  # Remove batch dimension
-            #     self.hook.current_file_name = f"{self.current_agent}_trial{trial_num}_round{round_num}"
-            # choice = self.agent.get_response(history_and_prompt)
-            # choice = "A"
-            #print(f'!!! {prompt} !!!')
             if self.is_instruct_model:
                 choice = self.agent.get_response(self.messages_conversation_history)
             else:
@@ -420,25 +413,6 @@ class TaskManager:
 
         #print("final choice: ", final_choice)
 
-        raw_logits = self.agent.get_last_logits()
-        if raw_logits is not None:
-            cpu_logits = {}
-            for tok, prob in raw_logits.items():
-                if isinstance(prob, torch.Tensor):
-                    # detach from graph and move to CPU
-                    cpu_logits[tok] = prob.detach().cpu().item()
-                else:
-                    # already a float (or numpy), just cast
-                    cpu_logits[tok] = float(prob)
-            trial_stats['logits'].append(cpu_logits)
-            if self.verbose:
-                tqdm.write("\nFinal choice token probabilities:")
-                for tok, prob in raw_logits.items():
-                    tqdm.write(f"  {tok!r}: {prob:.4f}")
-
-            del raw_logits
-
-        #print("final choice: ", final_choice)
         self.task.update_answer(final_choice)
 
         self.conversation_history += self.task.give_final_feedback()

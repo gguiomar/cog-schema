@@ -45,7 +45,8 @@ class LLMagent:
                  min_thinking_time: float = 5.0,
                  max_thinking_time: float = 10.0,
                  min_thinking_tokens: int = 200,
-                 max_thinking_tokens: int = 500):
+                 max_thinking_tokens: int = 500,
+                 add_padding: bool = False):
         """
         Initialize LLM agent with specified model and backend.
         
@@ -76,6 +77,7 @@ class LLMagent:
         self.min_thinking_tokens = min_thinking_tokens
         self.max_thinking_tokens = max_thinking_tokens
         self.token_count = 0  # Track token count for token-based reasoning
+        self.add_padding = add_padding
 
         # Map friendly model names to their corresponding Hugging Face repository strings.
         model_aliases = {
@@ -235,6 +237,10 @@ class LLMagent:
             self.tokenizer = transformers.AutoTokenizer.from_pretrained(model_alias)
         else:
             raise ValueError("Unsupported model or configuration")
+
+        if self.add_padding:
+            self.tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+            self.model.resize_token_embeddings(len(self.tokenizer))
 
 
     @classmethod
