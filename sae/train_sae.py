@@ -105,6 +105,7 @@ if __name__ == "__main__":
             print(
                 f"Loaded pretrained model from {args.pretrained_artifact_name}")
             cfg["data"] = args.data
+            cfg["num_epochs"] = 1200
             train_loader = SAEDataLoader(cfg["data"], batch_size=cfg["batch_size"], shuffle=True)
             cfg["act_size"] = train_loader.get_activation_dim()
     print(f"Running training with model: {cfg['sae_type']} with {sum(p.numel() for p in model.parameters())} parameters")
