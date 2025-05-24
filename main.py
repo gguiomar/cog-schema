@@ -6,7 +6,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Run G1Bbon LLM benchmark')
 
     # Model selection
-    parser.add_argument('--models', nargs='+', default=['Qwen_0.5B'],
+    parser.add_argument('--models', nargs='+', default=['Qwen_0.5B_Instruct'],
                         help='Models to benchmark')
 
     # Task configuration
@@ -16,14 +16,14 @@ def parse_args():
                         help='Number of quadrants for the VST task')
     parser.add_argument('--cues', type=int, default=1,
                         help='Number of cues per quadrant')
-    parser.add_argument('--task-type', type=str, default='BiasDetection',
+    parser.add_argument('--task-type', type=str, default='ClassicalConditioning',
                         choices=TaskSelector.get_list(),
                         help='Type of task to run', dest='task_type')
 
     # Experiment setup
-    parser.add_argument('--simulations', type=int, default=10,
+    parser.add_argument('--simulations', type=int, default=50,
                         help='Number of simulations per configuration')
-    parser.add_argument('--trials', type=int, default=1,
+    parser.add_argument('--trials', type=int, default=5,
                         help='Number of trials per simulation')
 
     # Hardware settings
@@ -50,8 +50,8 @@ def parse_args():
     
     parser.add_argument('--log-stats', action='store_true', help='Enable stats logging during benchmark')
 
-    parser.add_argument('--activation-layers', type=str, default='post_attention_layernorm',
-                        help='Layers to save activations for activation analysis, see model.named_modules() for options')
+    parser.add_argument('--activation-layers', type=str,
+                        help='Layers to save activations for activation analysis, see model.named_modules() for options') #post_attention_layernorm should be used as default
 
     parser.add_argument('--automate-activations-gathering', action='store_true',
                         help='Whether to automate the gathering of activations based on the layer ending. If True, activation-layers argument'

@@ -312,8 +312,10 @@ class TaskManager:
                 choice = self.agent.get_response(self.messages_conversation_history)
             else:
                 choice = self.agent.get_response(history_and_prompt)
+            '''
             if self.task_type._task_name == "ClassicalConditioning":
                 choice = "A"
+            '''
             self.task.update_answer(choice)
             self.messages_conversation_history.append({"role": "assistant", "content": choice})
             round_time = time.time() - round_start_time
@@ -390,8 +392,10 @@ class TaskManager:
             self.messages_conversation_history.append({"role": "assistant", "content": final_choice})
         else:
             final_choice = self.agent.get_response(history_and_prompt)
+        '''
         if self.task_type._task_name == "ClassicalConditioning":
             final_choice = "A"
+        '''
 
         raw_logits = self.agent.get_last_logits()
         if raw_logits is not None:
@@ -405,9 +409,10 @@ class TaskManager:
                     cpu_logits[tok] = float(prob)
             trial_stats['logits'].append(cpu_logits)
             if self.verbose:
-                tqdm.write("\nFinal choice token probabilities:")
+                #tqdm.write("\nFinal choice token probabilities:")
                 for tok, prob in raw_logits.items():
-                    tqdm.write(f"  {tok!r}: {prob:.4f}")
+                    #tqdm.write(f"  {tok!r}: {prob:.4f}")
+                    pass
 
             del raw_logits
 

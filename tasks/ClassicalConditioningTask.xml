@@ -30,6 +30,13 @@ Trial {current_trial}, Round {current_round}: You chose "{current_answer}" and s
 Choose: A.
 You choose: 
 </final_prompt>
+
+<final_feedback>
+Trial {current_trial}, Round {current_round}: You chose "{current_answer}" and saw {result_text}.
+{reward_text}
+
+</final_feedback>
+
 </prompt>
 
 <prompt version="1">
@@ -39,7 +46,11 @@ You choose:
 </trial_separator>
 
 <initial_prompt>
-Choose A: A
+You will play a game with {n_rounds} rounds.
+In each round you will choose A.
+
+You will be prompted like this: "You choose: ".
+Answer like this: "A"
 
 </initial_prompt>
 
