@@ -60,10 +60,10 @@ def save_checkpoint(wandb_run, sae, optimizer, scheduler, cfg, wandb_cfg, epoch)
 
     tqdm.write(f"Model and config saved as artifact at epoch {epoch}")
 
-def load_checkpoint(run_id, checkpoint_name, device="cuda"):
-    api = wandb.Api()
-    wandb_run = api.run(f"gibbon-sae/SAE training/{run_id}")
-    artifact = wandb_run.use_artifact(checkpoint_name, type='model')
+def load_checkpoint(wandb_run, artifact_name, device="cuda"):
+    artifact = wandb_run.use_artifact(
+        artifact_name,
+        type='model')
     artifact_dir = artifact.download()
     model_path = os.path.join(artifact_dir, "sae.pt")
     optimizer_path = os.path.join(artifact_dir, "optimizer.pt")
