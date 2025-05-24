@@ -10,7 +10,7 @@ def parse_args():
                         help='Models to benchmark')
 
     # Task configuration
-    parser.add_argument('--rounds', nargs='+', type=int, default=[6],
+    parser.add_argument('--rounds', nargs='+', type=int, default=[10],
                         help='Number of rounds for the VST task')
     parser.add_argument('--quadrants', nargs='+', type=int, default=[4],
                         help='Number of quadrants for the VST task')
@@ -21,7 +21,7 @@ def parse_args():
                         help='Type of task to run', dest='task_type')
 
     # Experiment setup
-    parser.add_argument('--simulations', type=int, default=50,
+    parser.add_argument('--simulations', type=int, default=2,
                         help='Number of simulations per configuration')
     parser.add_argument('--trials', type=int, default=5,
                         help='Number of trials per simulation')

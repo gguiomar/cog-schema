@@ -12,12 +12,11 @@ from config import get_default_cfg
 from dataset import SAEDataLoader
 from logs import init_wandb, log_batch_wandb, save_checkpoint
 
-def train_sparse_autoencoder(model, data_loader, cfg, wandb_cfg, wandb_run = None, optimizer=None, scheduler=None):
-    if optimizer is None:
-        optimizer = torch.optim.Adam(model.parameters(), lr=cfg["lr"], betas=(cfg["beta1"], cfg["beta2"]))
-    if scheduler is None:
-        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=2)
-
+def train_sparse_autoencoder(model, data_loader, cfg, wandb_cfg, wandb_run = None, optimizer_dict=None, scheduler_dict=None):
+    optimizer = torch.optim.Adam(model.parameters(), lr=cfg["lr"], betas=(cfg["beta1"], cfg["beta2"]))
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=2)
+    optimizer.load_state_dict(optimizer_dict)
+    scheduler.load_state_dict(scheduler_dict)
     epoch_range = trange(cfg["num_epochs"], desc="Training", unit="epoch")
 
     for (i, epoch) in enumerate(epoch_range):
@@ -60,10 +59,10 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Train a Sparse Autoencoder")
     parser.add_argument("--device", type=str, default="cuda", help="Device to run the training on (e.g., 'cpu', 'cuda', 'mps')")
-    parser.add_argument("--data", type=str, help="Directory containing activation data", default='../activations/Qwen_0.5B/model_layers[0]_post_attention_layernorm/20250511_142949')
+    parser.add_argument("--data", type=str, help="Directory containing activation data", default='../activations/Qwen_0.5B_Instruct/model_layers[23]_post_attention_layernorm/20250524_223401')
     parser.add_argument("--sae_type", type=str, default="topk", choices=["vanilla", "topk", "batchtopk", "jumprelu"], help="Type of Sparse Autoencoder to use")
-    parser.add_argument("-wandb", action="store_true", help="Enable Weights & Biases logging")
-    parser.add_argument("--wandb_name", type=str, default=None, help="Weights & Biases run name")
+    parser.add_argument("-wandb", action="store_true", help="Enable Weights & Biases logging", default=True)
+    parser.add_argument("--wandb_name", type=str, default="Testing", help="Weights & Biases run name")
     parser.add_argument("--pretrained_artifact_name", type=str,
                         default="gibbon-sae/SAE training/Gwen0.5B_Instruct_pretrained_NeelNandaDataset_post_attention_layernorm_2_99:v4",
                         help="Whether to load a pretrained model from a checkpoint")
@@ -101,12 +100,14 @@ if __name__ == "__main__":
         wandb_run = init_wandb(wandb_cfg, cfg=cfg)
         if args.pretrained_artifact_name:
             from logs import load_checkpoint
-            model, optimizer, scheduler, cfg = load_checkpoint(wandb_run, args.pretrained_artifact_name, device=args.device)
+            model_params, optimizer, scheduler, cfg = load_checkpoint(wandb_run, args.pretrained_artifact_name, device=args.device)
+            model.load_state_dict(model_params)
             print(
                 f"Loaded pretrained model from {args.pretrained_artifact_name}")
-            exit(69)
-
+            cfg["data"] = args.data
+            train_loader = SAEDataLoader(cfg["data"], batch_size=cfg["batch_size"], shuffle=True)
+            cfg["act_size"] = train_loader.get_activation_dim()
     print(f"Running training with model: {cfg['sae_type']} with {sum(p.numel() for p in model.parameters())} parameters")
 
     # Train model
-    train_sparse_autoencoder(model, train_loader, cfg, wandb_cfg, wandb_run if args.wandb else None, optimizer=optimizer, scheduler=scheduler)
+    train_sparse_autoencoder(model, train_loader, cfg, wandb_cfg, wandb_run if args.wandb else None, optimizer_dict=optimizer, scheduler_dict=scheduler)
