@@ -31,7 +31,7 @@ class BaseAutoencoder(nn.Module):
             cfg["device"]
         )
 
-        self.to(cfg["dtype"]).to(cfg["device"])
+        self.to(cfg["device"])
 
     def preprocess_input(self, x):
         if self.cfg.get("input_unit_norm", False):
@@ -88,7 +88,7 @@ class BatchTopKSAE(BaseAutoencoder):
 
         x_cent = acts - self.b_dec
         acts = F.relu(x_cent @ self.W_enc)
-        acts_topk = torch.topk(acts.flatten(), self.cfg["top_k"] * x.shape[0], dim=-1)
+        acts_topk = torch.topk(acts.flatten(), self.cfg["top_k"] * acts.shape[0], dim=-1)
         latents = (
             torch.zeros_like(acts.flatten())
             .scatter(-1, acts_topk.indices, acts_topk.values)
