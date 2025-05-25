@@ -381,11 +381,27 @@ class TaskManager:
             tqdm.write(history_and_prompt)
             tqdm.write("-------------------------")
 
-        if hasattr(self, "hook"):
-            self.hook.current_text = history_and_prompt
-            tokens = self.tokenizer(history_and_prompt, return_tensors="pt")["input_ids"]
-            self.hook.current_tokens = tokens.squeeze(0)  # Remove batch dimension
-            self.hook.current_file_name = f"{self.current_agent}_trial{trial_num}_round{round_num}"
+        if hasattr(self, "hooks"):
+            if not isinstance(self.messages_conversation_history, str):
+                text = self.tokenizer.apply_chat_template(
+                    self.messages_conversation_history,
+                    tokenize=False,
+                    add_generation_prompt=True,
+                    enable_thinking=False
+                )
+
+                inputs = self.tokenizer(
+                    [text],
+                    return_tensors="pt",
+                    padding=True,
+                )
+                inputs = {k: v.to(self.device) for k, v in inputs.items()}
+
+            for hook in self.hooks:
+                hook.current_text = text
+                tokens = inputs["input_ids"]
+                hook.current_tokens = tokens.squeeze(0)  # Remove batch dimension
+                hook.current_file_name = f"{self.current_agent}_trial{trial_num}_round{round_num}"
 
         if self.is_instruct_model:
             final_choice = self.agent.get_response(self.messages_conversation_history)
