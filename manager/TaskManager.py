@@ -1016,6 +1016,8 @@ class TaskManager:
     def activation_saving(self):
         for hook in self.hooks:
             print(f"Saving {len(hook.activations)} activations to {hook.save_path}")
+            if len(hook.activations) == 0:
+                print(f"WARNING: No activations collected for hook at {hook.save_path}")
             hook.save_all()
     def activation_reset(self):
         for hook in self.hooks:

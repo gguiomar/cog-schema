@@ -143,6 +143,7 @@ class LLMagent:
             "Deepseek_R1_8B_Llama": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
             "Deepseek_R1_14B_Qwen": "deepseek-ai/DeepSeek-R1-Distill-Qwen-14B",
             "Deepseek_R1_32B_Qwen": "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
+            "Llama-3.1-8B-Instruct": "meta-llama/Llama-3.1-8B-Instruct",
             "Qwen_0.5B": "Qwen/Qwen2.5-0.5B",
             "Qwen_1.5B": "Qwen/Qwen2.5-1.5B",
             "Qwen_3B": "Qwen/Qwen2.5-3B",

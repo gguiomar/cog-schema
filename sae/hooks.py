@@ -31,6 +31,7 @@ class Hook:
         """
         Hook to convert PyTorch tensors to NumPy arrays.
         """
+        print(f"Hook triggered! Output shape: {output.shape if hasattr(output, 'shape') else 'No shape'}")
         if isinstance(output, tuple):
             output = output[0]
         activations = output.detach().cpu().numpy()
@@ -39,6 +40,7 @@ class Hook:
             "text": self.current_text,
             "tokens": self.current_tokens.cpu() if self.current_tokens is not None else None,
         })
+        print(f"Total activations collected so far: {len(self.activations)}")
 
     def save_all(self):
         """Save all collected activations and metadata to disk."""
