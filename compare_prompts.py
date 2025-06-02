@@ -7,7 +7,7 @@ import numpy as np
 
 def main():
     # Configuration
-    model_name = "Deepseek_R1_8B_Llama"  
+    model_name = "Llama-3.1-8B-Instruct"  
     rounds = range(2,14)
     quadrants = [4]
     n_simulations = 10

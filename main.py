@@ -6,7 +6,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Run G1Bbon LLM benchmark')
 
     # Model selection
-    parser.add_argument('--models', nargs='+', default=['Deepseek_R1_8B_Llama'],
+    parser.add_argument('--models', nargs='+', default=['Llama-3.1-8B-Instruct'],
                         help='Models to benchmark')
 
     # Task configuration
