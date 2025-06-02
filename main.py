@@ -6,7 +6,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Run G1Bbon LLM benchmark')
 
     # Model selection
-    parser.add_argument('--models', nargs='+', default=['Qwen_0.5B_Instruct'],
+    parser.add_argument('--models', nargs='+', default=['Deepseek_R1_8B_Llama'],
                         help='Models to benchmark')
 
     # Task configuration
@@ -16,7 +16,7 @@ def parse_args():
                         help='Number of quadrants for the VST task')
     parser.add_argument('--cues', type=int, default=1,
                         help='Number of cues per quadrant')
-    parser.add_argument('--task-type', type=str, default='ClassicalConditioning',
+    parser.add_argument('--task-type', type=str, default='BiasDetection',
                         choices=TaskSelector.get_list(),
                         help='Type of task to run', dest='task_type')
 
