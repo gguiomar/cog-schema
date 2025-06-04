@@ -51,3 +51,84 @@ an invalid choice
 </feedback_invalid>
 </prompt>
 </prompts>
+
+
+
+## --------------------- Version 2 ---------------------
+
+
+
+<prompt version="1">
+<trial_separator>
+==== Trial {trial_num} ====
+
+
+</trial_separator>
+
+<initial_prompt>
+Task: Bias Detection Game
+
+You will play {n_rounds} rounds to identify which cue shows one outcome more frequently than the other.
+
+Game Rules:
+- 4 possible cues: A, B, C, D
+- ONE cue shows a particular outcome 90% of the time (the "biased" cue)
+- ALL other cues show both outcomes equally (50/50)
+- Each round, you see which cues are available and choose one
+- Available cues change randomly between rounds
+- You must choose from available options only
+
+After {n_rounds} rounds, you'll identify the biased cue.
+Scoring: Correct = +100 points, Wrong = -100 points
+</initial_prompt>
+
+<intermediate_prompt>
+Trial {current_trial}, Round {current_round}/{n_rounds}
+Available cues: {available_cues}
+
+Choose ONE letter from the available options above.
+Response format: Single letter only (A, B, C, or D)
+</intermediate_prompt>
+
+<feedback_prompt>
+Trial {current_trial}, Round {current_round}/{n_rounds}
+Available: {available_cues} | You chose: {current_answer} | Result: {result_text}
+
+Progress: {current_round} rounds completed
+
+</feedback_prompt>
+
+<final_prompt>
+Trial {current_trial} - FINAL DECISION
+
+Review your observations across all {n_rounds} rounds.
+Which cue ({letters}) showed its dominant outcome most frequently?
+
+The biased cue shows one outcome 90% of the time.
+Unbiased cues show each outcome only 50% of the time.
+
+Your answer (one letter): 
+</final_prompt>
+
+<final_feedback_prompt>
+Trial {current_trial} - RESULTS
+
+Your choice: {current_answer}
+Result: {feedback}
+Score: {score} points
+
+
+</final_feedback_prompt>
+
+<feedback_correct>
+CORRECT! You identified the biased cue
+</feedback_correct>
+
+<feedback_incorrect>
+INCORRECT. The biased cue was {biased_quadrant}
+</feedback_incorrect>
+
+<feedback_invalid>
+INVALID - Please choose only from available options
+</feedback_invalid>
+</prompt>
