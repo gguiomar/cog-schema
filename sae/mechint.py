@@ -1,6 +1,8 @@
 import numpy as np
 import os
 from tqdm import tqdm
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
 
 def organized_activations(num_trials, num_rounds, activations_base_path="activations/Qwen_0.5B"):
     """
@@ -45,3 +47,44 @@ def organized_activations(num_trials, num_rounds, activations_base_path="activat
     
     print(f"Successfully organized activations with final shape: {organized_activations.shape}")
     return organized_activations
+
+def to_pca(organized_activations):
+    """
+    Perform PCA on the organized activations.
+    """
+    num_trials, num_layers, max_tokens, hidden_dim = organized_activations.shape
+    reshaped_activations = organized_activations.reshape(num_trials * num_layers * max_tokens, hidden_dim)
+    pca = PCA(n_components=3)
+    pca_result = pca.fit_transform(reshaped_activations)
+    pca_reshaped = pca_result.reshape(num_trials, num_layers, max_tokens, -1)
+    print(f"PCA result shape: {pca_reshaped.shape}")
+    return pca_reshaped 
+
+def plot_traj(pca_reshaped, num_rounds, num_tokens, layer_idx=0, zero_tol=1e-6):
+    """
+    Plot trajectories of each token across rounds in 2D PCA space for a specified layer,
+    skipping padding tokens where PC1 and PC2 are both essentially zero.
+    """
+    plt.figure(figsize=(8, 6))
+    for token_idx in range(num_tokens):
+        token_coords = []
+        for round_idx in range(num_rounds + 1):
+            file_idx = round_idx  # assuming trial 0 is indexed 0..num_rounds
+            coord = pca_reshaped[file_idx, layer_idx, token_idx, :2]
+            if np.all(np.abs(coord) <= zero_tol):
+                print(f"Skipping token {token_idx} at round {round_idx} due to zero coordinates.")
+                continue
+            token_coords.append(coord)
+        
+        token_coords = np.stack(token_coords, axis=0)
+        x_vals = token_coords[:, 0]
+        y_vals = token_coords[:, 1]
+        plt.plot(x_vals, y_vals, marker='o', label=f'Token {token_idx}')
+    
+    plt.xlabel('PC1')
+    plt.ylabel('PC2')
+    plt.title(f'Token trajectories across rounds in PCA space (Layer {layer_idx})')
+    plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', fontsize='small')
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
