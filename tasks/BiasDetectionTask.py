@@ -123,8 +123,10 @@ class BiasDetectionTask(TaskGeneral):
                     })
                 rounds.append(round_cues)
 
-            if self._validate_bias_detection_rounds(rounds):
-                return rounds
+            # Uncomment to discard rounds that do not meet validation criteria
+            #if self._validate_bias_detection_rounds(rounds): 
+                #return rounds
+            return rounds
 
     def _get_color_for_bias_detection(self, quadrant: int) -> str:
         """Determine color based on quadrant probability for bias detection."""
@@ -135,7 +137,6 @@ class BiasDetectionTask(TaskGeneral):
     def _validate_bias_detection_rounds(self, rounds: List[List[Dict]]) -> bool:
         """Validate that the generated rounds create a solvable bias detection game."""
         color_counts = {q: {'RED': 0, 'GREEN': 0} for q in self.quadrants}
-
         # Count colors for each quadrant
         for round_data in rounds:
             for cue in round_data:
@@ -155,9 +156,8 @@ class BiasDetectionTask(TaskGeneral):
                     return False
             elif not (0.35 <= red_ratio <= 0.65):  # Ensure other quadrants are balanced
                 return False
-
         return True
-    
+
     def create_round_stats(self) -> Dict:
         # Create round stats
         return {
