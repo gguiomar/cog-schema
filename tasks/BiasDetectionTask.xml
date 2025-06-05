@@ -32,6 +32,7 @@ Trial {current_trial}, Round {current_round}: Available cues {available_cues}. Y
 Trial {current_trial}: Based on all observed colors, which cue {letters} do you think had the highest ratio of RED?
 Respond with exactly one letter: A, B, C, or D.
 </final_prompt>
+
 <final_feedback_prompt>
 Trial {current_trial}: Based on all observed colors, which cue {letters} do you think had the highest ratio of RED?
 
@@ -40,23 +41,19 @@ You received {score} points.
 
 
 </final_feedback_prompt>
+
 <feedback_correct>
 the biased cue
 </feedback_correct>
+
 <feedback_incorrect>
 not the biased cue. The biased cue was {biased_quadrant}
 </feedback_incorrect>
+
 <feedback_invalid>
 an invalid choice
 </feedback_invalid>
 </prompt>
-</prompts>
-
-
-
-## --------------------- Version 1 ---------------------
-
-
 
 <prompt version="1">
 <trial_separator>
@@ -134,12 +131,6 @@ INVALID - Please choose only from available options
 </feedback_invalid>
 </prompt>
 
-
-
-## --------------------- Version with colors ---------------------
-
-
-
 <prompt version="2">
 <trial_separator>
 ==== Trial {trial_num} ====
@@ -214,3 +205,5 @@ INCORRECT. The biased cue was {biased_quadrant}
 INVALID - Please choose only from available options
 </feedback_invalid>
 </prompt>
+
+</prompts>
