@@ -206,4 +206,455 @@ INVALID - Please choose only from available options
 </feedback_invalid>
 </prompt>
 
+
+<prompt version="3">
+<trial_separator>
+==== Trial {trial_num} ====
+
+
+</trial_separator>
+
+<initial_prompt>
+Task: Two-Phase Bias Detection Game
+
+PHASE 1: EVIDENCE GATHERING ({n_rounds} rounds)
+- Collect data by testing available cues
+- Results accumulate across all rounds
+- Each cue tested reveals either RED or GREEN
+
+PHASE 2: INTEGRATION and DECISION
+- Review all accumulated evidence
+- Identify which cue (A, B, C, D) is biased toward RED
+
+Game Mechanics:
+- 4 cues total: A, B, C, D
+- ONE randomly-selected cue shows RED 90% of time, GREEN 10% of time
+- THREE other cues show RED 50% of time, GREEN 50% of time
+- Available cues change randomly each round
+- The biased cue remains the same throughout the entire trial
+
+Scoring: Correct identification = +100 points, Wrong = -100 points
+</initial_prompt>
+
+<intermediate_prompt>
+PHASE 1: EVIDENCE GATHERING
+Trial {current_trial}, Round {current_round}/{n_rounds}
+
+Available cues: {available_cues}
+
+Choose ONE cue to test. Results will be stored for final analysis.
+Response format: Single letter only (A, B, C, or D)
+</intermediate_prompt>
+
+<feedback_prompt>
+Trial {current_trial}, Round {current_round}/{n_rounds}
+Available: {available_cues} | You tested: {current_answer} | Result: {result_text}
+
+Evidence collected: {current_round}/{n_rounds} rounds completed
+Continue gathering data to identify the 90/10 biased cue.
+
+</feedback_prompt>
+
+<final_prompt>
+PHASE 2: INTEGRATION and DECISION
+Trial {current_trial} - FINAL ANALYSIS
+
+Review ALL evidence from {n_rounds} rounds of testing.
+
+Key Facts:
+- ONE cue ({letters}) has 90% RED probability (biased)
+- THREE cues have 50% RED probability (unbiased)
+- The biased cue was randomly selected but remained consistent
+
+Analyze your accumulated evidence to identify which cue showed RED most frequently relative to how often it was tested.
+
+Your final answer (one letter): 
+</final_prompt>
+
+<final_feedback_prompt>
+Trial {current_trial} - RESULTS
+
+Your choice: {current_answer}
+Result: {feedback}
+Score: {score} points
+
+
+</final_feedback_prompt>
+
+<feedback_correct>
+CORRECT! You identified the biased cue
+</feedback_correct>
+
+<feedback_incorrect>
+INCORRECT. The biased cue was {biased_quadrant}
+</feedback_incorrect>
+
+<feedback_invalid>
+INVALID - Please choose only from available options
+</feedback_invalid>
+</prompt>
+
+<prompt version="4">
+<trial_separator>
+==== Trial {trial_num} ====
+
+
+</trial_separator>
+
+<initial_prompt>
+Task: Statistical Bias Detection
+
+OBJECTIVE: Identify which cue has a 90/10 RED/GREEN probability distribution
+
+EVIDENCE COLLECTION PHASE: {n_rounds} rounds
+- Test available cues to gather statistical evidence
+- Each test reveals one outcome (RED or GREEN)
+- Results accumulate - keep mental track of frequencies
+
+DECISION PHASE: Statistical analysis
+- Calculate observed RED frequencies for each cue
+- Identify which cue's frequency is closest to 90%
+
+PROBABILITY DISTRIBUTIONS:
+- Biased cue: 90% RED, 10% GREEN (randomly assigned, fixed per trial)
+- Unbiased cues: 50% RED, 50% GREEN (exactly 3 cues)
+
+Strategy: Test each available cue multiple times when possible to build reliable frequency estimates.
+
+Scoring: Correct = +100 points, Wrong = -100 points
+</initial_prompt>
+
+<intermediate_prompt>
+EVIDENCE COLLECTION - Statistical Sampling
+Trial {current_trial}, Round {current_round}/{n_rounds}
+
+Available for testing: {available_cues}
+
+Select one cue to sample. Consider testing each cue multiple times to estimate its true RED probability.
+Response format: Single letter only (A, B, C, or D)
+</intermediate_prompt>
+
+<feedback_prompt>
+Trial {current_trial}, Round {current_round}/{n_rounds}
+Tested: {current_answer} | Outcome: {result_text} | Available: {available_cues}
+
+Statistical Progress: {current_round}/{n_rounds} samples collected
+Continue sampling to estimate each cue's RED probability.
+
+</feedback_prompt>
+
+<final_prompt>
+DECISION PHASE - Statistical Analysis
+Trial {current_trial}
+
+Analyze your {n_rounds} samples to identify the biased cue.
+
+Statistical Framework:
+- Target: Cue with ~90% RED frequency (biased)
+- Baseline: Cues with ~50% RED frequency (unbiased)
+- Method: Compare observed RED frequencies
+
+Which cue ({letters}) showed the highest RED frequency in your samples?
+
+Your statistical conclusion (one letter): 
+</final_prompt>
+
+<final_feedback_prompt>
+Trial {current_trial} - STATISTICAL RESULTS
+
+Your analysis: {current_answer}
+Outcome: {feedback}
+Score: {score} points
+
+
+</final_feedback_prompt>
+
+<feedback_correct>
+CORRECT! Statistical analysis identified the biased cue
+</feedback_correct>
+
+<feedback_incorrect>
+INCORRECT. The biased cue was {biased_quadrant}
+</feedback_incorrect>
+
+<feedback_invalid>
+INVALID - Please choose only from available options
+</feedback_invalid>
+</prompt>
+
+
+<prompt version="5">
+<trial_separator>
+==== Trial {trial_num} ====
+
+
+</trial_separator>
+
+<initial_prompt>
+Task: Systematic Bias Investigation
+
+INVESTIGATION STRUCTURE:
+Phase 1: Data Collection ({n_rounds} rounds)
+Phase 2: Pattern Analysis and Conclusion
+
+EXPERIMENTAL SETUP:
+- Population: 4 cues (A, B, C, D)
+- Biased subject: 1 randomly-selected cue shows RED 90% of time
+- Control subjects: 3 remaining cues show RED 50% of time
+- Constraint: Biased cue identity is fixed throughout trial
+
+INVESTIGATION PROTOCOL:
+1. Test available cues systematically across {n_rounds} rounds
+2. Record all outcomes (RED/GREEN) for each cue
+3. Calculate frequency patterns
+4. Identify the cue with significantly higher RED frequency
+
+Your mission: Determine which cue exhibits the 90/10 bias pattern.
+
+Scoring: Correct identification = +100 points, Wrong = -100 points
+</initial_prompt>
+
+<intermediate_prompt>
+INVESTIGATION PHASE - Data Collection
+Trial {current_trial}, Round {current_round}/{n_rounds}
+
+Available subjects: {available_cues}
+
+Select one cue to investigate. Systematic testing of each available cue will reveal the bias pattern.
+Response format: Single letter only (A, B, C, or D)
+</intermediate_prompt>
+
+<feedback_prompt>
+Trial {current_trial}, Round {current_round}/{n_rounds}
+Investigated: {current_answer} | Result: {result_text} | Available: {available_cues}
+
+Investigation Progress: {current_round}/{n_rounds} tests completed
+Continue systematic data collection.
+
+</feedback_prompt>
+
+<final_prompt>
+ANALYSIS PHASE - Pattern Recognition
+Trial {current_trial}
+
+Systematic Review of {n_rounds} investigations:
+
+DETECTION CRITERIA:
+- Biased cue: Should show RED ~90% of times tested
+- Unbiased cues: Should show RED ~50% of times tested
+
+ANALYSIS QUESTION:
+Which cue ({letters}) demonstrated the clearest bias toward RED outcomes?
+
+Apply your systematic investigation findings to identify the biased cue.
+
+Your conclusion (one letter): 
+</final_prompt>
+
+<final_feedback_prompt>
+Trial {current_trial} - INVESTIGATION RESULTS
+
+Your identification: {current_answer}
+Outcome: {feedback}
+Score: {score} points
+
+
+</final_feedback_prompt>
+
+<feedback_correct>
+CORRECT! Investigation successfully identified the biased cue
+</feedback_correct>
+
+<feedback_incorrect>
+INCORRECT. The biased cue was {biased_quadrant}
+</feedback_incorrect>
+
+<feedback_invalid>
+INVALID - Please choose only from available options
+</feedback_invalid>
+</prompt>
+
+<prompt version="6">
+<trial_separator>
+==== Trial {trial_num} ====
+
+
+</trial_separator>
+
+<initial_prompt>
+Task: Bayesian Bias Detection
+
+BAYESIAN FRAMEWORK:
+- Prior: Each cue has 25% chance of being biased (uniform prior)
+- Evidence: Observe RED/GREEN outcomes through {n_rounds} rounds
+- Posterior: Update beliefs about which cue is biased
+
+LIKELIHOOD MODEL:
+- If cue is biased: P(RED) = 0.9, P(GREEN) = 0.1
+- If cue is unbiased: P(RED) = 0.5, P(GREEN) = 0.5
+- Exactly 1 cue is biased (randomly selected, consistent per trial)
+
+INFERENCE PROCESS:
+1. Evidence Accumulation: {n_rounds} rounds of observations
+2. Posterior Calculation: Update beliefs after each observation
+3. Maximum A Posteriori: Select cue with highest posterior probability
+
+Your goal: Use Bayesian reasoning to identify which cue has the 90/10 bias.
+
+Scoring: Correct = +100 points, Wrong = -100 points
+</initial_prompt>
+
+<intermediate_prompt>
+BAYESIAN EVIDENCE COLLECTION
+Trial {current_trial}, Round {current_round}/{n_rounds}
+
+Available for observation: {available_cues}
+
+Select one cue to observe. Each observation provides evidence to update your posterior beliefs about which cue is biased.
+Response format: Single letter only (A, B, C, or D)
+</intermediate_prompt>
+
+<feedback_prompt>
+Trial {current_trial}, Round {current_round}/{n_rounds}
+Observed: {current_answer} | Evidence: {result_text} | Available: {available_cues}
+
+Bayesian Update: {current_round}/{n_rounds} observations collected
+Continue gathering evidence to refine posterior probabilities.
+
+</feedback_prompt>
+
+<final_prompt>
+BAYESIAN INFERENCE - Posterior Estimation
+Trial {current_trial}
+
+Evidence Summary: {n_rounds} observations collected
+
+POSTERIOR CALCULATION:
+For each cue, consider:
+- How often it was tested
+- How often it showed RED vs GREEN
+- Likelihood under biased model (90/10) vs unbiased model (50/50)
+
+MAXIMUM A POSTERIORI DECISION:
+Which cue ({letters}) has the highest posterior probability of being biased?
+
+Your Bayesian inference (one letter): 
+</final_prompt>
+
+<final_feedback_prompt>
+Trial {current_trial} - BAYESIAN RESULTS
+
+Your inference: {current_answer}
+Outcome: {feedback}
+Score: {score} points
+
+
+</final_feedback_prompt>
+
+<feedback_correct>
+CORRECT! Bayesian inference identified the biased cue
+</feedback_correct>
+
+<feedback_incorrect>
+INCORRECT. The biased cue was {biased_quadrant}
+</feedback_incorrect>
+
+<feedback_invalid>
+INVALID - Please choose only from available options
+</feedback_invalid>
+</prompt>
+
+<prompt version="7">
+<trial_separator>
+==== Trial {trial_num} ====
+
+
+</trial_separator>
+
+<initial_prompt>
+Task: Experimental Bias Detection
+
+EXPERIMENTAL DESIGN:
+Hypothesis: One cue among A, B, C, D has 90% RED probability
+Null Hypothesis: All cues have 50% RED probability
+
+EXPERIMENTAL PHASES:
+Phase 1: Controlled Sampling ({n_rounds} rounds)
+- Design optimal sampling strategy
+- Collect sufficient data for statistical power
+- Balance sample sizes when possible
+
+Phase 2: Hypothesis Testing
+- Evaluate evidence against null hypothesis
+- Identify cue with significantly higher RED frequency
+
+KNOWN PARAMETERS:
+- Biased cue: P(RED) = 0.90, P(GREEN) = 0.10
+- Unbiased cues: P(RED) = 0.50, P(GREEN) = 0.50
+- Bias assignment: Random but fixed within trial
+
+EXPERIMENTAL STRATEGY: Maximize information gain by testing each available cue multiple times.
+
+Scoring: Correct detection = +100 points, Wrong = -100 points
+</initial_prompt>
+
+<intermediate_prompt>
+EXPERIMENTAL SAMPLING PHASE
+Trial {current_trial}, Round {current_round}/{n_rounds}
+
+Available for testing: {available_cues}
+
+Design your sampling strategy: Which cue should be tested to maximize information about the bias?
+Response format: Single letter only (A, B, C, or D)
+</intermediate_prompt>
+
+<feedback_prompt>
+Trial {current_trial}, Round {current_round}/{n_rounds}
+Sample: {current_answer} | Outcome: {result_text} | Available: {available_cues}
+
+Experimental Progress: {current_round}/{n_rounds} samples obtained
+Continue strategic sampling for robust bias detection.
+
+</feedback_prompt>
+
+<final_prompt>
+HYPOTHESIS TESTING PHASE
+Trial {current_trial}
+
+Experimental Data: {n_rounds} controlled samples
+
+STATISTICAL TEST:
+Compare each cue's observed RED frequency to expected values:
+- Under bias hypothesis: Expected RED frequency ≈ 90%
+- Under null hypothesis: Expected RED frequency ≈ 50%
+
+DETECTION THRESHOLD:
+Which cue ({letters}) shows RED frequency significantly above 50%?
+
+Your experimental conclusion (one letter): 
+</final_prompt>
+
+<final_feedback_prompt>
+Trial {current_trial} - EXPERIMENTAL RESULTS
+
+Your hypothesis test: {current_answer}
+Experimental outcome: {feedback}
+Score: {score} points
+
+
+</final_feedback_prompt>
+
+<feedback_correct>
+CORRECT! Experimental design successfully detected the bias
+</feedback_correct>
+
+<feedback_incorrect>
+INCORRECT. The biased cue was {biased_quadrant}
+</feedback_incorrect>
+
+<feedback_invalid>
+INVALID - Please choose only from available options
+</feedback_invalid>
+</prompt>
+
 </prompts>
