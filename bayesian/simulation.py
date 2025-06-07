@@ -24,7 +24,10 @@ class BayesianSimulation:
                  agent_types: List[str] = None,
                  verbose: bool = False,
                  log_results: bool = True,
-                 seed: int = 42):
+                 seed: int = 42,
+                 use_hidden_cues: bool = False,
+                 min_available_cues: int = None,
+                 max_available_cues: int = None):
         """
         Initialize the simulation.
         
@@ -48,6 +51,12 @@ class BayesianSimulation:
             Whether to save results to JSON
         seed : int
             Random seed
+        use_hidden_cues : bool
+            Whether to use hidden cues (subset of cues available each round)
+        min_available_cues : int
+            Minimum number of cues available per round (default: 1)
+        max_available_cues : int
+            Maximum number of cues available per round (default: k)
         """
         self.k = k
         self.p_t = p_t
@@ -61,6 +70,9 @@ class BayesianSimulation:
         self.agent_types = agent_types if agent_types is not None else ["BayesAgent", "RandomPolicyAgent", "MAPAgent"]
         self.verbose = verbose
         self.log_results = log_results
+        self.use_hidden_cues = use_hidden_cues
+        self.min_available_cues = min_available_cues
+        self.max_available_cues = max_available_cues
         
         self.rng = np.random.default_rng(seed)
         self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -71,8 +83,13 @@ class BayesianSimulation:
         os.makedirs(self.logs_dir, exist_ok=True)
         os.makedirs(self.plots_dir, exist_ok=True)
         
-        # Initialize environment
-        self.env = TemporalReasoningEnvironment(k, p_t, p_f, self.rng)
+        # Initialize environment with hidden cues parameters
+        self.env = TemporalReasoningEnvironment(
+            k, p_t, p_f, self.rng,
+            use_hidden_cues=use_hidden_cues,
+            min_available_cues=min_available_cues,
+            max_available_cues=max_available_cues
+        )
         
         # Results storage with compact dictionary structure
         self.results = {}
@@ -115,13 +132,14 @@ class BayesianSimulation:
         
         # Run n_rounds of observations and updates
         for round_num in range(n_rounds):
-            cue, color = self.env.sample_round(true_z)
+            cue, color, available_cues = self.env.sample_round(true_z)
             shannon_s, bayesian_s, pred_prob = bayes_agent.update(cue, color)
             
             round_data = {
                 'round': int(round_num),
                 'cue': int(cue),
                 'color': int(color),
+                'available_cues': [int(c) for c in available_cues],
                 'shannon_surprise': float(shannon_s),
                 'bayesian_surprise': float(bayesian_s),
                 'predictive_prob': float(pred_prob),
@@ -231,6 +249,9 @@ class BayesianSimulation:
             'k': self.k,
             'p_t': self.p_t,
             'p_f': self.p_f,
+            'use_hidden_cues': self.use_hidden_cues,
+            'min_available_cues': self.min_available_cues,
+            'max_available_cues': self.max_available_cues,
             'total_time': total_time,
             'metrics': {}
         }

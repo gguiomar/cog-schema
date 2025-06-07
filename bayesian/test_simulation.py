@@ -2,28 +2,55 @@
 import sys
 import os
 
-# Add the parent directory to the path so we can import the bayesian package
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from bayesian.simulation import BayesianSimulation
 import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from bayesian.utils import plot_comparison
 
-
-# Initialize simulation with small parameters for quick testing
-sim = BayesianSimulation(
+#%%
+sim_standard = BayesianSimulation(
     k=4,
     p_t=0.9,
     p_f=0.5,
-    n_trials=100,  # Small number for quick test
-    rounds= np.arange(1, 100),  # Fewer rounds for quick test
+    n_trials=100,  
+    rounds=np.arange(1, 100),  
     agent_types=["BayesAgent"],
     verbose=True,
     log_results=True,
-    seed=42
+    seed=42,
+    use_hidden_cues=False  
 )
-# Run simulations
-results = sim.run_all_simulations()
-sim.plot_results(save_plots=False)
 
+results_standard = sim_standard.run_all_simulations()
+sim_standard.plot_results(save_plots=False)
+
+
+#%%
+sim_hidden = BayesianSimulation(
+    k=4,
+    p_t=0.9,
+    p_f=0.5,
+    n_trials=100,  
+    rounds=np.arange(1, 100),  
+    agent_types=["BayesAgent"],
+    verbose=True,
+    log_results=True,
+    seed=42,  
+    use_hidden_cues=True,  
+    min_available_cues=1,  
+    max_available_cues=3   
+)
+
+results_hidden = sim_hidden.run_all_simulations()
+sim_hidden.plot_results(save_plots=False)
+
+
+
+#%%
+plot_comparison(results_standard, results_hidden, save_plots=True, figsize=(10, 6))
 
 # %%
