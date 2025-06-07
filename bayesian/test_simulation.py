@@ -1,8 +1,6 @@
 #%%
 import sys
 import os
-
-
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from bayesian.simulation import BayesianSimulation
@@ -35,7 +33,7 @@ sim_hidden = BayesianSimulation(
     p_t=0.9,
     p_f=0.5,
     n_trials=100,  
-    rounds=np.arange(1, 100),  
+    rounds=list(np.arange(1, 100)),  
     agent_types=["BayesAgent"],
     verbose=True,
     log_results=True,
@@ -51,6 +49,6 @@ sim_hidden.plot_results(save_plots=False)
 
 
 #%%
-plot_comparison(results_standard, results_hidden, save_plots=True, figsize=(10, 6))
+plot_comparison(results_standard, results_hidden, save_plots=False, fig_size=(10, 6))
 
 # %%

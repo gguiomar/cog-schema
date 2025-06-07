@@ -88,3 +88,130 @@ class TemporalReasoningEnvironment:
         color = int(self.rng.random() < p_color_1)
         
         return cue, color, available_cues
+
+
+class RLEnvironmentWrapper:
+    """Wrapper for TemporalReasoningEnvironment that adds reward functionality for RL agents."""
+    
+    def __init__(self, base_env: TemporalReasoningEnvironment, reward_value: float = 1.0):
+        """
+        Initialize the RL environment wrapper.
+        
+        Parameters:
+        -----------
+        base_env : TemporalReasoningEnvironment
+            The base environment to wrap
+        reward_value : float
+            Reward value for correct final decisions
+        """
+        self.base_env = base_env
+        self.reward_value = reward_value
+        self.current_trial_target = None
+        self.episode_step = 0
+        self.max_episode_length = None
+    
+    def start_trial(self, max_episode_length: int = None) -> int:
+        """
+        Start a new trial and return the true target.
+        
+        Parameters:
+        -----------
+        max_episode_length : int, optional
+            Maximum number of steps in this episode
+            
+        Returns:
+        --------
+        int
+            The true target location
+        """
+        self.current_trial_target = self.base_env.start_trial()
+        self.episode_step = 0
+        self.max_episode_length = max_episode_length
+        return self.current_trial_target
+    
+    def step(self, action: int, is_final_step: bool = False):
+        """
+        Take a step in the environment with reward calculation.
+        
+        Parameters:
+        -----------
+        action : int
+            The action taken by the agent (cue selection or final decision)
+        is_final_step : bool
+            Whether this is the final decision step
+            
+        Returns:
+        --------
+        tuple
+            (cue, color, available_cues, reward, done) where:
+            - cue is the sampled cue location
+            - color is the observed outcome (0 or 1)
+            - available_cues is the list of available cues
+            - reward is the reward signal (0 during sampling, R for correct final decision)
+            - done is whether the episode is finished
+        """
+        self.episode_step += 1
+        
+        if is_final_step:
+            # Final decision step - no environment sampling, just reward calculation
+            reward = self.reward_value if action == self.current_trial_target else 0.0
+            done = True
+            # Return dummy values for cue and color since this is decision step
+            return None, None, list(range(self.base_env.k)), reward, done
+        else:
+            # Sampling step - get environment response
+            cue, color, available_cues = self.base_env.sample_round(self.current_trial_target)
+            reward = 0.0  # No reward during sampling
+            
+            # Check if episode should end (if max length specified)
+            done = False
+            if self.max_episode_length is not None and self.episode_step >= self.max_episode_length:
+                done = True
+                
+            return cue, color, available_cues, reward, done
+    
+    def sample_round(self, true_z: int):
+        """
+        Compatibility method for non-RL agents - delegates to base environment.
+        
+        Parameters:
+        -----------
+        true_z : int
+            The true target location
+            
+        Returns:
+        --------
+        tuple
+            (cue, color, available_cues)
+        """
+        return self.base_env.sample_round(true_z)
+    
+    @property
+    def k(self):
+        """Number of possible locations."""
+        return self.base_env.k
+    
+    @property
+    def p_t(self):
+        """Probability of correct color when cue matches true target."""
+        return self.base_env.p_t
+    
+    @property
+    def p_f(self):
+        """Probability of correct color when cue doesn't match true target."""
+        return self.base_env.p_f
+    
+    @property
+    def use_hidden_cues(self):
+        """Whether hidden cues are enabled."""
+        return self.base_env.use_hidden_cues
+    
+    @property
+    def min_available_cues(self):
+        """Minimum number of available cues per round."""
+        return self.base_env.min_available_cues
+    
+    @property
+    def max_available_cues(self):
+        """Maximum number of available cues per round."""
+        return self.base_env.max_available_cues

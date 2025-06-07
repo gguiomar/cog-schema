@@ -8,6 +8,42 @@ from datetime import datetime
 from typing import Dict, List
 from tqdm import tqdm
 
+# Try to import notebook tqdm with better error handling
+def get_tqdm_class():
+    """Get the appropriate tqdm class based on environment."""
+    try:
+        # First check if we're in a notebook environment
+        shell = get_ipython().__class__.__name__
+        if shell == 'ZMQInteractiveShell':
+            # We're in Jupyter, try to import notebook tqdm
+            try:
+                from tqdm.notebook import tqdm as tqdm_notebook
+                return tqdm_notebook
+            except ImportError:
+                # Fallback to regular tqdm if notebook version fails
+                print("Warning: tqdm.notebook not available, using standard tqdm. "
+                      "For better Jupyter support, install/update ipywidgets: pip install ipywidgets")
+                return tqdm
+        else:
+            # Terminal IPython or other
+            return tqdm
+    except NameError:
+        # Not in IPython at all
+        return tqdm
+
+# Detect if running in Jupyter notebook
+def is_notebook():
+    try:
+        shell = get_ipython().__class__.__name__
+        if shell == 'ZMQInteractiveShell':
+            return True   # Jupyter notebook or qtconsole
+        elif shell == 'TerminalInteractiveShell':
+            return False  # Terminal running IPython
+        else:
+            return False  # Other type (?)
+    except NameError:
+        return False      # Probably standard Python interpreter
+
 from .environment import TemporalReasoningEnvironment
 from .bayesian_agent import BayesAgent, RandomPolicyAgent, MAPAgent
 
@@ -175,7 +211,7 @@ class BayesianSimulation:
         
         return trial_stats
 
-    def run_simulation(self, agent_name: str, n_rounds: int) -> Dict:
+    def run_simulation(self, agent_name: str, n_rounds: int, pbar=None) -> Dict:
         """
         Run simulation for a specific agent and round count.
         
@@ -185,21 +221,22 @@ class BayesianSimulation:
             Name of the agent type
         n_rounds : int
             Number of rounds
+        pbar : tqdm, optional
+            Global progress bar to update
             
         Returns:
         --------
         dict
             Aggregated simulation results
         """
-        if self.verbose:
-            print(f"Running simulation: {agent_name}, {n_rounds} rounds, {self.n_trials} trials")
-        
         all_trials = []
         start_time = time.time()
         
-        for trial_num in tqdm(range(self.n_trials), desc=f"{agent_name} - {n_rounds}r", disable=not self.verbose):
+        for trial_num in range(self.n_trials):
             trial_stats = self.run_single_trial(agent_name, n_rounds, trial_num)
             all_trials.append(trial_stats)
+            if pbar:
+                pbar.update(1)
         
         total_time = time.time() - start_time
         
@@ -279,17 +316,25 @@ class BayesianSimulation:
         """
         start_time = time.time()
         
-        for agent_name in self.agent_types:
-            if agent_name not in self.results:
-                self.results[agent_name] = {}
-            
-            for n_rounds in self.rounds:
-                simulation_results = self.run_simulation(agent_name, n_rounds)
-                self.results[agent_name][n_rounds] = simulation_results
+        # Calculate total number of trials across all configurations
+        total_trials = len(self.agent_types) * len(self.rounds) * self.n_trials
+        
+        # Create global progress bar - get appropriate tqdm class
+        tqdm_class = get_tqdm_class()
+        with tqdm_class(total=total_trials, desc="Running simulations", disable=not self.verbose, 
+                       bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}] {postfix}') as pbar:
+            for agent_name in self.agent_types:
+                if agent_name not in self.results:
+                    self.results[agent_name] = {}
                 
-                # Save individual simulation results
-                if self.log_results:
-                    self.save_simulation_results(agent_name, n_rounds, simulation_results)
+                for n_rounds in self.rounds:
+                    pbar.set_postfix_str(f"{agent_name} - {n_rounds}r")
+                    simulation_results = self.run_simulation(agent_name, n_rounds, pbar)
+                    self.results[agent_name][n_rounds] = simulation_results
+                    
+                    # Save individual simulation results
+                    if self.log_results:
+                        self.save_simulation_results(agent_name, n_rounds, simulation_results)
         
         total_elapsed = time.time() - start_time
         
