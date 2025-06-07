@@ -38,6 +38,7 @@ class TaskManager:
                  activation_layers=None,
                  automate_activations_gathering=False,
                  add_padding=False,
+                 prompt_version=None,
                  ):
         """
         Initialize task manager with benchmark capabilities.
@@ -142,6 +143,7 @@ class TaskManager:
         self.hooks = list()
 
         self.add_padding = add_padding
+        self.prompt_version = prompt_version
 
     def initialize_agent(self, agent_name):
         """Initialize an LLM agent with the specified model."""
@@ -226,8 +228,7 @@ class TaskManager:
         dict
             Dictionary containing trial results and statistics
         """
-        task = self.task_type.get_task()
-        self.task = task(n_rounds, num_quadrants, self.num_cues)
+        self.task = self.task_type.get_task(n_rounds=n_rounds, n_quadrants=num_quadrants, n_cues=self.num_cues, prompt_version=self.prompt_version)
         self.task.verbose = self.verbose # This is not a nice fix, kinda scrappy
         self.task.update_trial(trial_num)
         self.thinking_times = []  # Reset thinking times for this trial

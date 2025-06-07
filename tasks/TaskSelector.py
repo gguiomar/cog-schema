@@ -26,6 +26,6 @@ class TaskSelector(Enum):
                 return task
         raise ValueError(f"Task '{task_name}' not found in TaskSelector.")
     
-    def get_task(self):
-        """Return an instance of the task class."""
-        return self._task_class
+    def get_task(self, **kwargs):
+        """Return an instance of the task class with optional parameters."""
+        return self._task_class(**kwargs)
