@@ -325,4 +325,205 @@ learning_curves = {
 
 plot_learning_curves(learning_curves, save_plots=True)
 
+#%%
+# RL Agent vs MAP Bayes Agent Comparison
+def run_rl_vs_bayes_comparison(k=4, p_t=0.9, p_f=0.5, n_trials=100, max_rounds=30, 
+                               seed=42, n_training_episodes=1000):
+    """
+    Run simulation comparing RL agent (alpha=0.1, beta=1) vs MAP Bayes agent.
+    """
+    rng = np.random.default_rng(seed)
+    env = TemporalReasoningEnvironment(k, p_t, p_f, rng)
+    rl_env = RLEnvironmentWrapper(env)
+    
+    # Initialize and train RL agent
+    rl_agent = RLAgent(k, p_t, p_f, alpha=0.1, gamma=0.9, beta=1.0, state_discretization=10)
+    
+    print("Training RL agent for comparison...")
+    training_rewards = []
+    
+    # Training phase
+    for episode in range(n_training_episodes):
+        rl_agent.reset()
+        true_z = rl_env.start_trial(max_episode_length=max_rounds)
+        
+        episode_reward = 0
+        done = False
+        step = 0
+        
+        while not done and step < max_rounds:
+            current_state = rl_agent.discretize_state(rl_agent.posterior)
+            available_cues = list(range(k))
+            action = rl_agent.select_action(available_cues, current_state)
+            
+            cue, color, _, reward, done = rl_env.step(action, is_final_step=(step == max_rounds - 1))
+            
+            if not done:
+                rl_agent.update(cue, color)
+                next_state = rl_agent.discretize_state(rl_agent.posterior)
+                rl_agent.update_q_values(current_state, action, reward, next_state, done)
+            else:
+                final_decision = action
+                reward = 1.0 if final_decision == true_z else 0.0
+                rl_agent.update_q_values(current_state, action, reward, current_state, done)
+            
+            episode_reward += reward
+            step += 1
+        
+        training_rewards.append(episode_reward)
+        
+        if episode % 200 == 0:
+            recent_avg = np.mean(training_rewards[-100:]) if len(training_rewards) >= 100 else np.mean(training_rewards)
+            print(f"  Episode {episode}, Recent avg reward: {recent_avg:.3f}")
+    
+    # Testing phase
+    print("Testing RL agent vs MAP Bayes agent...")
+    results = {'RL_Agent': {}, 'MAP_Bayes': {}}
+    
+    for n_rounds in range(1, max_rounds + 1):
+        if n_rounds % 5 == 0:
+            print(f"  Processing {n_rounds} rounds...")
+        
+        rl_trials = []
+        bayes_trials = []
+        
+        for trial in range(n_trials):
+            # Start trial
+            true_z = env.start_trial()
+            
+            # Initialize agents
+            rl_agent.posterior = np.full(k, 1.0 / k)  # Reset beliefs but keep Q-table
+            bayes_agent = BayesAgent(k, p_t, p_f)
+            map_agent = MAPAgent(k)
+            
+            # Run rounds - RL agent selects cues
+            for round_num in range(n_rounds):
+                available_cues = list(range(k))
+                
+                # RL agent selects cue
+                current_state = rl_agent.discretize_state(rl_agent.posterior)
+                rl_cue = rl_agent.select_action(available_cues, current_state)
+                if rl_cue == true_z:
+                    p_color_1 = p_t
+                else:
+                    p_color_1 = p_f
+                rl_color = int(rng.random() < p_color_1)
+                rl_agent.update(rl_cue, rl_color)
+                
+                # Bayes agent uses random cue selection
+                bayes_cue = rng.choice(available_cues)
+                if bayes_cue == true_z:
+                    p_color_1 = p_t
+                else:
+                    p_color_1 = p_f
+                bayes_color = int(rng.random() < p_color_1)
+                bayes_agent.update(bayes_cue, bayes_color)
+            
+            # Final decisions
+            rl_decision = rl_agent.get_decision()  # Uses MAP
+            bayes_decision = bayes_agent.get_decision()  # Uses MAP
+            
+            # Store results
+            rl_trials.append({
+                'correct': int(rl_decision == true_z),
+                'entropy': rl_agent.entropy,
+                'posterior_true_target': rl_agent.posterior[true_z],
+                'map_probability': np.max(rl_agent.posterior)
+            })
+            
+            bayes_trials.append({
+                'correct': int(bayes_decision == true_z),
+                'entropy': bayes_agent.entropy,
+                'posterior_true_target': bayes_agent.posterior[true_z],
+                'map_probability': np.max(bayes_agent.posterior)
+            })
+        
+        # Aggregate results
+        for agent_name, trials in [('RL_Agent', rl_trials), ('MAP_Bayes', bayes_trials)]:
+            metrics = {}
+            for metric_name in ['correct', 'entropy', 'posterior_true_target', 'map_probability']:
+                values = [t[metric_name] for t in trials]
+                metrics[metric_name] = {
+                    'mean': np.mean(values),
+                    'std': np.std(values),
+                    'values': values
+                }
+            results[agent_name][n_rounds] = metrics
+    
+    return results, training_rewards
+
+#%%
+def plot_rl_vs_bayes_comparison(results, save_plots=True):
+    """Plot comparison between RL agent and MAP Bayes agent."""
+    sns.set_style("white")
+    colors = {'RL_Agent': '#2E86AB', 'MAP_Bayes': '#A23B72'}
+    plt.rcParams.update({'font.size': 12, 'axes.titlesize': 14, 'axes.labelsize': 12, 'legend.fontsize': 11})
+    
+    fig, axes = plt.subplots(2, 2, figsize=(12, 8))
+    axes = axes.flatten()
+    
+    rounds_list = sorted(results['RL_Agent'].keys())
+    
+    metrics = ['correct', 'entropy', 'posterior_true_target', 'map_probability']
+    titles = {
+        'correct': 'Decision Accuracy',
+        'entropy': 'Posterior Entropy (nats)',
+        'posterior_true_target': 'P(true target)',
+        'map_probability': 'MAP Probability'
+    }
+    
+    for i, metric in enumerate(metrics):
+        ax = axes[i]
+        
+        for agent_name in ['RL_Agent', 'MAP_Bayes']:
+            means = []
+            stds = []
+            
+            for n_rounds in rounds_list:
+                data = results[agent_name][n_rounds][metric]
+                means.append(data['mean'])
+                stds.append(data['std'])
+            
+            means = np.array(means)
+            stds = np.array(stds)
+            
+            label = 'RL Agent (α=0.1, β=1)' if agent_name == 'RL_Agent' else 'MAP Bayes Agent'
+            color = colors[agent_name]
+            
+            ax.plot(rounds_list, means, "-o", label=label, color=color, linewidth=2.5, markersize=4)
+            ax.fill_between(rounds_list, means - stds, means + stds, color=color, alpha=0.2)
+        
+        # Add reference lines
+        if metric == 'correct':
+            ax.axhline(y=0.25, color="gray", linestyle="--", alpha=0.7, label="Chance level")
+            ax.set_ylim(0, 1)
+        elif metric == 'entropy':
+            ax.axhline(y=np.log(4), color="gray", linestyle="--", alpha=0.7, label="Max entropy")
+        
+        ax.set_xlabel("Number of Rounds")
+        ax.set_ylabel(titles[metric])
+        ax.set_title(f"{titles[metric]} Comparison")
+        ax.legend()
+        ax.grid(True, alpha=0.3)
+        sns.despine(ax=ax)
+    
+    plt.tight_layout()
+    
+    if save_plots:
+        os.makedirs("observers/bayesian_plots", exist_ok=True)
+        plt.savefig("observers/bayesian_plots/rl_vs_bayes_comparison.png", dpi=300, bbox_inches='tight')
+        print("Plot saved to observers/bayesian_plots/rl_vs_bayes_comparison.png")
+    
+    plt.show()
+
+#%%
+# Run the RL vs Bayes comparison
+print("Starting RL Agent vs MAP Bayes Agent comparison...")
+results, training_rewards = run_rl_vs_bayes_comparison(
+    k=4, p_t=0.9, p_f=0.5, n_trials=100, max_rounds=30, seed=42, n_training_episodes=1000
+)
+
+# Plot results
+plot_rl_vs_bayes_comparison(results, save_plots=True)
+
 # %%

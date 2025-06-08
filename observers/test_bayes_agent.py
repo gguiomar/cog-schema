@@ -91,7 +91,7 @@ sim_standard = BayesianSimulation(
 )
 
 results_standard = sim_standard.run_all_simulations()
-sim_standard.plot_results(save_plots=False)
+#sim_standard.plot_results(save_plots=False)
 
 #%%
 # Hidden cues task (1-3 cues available)
@@ -125,7 +125,9 @@ sim_weak_signal = BayesianSimulation(
     verbose=True,
     log_results=True,
     seed=42,
-    use_hidden_cues=False  
+    use_hidden_cues=True,
+    min_available_cues=1,  
+    max_available_cues=3     
 )
 
 results_weak_signal = sim_weak_signal.run_all_simulations()
@@ -134,7 +136,7 @@ results_weak_signal = sim_weak_signal.run_all_simulations()
 # Very strong signal
 sim_strong_signal = BayesianSimulation(
     k=4,
-    p_t=0.95,  # Very strong signal
+    p_t=0.6,  # Very strong signal
     p_f=0.5,
     n_trials=100,  
     rounds=list(np.arange(1, 50)),  
@@ -142,7 +144,9 @@ sim_strong_signal = BayesianSimulation(
     verbose=True,
     log_results=True,
     seed=42,
-    use_hidden_cues=False  
+    use_hidden_cues=True,  
+    min_available_cues=1,  
+    max_available_cues=3  
 )
 
 results_strong_signal = sim_strong_signal.run_all_simulations()
@@ -158,7 +162,11 @@ results_comparison = {
 
 plot_bayes_agent_comparison(results_comparison, save_plots=True)
 
+
 #%%
+
+####### -- Additional Simulations -- #######
+
 # Different k values (number of locations)
 sim_k2 = BayesianSimulation(
     k=2,  # Binary choice
