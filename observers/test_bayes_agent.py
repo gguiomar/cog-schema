@@ -76,88 +76,81 @@ def plot_bayes_agent_comparison(results_dict, save_plots=True, fig_size=(14, 8))
     plt.show()
 
 #%%
+# Signal strength comparison with hidden cues
+print("Running signal strength comparison...")
+
+# Common parameters
+common_params = {
+    'k': 4,
+    'p_f': 0.5,
+    'n_trials': 100,
+    'rounds': list(range(1, 50)),
+    'agent_types': ["BayesAgent"],
+    'verbose': True,
+    'log_results': True,
+    'seed': 42,
+    'use_hidden_cues': True,
+    'min_available_cues': 1,
+    'max_available_cues': 2
+}
+
 # Standard task (all cues available)
-sim_standard = BayesianSimulation(
-    k=4,
-    p_t=0.9,
-    p_f=0.5,
-    n_trials=100,  
-    rounds=np.arange(1, 50),  
-    agent_types=["BayesAgent"],
-    verbose=True,
-    log_results=True,
-    seed=42,
-    use_hidden_cues=False  
-)
+results_standard = BayesianSimulation(
+    **{**common_params, 'use_hidden_cues': False, 'p_t': 0.9}).run_all_simulations()
 
-results_standard = sim_standard.run_all_simulations()
-#sim_standard.plot_results(save_plots=False)
+# Hidden cues with different signal strengths
+results_hidden_09 = BayesianSimulation(**{**common_params, 'p_t': 0.9}).run_all_simulations()
+results_hidden_07 = BayesianSimulation(**{**common_params, 'p_t': 0.7}).run_all_simulations()
+results_hidden_06 = BayesianSimulation(**{**common_params, 'p_t': 0.6}).run_all_simulations()
 
 #%%
-# Hidden cues task (1-3 cues available)
-sim_hidden = BayesianSimulation(
-    k=4,
+# sim with k = 10, p_t = 0.9, p_f = 0.5 and hidden cues with max 2 cues
+results_hidden_k10 = BayesianSimulation(
+    k=10,
     p_t=0.9,
     p_f=0.5,
-    n_trials=100,  
-    rounds=list(np.arange(1, 50)),  
-    agent_types=["BayesAgent"],
-    verbose=True,
-    log_results=True,
-    seed=42,  
-    use_hidden_cues=True,  
-    min_available_cues=1,  
-    max_available_cues=3   
-)
-
-results_hidden = sim_hidden.run_all_simulations()
-sim_hidden.plot_results(save_plots=False)
-
-#%%
-# Different p_t values (signal strength)
-sim_weak_signal = BayesianSimulation(
-    k=4,
-    p_t=0.7,  # Weaker signal
-    p_f=0.5,
-    n_trials=100,  
-    rounds=list(np.arange(1, 50)),  
+    n_trials=100,
+    rounds=list(range(1, 50)),
     agent_types=["BayesAgent"],
     verbose=True,
     log_results=True,
     seed=42,
     use_hidden_cues=True,
-    min_available_cues=1,  
-    max_available_cues=3     
-)
-
-results_weak_signal = sim_weak_signal.run_all_simulations()
+    min_available_cues=1,
+    max_available_cues=2
+).run_all_simulations()
 
 #%%
-# Very strong signal
-sim_strong_signal = BayesianSimulation(
-    k=4,
-    p_t=0.6,  # Very strong signal
+results_nohidden_k10 = BayesianSimulation(
+    k=10,
+    p_t=0.9,
     p_f=0.5,
-    n_trials=100,  
-    rounds=list(np.arange(1, 50)),  
+    n_trials=100,
+    rounds=list(range(1, 50)),
     agent_types=["BayesAgent"],
     verbose=True,
     log_results=True,
     seed=42,
-    use_hidden_cues=True,  
-    min_available_cues=1,  
-    max_available_cues=3  
-)
+    use_hidden_cues=False,
+).run_all_simulations()
 
-results_strong_signal = sim_strong_signal.run_all_simulations()
 
 #%%
+
 # Compare all conditions
 results_comparison = {
-    'Standard (p_t=0.9)': results_standard,
-    'Hidden Cues (p_t=0.9)': results_hidden,
-    'Weak Signal (p_t=0.7)': results_weak_signal,
-    'Strong Signal (p_t=0.95)': results_strong_signal
+    'No Hidden Cues (p_t=0.9)': results_standard,
+    'Hidden Cues (p_t=0.9)': results_hidden_09,
+    'Hidden Cues (p_t=0.7)': results_hidden_07,
+    'Hidden Cues (p_t=0.6)': results_hidden_06,
+}
+
+plot_bayes_agent_comparison(results_comparison, save_plots=True)
+
+#%%
+results_comparison = {
+    'Hidden Cues (k=10, p_t=0.9)': results_hidden_k10,
+    'No Hidden Cues (k=10, p_t=0.9)': results_nohidden_k10
 }
 
 plot_bayes_agent_comparison(results_comparison, save_plots=True)
