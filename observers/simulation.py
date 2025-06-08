@@ -45,7 +45,7 @@ def is_notebook():
         return False      # Probably standard Python interpreter
 
 from .environment import TemporalReasoningEnvironment
-from .bayesian_agent import BayesAgent, RandomPolicyAgent, MAPAgent
+from .agents import BayesAgent, RandomPolicyAgent, MAPAgent
 
 
 class BayesianSimulation:

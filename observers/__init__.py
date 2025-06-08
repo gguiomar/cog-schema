@@ -17,7 +17,7 @@ Usage:
 """
 
 from .environment import TemporalReasoningEnvironment
-from .bayesian_agent import BayesAgent, RandomPolicyAgent, MAPAgent
+from .agents import BayesAgent, RandomPolicyAgent, MAPAgent
 from .simulation import BayesianSimulation
 
 __all__ = [

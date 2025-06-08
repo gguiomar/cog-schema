@@ -53,8 +53,8 @@ def is_notebook():
     except NameError:
         return False      # Probably standard Python interpreter
 
-from bayesian.environment import TemporalReasoningEnvironment, RLEnvironmentWrapper
-from bayesian.bayesian_agent import BayesAgent, RandomPolicyAgent, MAPAgent, ActiveInferenceAgent, RLAgent
+from observers.environment import TemporalReasoningEnvironment, RLEnvironmentWrapper
+from observers.agents import BayesAgent, RandomPolicyAgent, MAPAgent, ActiveInferenceAgent, RLAgent
 
 #%%
 
