@@ -180,3 +180,4 @@ class BiasDetectionTask(TaskGeneral):
             )
         except AttributeError:
             raise ValueError("Final prompt not defined for this task.")
+
